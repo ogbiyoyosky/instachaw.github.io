@@ -8,26 +8,6 @@ export function toQueryString(obj) {
   return str.join("&");
 }
 
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-export function debounce(func, wait, immediate) {
-  let timeout;
-  return () => {
-    let context = this;
-    let args = arguments;
-    let later = () => {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    let callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}
-
 // function returns a universally unique identifier (note this is not RFC4122 compliant)
 export function getUuid() {
   function s4() {
@@ -99,4 +79,40 @@ export function removeQueryParameter(uri, key) {
   }
   uri = pars.length > 0 ? pars.join("&") : "";
   return uri;
+}
+
+/**
+ * Rounds a value to a the provided number of decimal places.
+ * 
+ * @param {*} value 
+ * @param {*} decimals 
+ */
+export function roundToDecimalPlaces(value, decimals = 2) {
+  return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+}
+
+/**
+ * Returns a string in title case.
+ * 
+ * @param {String} str 
+ */
+export function toTitleCase(str) {
+  return str
+    .charAt(0)
+    .toUpperCase()
+    .concat(str.slice(1, str.length));
+}
+
+/**
+ * Finds an item in a set of items
+ * 
+ * @param {*} item 
+ * @param {*} cartItems 
+ */
+export function getCartItemFromFeed(item, cartItems) {
+  return cartItems.length
+    ? cartItems.filter(
+        cartItem => parseInt(cartItem.id, 10) === parseInt(item.id, 10)
+      )[0]
+    : null;
 }

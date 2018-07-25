@@ -1,6 +1,13 @@
 import { fromJS } from "immutable";
 
-import { SET_NAV_ITEM_ACTIVE, SET_HEADER, REDUCER_NAME } from "./constants";
+import {
+  SET_NAV_ITEM_ACTIVE,
+  SET_MENU_OPEN_STATE,
+  SET_ACCOUNT_MENU_OPEN_STATE,
+  SET_HEADER,
+  SET_HEADER_VISIBILITY,
+  REDUCER_NAME
+} from "./constants";
 
 const initialState = fromJS({
   nav: {
@@ -9,7 +16,10 @@ const initialState = fromJS({
     icon: "",
     isActive: false,
     children: []
-  }
+  },
+  isMenuOpen: false,
+  isAccountMenuOpen: false,
+  isHeaderVisible: true
 });
 
 export function headerReducer(state = initialState, action) {
@@ -30,6 +40,12 @@ export function headerReducer(state = initialState, action) {
         );
     case SET_HEADER:
       return state.set("nav", action.data);
+    case SET_HEADER_VISIBILITY:
+      return state.set("isHeaderVisible", action.data.isHeaderVisible);
+    case SET_MENU_OPEN_STATE:
+      return state.set("isMenuOpen", action.data.isMenuOpen);
+    case SET_ACCOUNT_MENU_OPEN_STATE:
+      return state.set("isAccountMenuOpen", action.data.isAccountMenuOpen);
     default:
       return state;
   }

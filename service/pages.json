@@ -2,13 +2,92 @@
     "/": {
         "name": "Home",
         "meta": {
-            "title": "React PWA"
+            "title": "Delight PWA"
         },
         "title": "Delight",
         "images": [],
         "buttons": [{"url": "/settings", "title": "Settings"}],
         "html": "<p>Delight is a PWA under development</p>",
-        "url": "/"
+        "url": "/",
+        "pathname": "/",
+        "protected": false
+    },
+    "/cart": {
+        "name": "Cart",
+        "meta": {
+            "title": "Cart"
+        },
+        "title": "Cart PWA",
+        "html": "<p>Cart Page</p>",
+        "url": "/cart",
+        "pathname": "/cart",
+        "protected": false
+    },
+    "/checkout": {
+        "name": "Checkout",
+        "meta": {
+            "title": "Checkout"
+        },
+        "title": "Checkout PWA",
+        "html": "<p>Checkout Page</p>",
+        "url": "/checkout",
+        "pathname": "/checkout",
+        "protected": true
+    },
+    "/treat/:id": {
+        "name": "Treat",
+        "meta": {
+            "title": "Treat"
+        },
+        "title": "Exotic Treat Special",
+        "html": "<p>Treat Page</p>",
+        "url": "/treat/:id",
+        "pathname": "/treat",
+        "protected": false        
+    },
+    "/account": {
+        "name": "Account",
+        "meta": {
+            "title": "Account"
+        },
+        "title": "Account",
+        "html": "<p>Account Page</p>",
+        "url": "/account/:tab?/:opt?",
+        "pathname": "/account",
+        "protected": true        
+    },
+    "/login": {
+        "name": "Login",
+        "meta": {
+            "title": "Login"
+        },
+        "title": "Login",
+        "html": "<p>Login Page</p>",
+        "url": "/login",
+        "pathname": "/login",
+        "protected": false        
+    },
+    "/register": {
+        "name": "Register",
+        "meta": {
+            "title": "Register"
+        },
+        "title": "Register",
+        "html": "<p>Registration Page</p>",
+        "url": "/register",
+        "pathname": "/register",
+        "protected": false    
+    },
+    "/resetPassword": {
+        "name": "ResetPassword",
+        "meta": {
+            "title": "Reset Password"
+        },
+        "title": "Reset Password",
+        "html": "<p>Reset Page</p>",
+        "url": "/resetPassword",
+        "pathname": "/resetPassword",
+        "protected": false    
     },
     "/page-not-found": {
         "name": "Page",
@@ -17,6 +96,8 @@
         },
         "title": "Page Not Found",
         "html": "<p>The page you were looking for could not be found. Please contact an administrator.</p>",
-        "url": "/page-not-found"
+        "url": "/page-not-found",
+        "pathname": "/page-not-found",
+        "protected": false        
     }
 }

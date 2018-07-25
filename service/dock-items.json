@@ -1,0 +1,29 @@
+[
+    {
+      "name": "home",
+      "icon": "home",
+      "path": "/"
+    },
+    {
+      "name": "cart",
+      "icon": "carriage",
+      "path": "/cart"
+    },
+    {
+      "name": "account",
+      "icon": "user",
+      "path": "/account",
+      "alternates": [
+        {
+          "name": "notifications",
+          "icon": "notification",
+          "path": "/account/notifications"
+        },
+        {
+          "name": "orders",
+          "icon": "web",
+          "path": "/account/orders"
+        }
+      ]
+    }
+  ]

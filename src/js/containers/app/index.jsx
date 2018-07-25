@@ -2,6 +2,7 @@
  * Root component
  */
 import React from "react";
+
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 
@@ -10,6 +11,41 @@ import { configureStore } from "../../redux/store";
 import { getRoutesState } from "../../routes/reducer";
 import { setDeferredPrompt } from "./actions";
 import Routes from "../../routes/index";
+
+const initServiceWorker = () => {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then(reg => {
+        console.log("Successfully registered service worker", reg);
+      })
+      .catch(err => {
+        console.warn("Error whilst registering service worker", err);
+      });
+  }
+};
+
+const initOffline = () => {
+  window.addEventListener(
+    "online",
+    e => {
+      OfflineManager.setOffline(false);
+    },
+    false
+  );
+
+  window.addEventListener(
+    "offline",
+    e => {
+      OfflineManager.setOffline(true);
+    },
+    false
+  );
+
+  if (!navigator.onLine) {
+    OfflineManager.setOffline(true);
+  }
+};
 
 export default class App extends React.Component {
   constructor(props) {
@@ -51,38 +87,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const initServiceWorker = () => {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then(reg => {
-        console.log("Successfully registered service worker", reg);
-      })
-      .catch(err => {
-        console.warn("Error whilst registering service worker", err);
-      });
-  }
-};
-
-const initOffline = () => {
-  window.addEventListener(
-    "online",
-    e => {
-      OfflineManager.setOffline(false);
-    },
-    false
-  );
-
-  window.addEventListener(
-    "offline",
-    e => {
-      OfflineManager.setOffline(true);
-    },
-    false
-  );
-
-  if (!navigator.onLine) {
-    OfflineManager.setOffline(true);
-  }
-};
