@@ -13,11 +13,57 @@ body {
   background-color: #fff;
 }
 
+.page-container {
+  width: 200%;
+  overflow-x: hidden;
+}
+
+.page-section__forms {
+  transform: translateX(0);
+  opacity: 1;
+  -webkit-transition: transform 5s ease-in 0.5s,
+                      opacity 0.5s ease-in;
+
+  -moz-transition:    transform 5s ease-in 0.5s,
+                      opacity 0.5s ease-in;
+
+  transition:         transform 5s ease-in 0.5s,
+                      opacity 0.5s ease-in;  
+}
+
+.page-section__success-notification {
+  transform: translateX(100%);
+  opacity: 0;
+  -webkit-transition: transform 10s ease-in 0.5s,
+                      opacity 3s ease-in;
+
+  -moz-transition:    transform 5s ease-in 0.5s,
+                      opacity 3s ease-in;
+
+  transition:         transform 5s ease-in 0.5s,
+                      opacity 3s ease-in;  
+}
+
+.page-container.has-success-notification .page-section__forms {
+  transform: translateX(-100%)
+}
+
+.page-container.has-success-notification .page-section__success-notification {
+  transform: translateX(-100%);
+  opacity: 1;
+}
+
+.page-section {
+  width: 50%;
+  float: left;
+  overflow-x: hidden;
+}
+
 .form-signin {
   width: 100%;
   max-width: 330px;
-  padding: 15px;
   margin: auto;
+  overflow: hidden;
 }
 .form-signin .checkbox {
   font-weight: 400;
