@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ee353b">
+    <meta name="msapplication-TileColor" content="#ee353b">
+    <meta name="theme-color" content="#2f2e33">
+
+
+    <title>Instachaw &#8226; Get on the list</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="signin.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+    <form class="form-signin" id="earlybird-form"> 
+      <img class="mb-3" src="../assets/brand/instachaw-primary.svg" alt="" width="150" height="50">
+      
+      <div class="page-container _has-success-notification" id="page-container">
+          <section class="page-section page-section__forms">
+              <div class="form-group">
+                  <label for="inputEmail" class="label">Email address<sup style="color: red;">*</sup></label>
+                  <input type="email" name="email" id="inputEmail" class="form-control mb-2" placeholder="" required autofocus>  
+                </div>
+          
+                <div class="form-group mb-3">
+                  <label for="inputAddress" class="label">Where do you live?</label>
+                  <input type="text" name="address" id="inputAddress" class="form-control mb-1">  
+                  <p class="small text-left text-muted">Example: Suite 24, No 2 Somalia Crescent, PHC</p>
+                </div>
+          
+                <button class="btn btn-lg btn-primary btn-block" id="submit-button" type="submit">Join the Earlybird list</button>      
+          </section>
+    
+          <section class="page-section page-section__success-notification">
+              <h3 class="h4 mb-3">
+                  Welcome to the top.              
+              </h3>
+              <p class="lead">
+                Congratulations! You are now at the top of the Earlybird list.
+              </p>
+    
+              <p class="">
+                You'll get awesome offers and you'll be first to know when we are ready to serve you.
+              </p>
+          </section>
+    
+      </div>
+      <p class="mt-3 mb-3 small text-muted">&copy; Instachaw, 2018</p>
+    </form>
+
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-firestore.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCF7kmj2jhNUzm_E1-MLRd1WoL1GVzInqo",
+        authDomain: "instachaw-b45a5.firebaseapp.com",
+        databaseURL: "https://instachaw-b45a5.firebaseio.com",
+        projectId: "instachaw-b45a5",
+        storageBucket: "instachaw-b45a5.appspot.com",
+        messagingSenderId: "371905900841"
+      };
+      firebase.initializeApp(config);
+    </script>
+    
+    <script>
+        function EarlyBirdApp () {
+          this.init = () => {
+            this.earlybirdForm = document.getElementById('earlybird-form');
+            this.pageContainer = document.getElementById("page-container");
+            this.submitButton = document.getElementById("submit-button");
+
+            this.isSubmitButtonActive = true;
+
+            this.earlyBirdDetails = {
+              email: '',
+              address: ''
+            }
+
+            this.setupEventListeners()
+          }
+
+          this.setupEventListeners = function () {
+            let self = this;
+
+            this.earlybirdForm.onsubmit = function (e) {
+              e.preventDefault()
+              let email = document.getElementById('inputEmail').value
+              let address = document.getElementById('inputAddress').value
+
+              self._setEarlyBirdDetail('email', email)
+              self._setEarlyBirdDetail('address', address)
+
+              self._handleEarlyBirdSignup()
+            }
+          }
+
+          this._toggleSubmitButtonLoadingState = () => {
+            this.isSubmitButtonActive = !this.isSubmitButtonActive;
+            this.submitButton.disabled = !this.isSubmitButtonActive
+            let submitButtonMessage = this.submitButton.innerHTML;
+
+            this.submitButton.innerHTML = this.isSubmitButtonActive ? "Join the Earlybird list" 
+            : "Getting you on the list...";
+          }
+
+          this._setEarlyBirdDetail = (detail, value) => {
+            this.earlyBirdDetails[detail] = value
+          }
+
+          this._getEarlyBirdDetail = (detail) => {
+            return this.earlyBirdDetails.hasOwnProperty(detail) ? 
+            this.earlyBirdDetails[detail] : 
+            null;
+          }
+
+          this._handleEarlyBirdSignup = () => {
+            this._toggleSubmitButtonLoadingState()
+
+            this._persistToStorage({
+              email: this._getEarlyBirdDetail('email'),
+              address: this._getEarlyBirdDetail('address'),
+            })
+          }
+
+          this._handleEarlyBirdSignupSuccess = () => {
+            this._transitionToFeedback()
+          }
+
+          this._handleEarlyBirdSignupError = () => {
+            alert(`So sorry we've been unable to add you to the list, please try again.`)
+            this._toggleSubmitButtonLoadingState()
+          }
+
+          this._persistToStorage = (data) => {
+            var self = this,
+                db = firebase.firestore();
+
+            db.settings({
+              timestampsInSnapshots: true
+            })
+
+            return db
+              .collection('earlybirds')
+              .add(data)
+              .then((docRef) => {
+                return self._handleEarlyBirdSignupSuccess()
+              })
+              .catch((error) => {
+                self._handleEarlyBirdSignupError(error)
+            });
+          }
+
+          this._transitionToFeedback = () => {
+            let pageContainerClasses = this.pageContainer.classList;
+
+              !pageContainerClasses.contains('has-success-notification') > -1 ? 
+              pageContainerClasses.add('has-success-notification') :
+              pageContainerClasses.remove('has-success-notification')
+            }
+
+            this.init()      
+          }
+
+          let earlyBirdApp = new EarlyBirdApp()
+    </script>
+  </body>
+</html>
