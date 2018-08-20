@@ -10,8 +10,14 @@ import { setUser } from "../../screens/account/actions";
 import { setLoginStatus } from "../../screens/login/actions";
 import { sendRequest } from "../../services/ApiService";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 export const attemptRegistration = (data, cb) => {
   return dispatch => {
+    let endpoint = `api/v1/users`;
     dispatch(
       setRegistrationAttemptingStatus({
         isAttemptingRegistration: true
@@ -19,7 +25,7 @@ export const attemptRegistration = (data, cb) => {
     );
 
     return sendRequest({
-      endpoint: "http://localhost:3333/api/v1/users",
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "POST",
       payload: JSON.stringify(data)
     })

@@ -21,6 +21,11 @@ import {
 } from "../../containers/app/actions";
 import { getPageData } from "../../../../service/service";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 const loadAccount = data => {
   return {
     type: SET_ACCOUNT,
@@ -36,9 +41,11 @@ export const addUserOrder = data => {
 };
 
 export const fetchOrders = () => {
+  let endpoint = `api/v1/orders`;
+
   return dispatch => {
     sendRequest({
-      endpoint: "http://localhost:3333/api/v1/orders",
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "GET"
     })
       .then(response => {
@@ -56,8 +63,9 @@ export const fetchOrders = () => {
 
 export const fetchTransactionToken = (cb = () => {}) => {
   return dispatch => {
+    let endpoint = `api/v1/transactions/generateToken`;
     sendRequest({
-      endpoint: `http://localhost:3333/api/v1/transactions/generateToken`,
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "POST"
     })
       .then(response => {
@@ -71,8 +79,10 @@ export const fetchTransactionToken = (cb = () => {}) => {
 
 export const fetchTransactionsCount = ({ userID }, cb = () => {}) => {
   return dispatch => {
+    let endpoint = `api/v1/transactions?type=getCount&uid=${userID}`;
+
     sendRequest({
-      endpoint: `http://localhost:3333/api/v1/transactions?type=getCount&uid=${userID}`,
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "GET"
     })
       .then(response => {
@@ -91,8 +101,9 @@ export const fetchTransactionsCount = ({ userID }, cb = () => {}) => {
 
 export const cancelOrder = data => {
   return dispatch => {
+    let endpoint = `api/v1/orders/${data.orderID}`;
     sendRequest({
-      endpoint: `http://localhost:3333/api/v1/orders/${data.orderID}`,
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "DELETE"
     })
       .then(response => {

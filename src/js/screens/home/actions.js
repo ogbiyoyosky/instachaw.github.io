@@ -15,6 +15,11 @@ import {
 import { getPageData } from "../../../../service/service";
 import { sendRequest } from "../../services/ApiService";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 export const setSearch = data => {
   return {
     type: SET_SEARCH,
@@ -80,9 +85,10 @@ export const fetchHome = data => {
 };
 
 export const attemptSearchQuery = data => {
+  let endpoint = `api/v1/items?search=${data["search"]}`;
   return dispatch => {
     sendRequest({
-      endpoint: `http://localhost:3333/api/v1/items?search=${data["search"]}`,
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "GET"
     })
       .then(response => {

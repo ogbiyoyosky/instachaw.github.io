@@ -13,8 +13,15 @@ import {
 import { setUser } from "../../screens/account/actions";
 import { sendRequest } from "../../services/ApiService";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 export const attemptLogin = (data, cb) => {
   return dispatch => {
+    let endpoint = `api/v1/auth`;
+
     dispatch(
       setLoginAttemptingStatus({
         isAttemptingLogin: true
@@ -22,7 +29,7 @@ export const attemptLogin = (data, cb) => {
     );
 
     return sendRequest({
-      endpoint: "http://localhost:3333/api/v1/auth",
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "POST",
       payload: JSON.stringify(data)
     })

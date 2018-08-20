@@ -20,6 +20,11 @@ import {
 import { getTreatsData, getPageData } from "../../../../service/service";
 import { sendRequest } from "../../services/ApiService";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 const fetchTreats = data => {
   let endpoint = TREATS_ENDPOINT;
 
@@ -29,8 +34,9 @@ const fetchTreats = data => {
 
   return dispatch => {
     let endpointSuffix = data.id ? data.id : `?page=${data.page}`;
+    let endpoint = `api/v1/items/${endpointSuffix}`;
     sendRequest({
-      endpoint: `http://localhost:3333/api/v1/items/${endpointSuffix}`,
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "GET"
     })
       .then(response => {

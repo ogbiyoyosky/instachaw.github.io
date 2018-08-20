@@ -19,8 +19,14 @@ import {
 
 import { addUserOrder } from "../../screens/account/actions";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 export const attemptOrderPlacement = (data, callback) => {
   return dispatch => {
+    let endpoint = `api/v1/orders`;
     dispatch(
       setCheckoutAttemptingStatus({
         isAttemptingCheckout: true
@@ -28,7 +34,7 @@ export const attemptOrderPlacement = (data, callback) => {
     );
 
     sendRequest({
-      endpoint: "http://localhost:3333/api/v1/orders",
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "POST",
       payload: JSON.stringify(data)
     })
