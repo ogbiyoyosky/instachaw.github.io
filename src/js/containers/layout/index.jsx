@@ -6,12 +6,21 @@ import Header from "../header/index";
 import Footer from "../footer/index";
 import Menu from "../../components/menu";
 import Meta from "../../components/meta/meta";
-import { ThemeProvider } from "pcln-design-system";
+import { LoadingDisplay } from "../../components/UI/molecules";
+
+import ThemeProvider from "./ThemeProvider";
 import { getAppState } from "../app/reducer";
+import { fetchRates } from "../app/actions";
 import { getHeaderState } from "../header/reducer";
 import { setMenuOpenState } from "../header/actions";
 
 class Layout extends React.PureComponent {
+  componentDidMount() {
+    if (!this.props.app.hasFetchedRates) {
+      this.props.fetchRates();
+    }
+  }
+
   // returns the JSX that will be rendered for this component
   render() {
     const { children, app } = this.props;
@@ -23,8 +32,8 @@ class Layout extends React.PureComponent {
             minHeight: "100vh",
             flexDirection: "column"
           }}
-          className={(app.isLoading ? "is-loading" : "") + " layout"}
         >
+          <LoadingDisplay isLoading={app.isFetchingData} />
           <Meta meta={app.meta} url={app.url} />
           {this.props.header.isMenuOpen && (
             <Menu
@@ -55,7 +64,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSetMenuOpenState: data => dispatch(setMenuOpenState(data))
+    onSetMenuOpenState: data => dispatch(setMenuOpenState(data)),
+    fetchRates: data => dispatch(fetchRates(data))
   };
 };
 

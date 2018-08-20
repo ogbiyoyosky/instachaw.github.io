@@ -7,9 +7,15 @@ import { REDUCER_NAME } from "./constants";
 import {
   fetchAccount,
   fetchOrders,
+  setTransactionsCount,
+  fetchTransactionsCount,
+  fetchTransactionToken,
   cancelOrder,
-  setPaymentModalStatus,
-  setPaymentAmount
+  setUser,
+  setFundingModalStatus,
+  setFundingAmount,
+  setFundingMethod,
+  setFundingAttemptingStatus
 } from "./actions";
 import { accountReducer } from "./reducer";
 import { getAppState } from "../../containers/app/reducer";
@@ -30,182 +36,148 @@ import {
   Icon
 } from "pcln-design-system";
 import Feed from "../../containers/feed";
-import styled from "styled-components";
-import posed from "react-pose";
-import { tween } from "popmotion";
 import {
   Tab,
   NotificationFeed,
   OrdersFeed,
   TabBar
 } from "../../components/UI/molecules";
-import { toTitleCase } from "../../util/util";
+import { SteemFundingModal } from "../../components/UI/ecosystems";
+
+import AccountService from "../../services/AccountService";
+import { toTitleCase, roundToDecimalPlaces } from "../../util/util";
 
 const notifications = [
   {
     id: 1,
-    title: "3 new treats added!",
-    body:
-      "We've added 3 brand new treats for your enjoyment. Check them out now.",
+    title: "Delighted to see you!",
+    body: `Hi, we are delighted to serve you.
+      Make a selection of your favorite meals and we'll hand them over within 15 minutes.`,
     isUnread: true
-  },
-  {
-    id: 2,
-    title: "You just got a coupon",
-    body: "We love you and we're rewarding you with a free coupon.",
-    isUnread: false
   }
+  // {
+  //   id: 2,
+  //   title: "You just got a coupon",
+  //   body: "We love you and we're rewarding you with a free coupon.",
+  //   isUnread: false
+  // }
 ];
 
-const AccountTabComponent = props => (
-  <Flex flexDirection="column" width="100%">
-    <Flex
-      flexDirection="column"
-      width="100%"
-      py={3}
-      px={4}
-      style={{
-        display: props.account.isPaymentModalOpen ? "none" : "block"
-      }}
-    >
-      <Flex alignItems="center" justify="center">
-        <Box width={[1, 0.9, 0.7, 0.7]}>
-          <Heading.h3 mb={2} bold>
-            My Account.
-          </Heading.h3>
-
-          <Flex justify="center" alignItems="center">
-            <Flex>
-              <Flex flexDirection="column" mb={1} mr={4}>
-                <Text align="center" fontSize={6} color="green">
-                  {props.getWalletBalance("STEEM")}
-                </Text>
-                <Text style={{ textAlign: "center" }} color="gray" fontSize={1}>
-                  STEEM
-                </Text>
-              </Flex>
-
-              <Flex flexDirection="column" mb={4}>
-                <Text align="center" fontSize={6} color="gray">
-                  {props.account.orders.length}
-                </Text>
-                <Text style={{ textAlign: "center" }} color="gray" fontSize={1}>
-                  Orders
-                </Text>
-              </Flex>
-            </Flex>
-          </Flex>
-
-          <Flex flexDirection="column" mb={3}>
-            <Text mb={3}>
-              <Flex justify="center">
-                <Text>Running low on&nbsp;</Text>
-                <Text color="blue" bold>
-                  STEEM
-                </Text>
-                <Text>?</Text>
-              </Flex>
-            </Text>
-            <Button
-              onClick={e =>
-                props.setPaymentModalStatus({
-                  isPaymentModalOpen: true
-                })}
-            >
-              Add STEEM painlessly
-            </Button>
-          </Flex>
-        </Box>
-      </Flex>
-    </Flex>
-
-    {props.account.isPaymentModalOpen ? (
-      <StyledModal
-        pose={props.account.isPaymentModalOpen ? "fullscreen" : "idle"}
+const AccountTabComponent = props => {
+  return (
+    <Flex flexDirection="column" width="100%">
+      <Flex
+        flexDirection="column"
+        width="100%"
+        py={3}
+        px={4}
         style={{
-          display: !props.account.isPaymentModalOpen ? "none" : "block"
+          display: props.account.isFundingModalOpen ? "none" : "block"
         }}
       >
-        <Flex
-          p={2}
-          flexDirection="column"
-          justify="center"
-          alignItems="center"
-          style={{
-            height: "100%"
-          }}
-        >
-          <IconButton
-            size={36}
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px"
-            }}
-            color="#999"
-            borderColor="transparent"
-            name="close"
-            onClick={e =>
-              props.setPaymentModalStatus({
-                isPaymentModalOpen: false
-              })}
-          />
+        <Flex alignItems="center" justify="center">
+          <Box width={[1, 0.9, 0.7, 0.7]}>
+            <Heading.h3 mb={2} bold>
+              My Account.
+            </Heading.h3>
 
-          <Flex justify="center" alignItems="center">
-            <Box width={[0.8, 0.6, 0.5]}>
-              <form method="get" onSubmit={props.onPaymentSubmit}>
-                <Flex
-                  flexDirection="column"
-                  justify="center"
-                  alignItems="center"
-                >
-                  <Text
-                    fontSize={4}
-                    mb={3}
-                    style={{
-                      textAlign: "center"
-                    }}
-                  >
-                    Fund <strong>STEEM</strong> <em>Without Stress</em>.
+            <Flex justify="center" alignItems="center">
+              <Flex>
+                <Flex flexDirection="column" mb={1} mr={4}>
+                  <Text align="center" fontSize={4} color="blue">
+                    {roundToDecimalPlaces(props.getWalletBalance("STEEM"), 3)}
                   </Text>
-
-                  <Box mb={3}>
-                    <Label mb={1} fontSize={0}>
-                      Amount
-                    </Label>
-                    <Input
-                      onChange={e => {
-                        props.setPaymentAmount({
-                          paymentAmount: Number(e.target.value)
-                        });
-                      }}
-                      value={props.account.paymentAmount}
-                      type="number"
-                      min="0"
-                      step="any"
-                      id="amount"
-                      onFocus={e => e.target.select()}
-                      autoFocus={props.account.isPaymentModalOpen}
-                      style={{
-                        background: "#fff"
-                      }}
-                    />
-                  </Box>
-
-                  <Box>
-                    <GreenButton type="submit" fullWidth>
-                      Pay Securely with SteemConnect
-                    </GreenButton>
-                  </Box>
+                  <Text
+                    style={{ textAlign: "center" }}
+                    color="gray"
+                    fontSize={1}
+                  >
+                    STEEM
+                  </Text>
                 </Flex>
-              </form>
-            </Box>
-          </Flex>
+
+                <Flex flexDirection="column" mb={1} mr={4}>
+                  <Text align="center" fontSize={4} color="green">
+                    {roundToDecimalPlaces(props.getWalletBalance("SBD"), 3)}
+                  </Text>
+                  <Text
+                    style={{ textAlign: "center" }}
+                    color="gray"
+                    fontSize={1}
+                  >
+                    SBD
+                  </Text>
+                </Flex>
+
+                <Flex flexDirection="column" mb={1}>
+                  <Text align="center" fontSize={4} color="gray">
+                    {props.account.orders.length}
+                  </Text>
+                  <Text
+                    style={{ textAlign: "center" }}
+                    color="gray"
+                    fontSize={1}
+                  >
+                    Orders
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+
+            <Flex flexDirection="column" mt={2} mb={3}>
+              <Text mb={3}>
+                <Flex justify="center">
+                  <Text>Running low on&nbsp;</Text>
+                  <Text color="blue" bold>
+                    STEEM
+                  </Text>
+                  <Text>?</Text>
+                </Flex>
+              </Text>
+              <Button
+                onClick={e =>
+                  props.setFundingModalStatus({
+                    isFundingModalOpen: true
+                  })}
+              >
+                Add SBD/STEEM painlessly
+              </Button>
+            </Flex>
+          </Box>
         </Flex>
-      </StyledModal>
-    ) : null}
-  </Flex>
-);
+      </Flex>
+
+      {props.account.isFundingModalOpen && (
+        <SteemFundingModal
+          fundingAmount={props.account.fundingAmount}
+          fundingMethod={props.account.fundingMethod}
+          isAttemptingFunding={props.account.isAttemptingFunding}
+          isFundingModalOpen={props.account.isFundingModalOpen}
+          isFullscreenModal={true}
+          onFundingSubmit={e => props.onFundingSubmit(e)}
+          onSetFundingAmount={data => props.setFundingAmount(data)}
+          onSetFundingMethod={data => {
+            props.setFundingAmount({
+              fundingAmount: this.getPaymentAmount(fundingMethod)
+            });
+            props.setFundingMethod(data);
+          }}
+          onClose={e => {
+            props.setFundingModalStatus({
+              isFundingModalOpen: false
+            });
+
+            props.setFundingAttemptingStatus({
+              isAttemptingFunding: false
+            });
+
+            props.clearPaymentInterval();
+          }}
+        />
+      )}
+    </Flex>
+  );
+};
 
 const NotificationsTabComponent = () => (
   <Flex width={1} alignItems="center" justify="center">
@@ -232,9 +204,10 @@ const OrdersTabComponent = props => {
 
           <OrdersFeed
             onCancelOrder={props.onCancelOrder}
-            orders={props.account.orders.filter(
-              order => order.deleted_at == null
-            )}
+            orders={
+              props.account.orders.length > 0 &&
+              props.account.orders.filter(order => order.deleted_at == null)
+            }
             isOrderCancellable={true}
           />
         </Box>
@@ -246,9 +219,10 @@ const OrdersTabComponent = props => {
 
           <OrdersFeed
             onCancelOrder={props.onCancelOrder}
-            orders={props.account.orders.filter(
-              order => order.deleted_at !== null
-            )}
+            orders={
+              props.account.orders.length > 0 &&
+              props.account.orders.filter(order => order.deleted_at !== null)
+            }
             isOrderCancellable={false}
           />
         </Box>
@@ -282,43 +256,31 @@ const getTabComponent = (path, props) => {
   return tabItems.filter(tabItem => tabItem.path === path)[0].component(props);
 };
 
-const Modal = posed.div({
-  fullscreen: {
-    scale: 1,
-    transition: "tween"
-  },
-  idle: {
-    scale: 0,
-    transition: "tween"
-  }
-});
-const StyledModal = styled(Modal)`
-  background: #f5f5f5;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 999;
-  border-radius: 4px;
-  display: flex;
-`;
-
 class Account extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       isModalOpen: false
     };
-    this.onPaymentSubmit = this.onPaymentSubmit.bind(this);
+    this.onFundingSubmit = this.onFundingSubmit.bind(this);
     this.onCancelOrder = this.onCancelOrder.bind(this);
   }
 
   componentDidMount() {
-    const { onLoadAccount, match, app, setTitle, history } = this.props;
+    const {
+      onLoadAccount,
+      match,
+      app,
+      account,
+      setTitle,
+      history,
+      fetchTransactionsCount,
+      fetchOrders
+    } = this.props;
 
     // onLoadAccount(match.path);
 
-    this.props.fetchOrders();
+    fetchOrders();
 
     let pathSegments = match.url.split("/");
     let title = toTitleCase(pathSegments[pathSegments.length - 1]);
@@ -327,7 +289,7 @@ class Account extends React.PureComponent {
       title
     });
 
-    this.props.history.listen(e => {
+    history.listen(e => {
       let newPathSegments = e.pathname.split("/");
       let newTitle = toTitleCase(newPathSegments[newPathSegments.length - 1]);
 
@@ -337,16 +299,11 @@ class Account extends React.PureComponent {
     });
   }
 
-  // componentWillUpdate() {
-  //   const { setTitle, match } = this.props;
-
-  //   let pathSegments = match.url.split("/");
-  //   let title = toTitleCase(pathSegments[pathSegments.length - 1]);
-
-  //   setTitle({
-  //     title
-  //   });
-  // }
+  componentWillUnmount() {
+    this.onPaymentSubmit = null;
+    this.onCancelOrder = null;
+    this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+  }
 
   render() {
     return (
@@ -381,8 +338,9 @@ class Account extends React.PureComponent {
             render={props => {
               return getTabComponent(this.props.match.url, {
                 ...this.props,
-                onPaymentSubmit: this.onPaymentSubmit,
-                onCancelOrder: this.onCancelOrder
+                onFundingSubmit: this.onFundingSubmit,
+                onCancelOrder: this.onCancelOrder,
+                clearPaymentInterval: this.clearPaymentInterval
               });
             }}
           />
@@ -391,16 +349,40 @@ class Account extends React.PureComponent {
     );
   }
 
-  onPaymentSubmit(event) {
+  onFundingSubmit(event) {
     event.preventDefault();
-    const paymentQueryURL = "https://steemconnect.com/sign/transfer?";
-    const paymentAddress = "instachaw";
-    const amount = `${this.props.account.paymentAmount} STEEM`;
-    const memo = "This is a test memo";
-    const redirect_uri = "http://localhost:3333/processTransaction";
-    const paymentQueryString = `to=${paymentAddress}&amount=${amount}&memo=${memo}&redirect_uri=${redirect_uri}`;
 
-    window.open(encodeURI(`${paymentQueryURL}${paymentQueryString}`.trim()));
+    AccountService.processFundingRequest({
+      account: this.props.account,
+
+      handleFetchTransactionToken: this.props.fetchTransactionToken,
+
+      handleSetFundingAttemptingStatus: data =>
+        this.props.setFundingAttemptingStatus(data),
+
+      handleSetTransactionsCount: data => this.props.setTransactionsCount(data),
+
+      handleFetchTransactionsCount: (data, cb) =>
+        this.props.fetchTransactionsCount(data, cb),
+
+      handlesSetUser: data => this.props.setUser(data),
+
+      handleSetFundingModalStatus: data =>
+        this.props.setFundingModalStatus(data),
+
+      handleSetupPaymentStatusInterval: cb => {
+        this.paymentStatusInterval = setInterval(() => {
+          cb();
+        }, 7000);
+      },
+      handleTeardownPaymentStatusInterval: () => props.clearPaymentInterval()
+    });
+  }
+
+  clearPaymentInterval() {
+    if (this.paymentStatusInterval) {
+      this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+    }
   }
 
   onCancelOrder(orderID) {
@@ -421,8 +403,9 @@ class Account extends React.PureComponent {
 const mapStateToProps = state => {
   const account = getAccountState(state).toJS();
   const getWalletBalance = wallet =>
-    account.wallets.filter(currentWallet => currentWallet.title == wallet)[0]
-      .balance;
+    account.user.wallets.filter(
+      currentWallet => currentWallet.title == wallet
+    )[0].balance;
 
   return {
     account,
@@ -438,9 +421,17 @@ const mapDispatchToProps = dispatch => {
     },
     onLoadAccount: data => dispatch(fetchAccount("/account")),
     fetchOrders: data => dispatch(fetchOrders()),
+    fetchTransactionsCount: (data, cb) =>
+      dispatch(fetchTransactionsCount(data, cb)),
+    fetchTransactionToken: cb => dispatch(fetchTransactionToken(cb)),
     cancelOrder: data => dispatch(cancelOrder(data)),
-    setPaymentModalStatus: data => dispatch(setPaymentModalStatus(data)),
-    setPaymentAmount: data => dispatch(setPaymentAmount(data))
+    setFundingAmount: data => dispatch(setFundingAmount(data)),
+    setFundingAttemptingStatus: data =>
+      dispatch(setFundingAttemptingStatus(data)),
+    setFundingModalStatus: data => dispatch(setFundingModalStatus(data)),
+    setFundingMethod: data => dispatch(setFundingMethod(data)),
+    setTransactionsCount: data => dispatch(setTransactionsCount(data)),
+    setUser: data => dispatch(setUser(data))
   };
 };
 

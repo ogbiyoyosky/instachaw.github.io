@@ -1,386 +1,69 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Autocomplete from "react-autocomplete";
 import { withRouter, Link } from "react-router-dom";
 
 import reducerInjector from "../../redux/reducerInjector";
+
+import { Flex, Text, Link as UILink, GreenButton } from "pcln-design-system";
+import { OutlineButton, Radio } from "../../components/UI/atoms";
+import { ActionStrip } from "../../components/UI/molecules";
+import { CartEmptyState } from "../../components/UI/organisms";
+import {
+  CheckoutInfo,
+  Summary,
+  CartModal,
+  SteemFundingModal
+} from "../../components/UI/ecosystems";
+
 import { REDUCER_NAME } from "./constants";
+
 import { fetchCart, clearCart, setCartModalStatus } from "./actions";
-import { cartReducer, getCartState } from "./reducer";
-import { setHeaderVisibility } from "../../containers/header/actions";
-import { setFooterVisibility } from "../../containers/footer/actions";
-import { getAppState } from "../../containers/app/reducer";
-import { getAccountState } from "../../screens/account/reducer";
-import { getCheckoutState } from "../../screens/checkout/reducer";
+import {
+  setFundingModalStatus,
+  setFundingAmount,
+  fetchTransactionsCount,
+  fetchTransactionToken,
+  setTransactionsCount,
+  setFundingAttemptingStatus,
+  setUser,
+  setFundingMethod
+} from "../../screens/account/actions";
 import {
   setPaymentMethod,
+  setPaymentMode,
   setDeliveryAddress
 } from "../../screens/checkout/actions";
-import { roundToDecimalPlaces } from "../../util/util";
-import {
-  Card,
-  Heading,
-  Flex,
-  Icon,
-  Input,
-  InputField,
-  Text,
-  BlockLink,
-  Link as UILink,
-  OutlineButton,
-  Box,
-  GreenButton,
-  IconButton
-} from "pcln-design-system";
+import { setHeaderVisibility } from "../../containers/header/actions";
+import { setFooterVisibility } from "../../containers/footer/actions";
+
 import Feed from "../../containers/feed";
-import styled from "styled-components";
-import posed from "react-pose";
-import { tween } from "popmotion";
 
-const items = [
-  {
-    id: 1,
-    title: "Cheese Hamburger",
-    price: "$2.99",
-    description: "Cheese Hamburgers are delectable",
-    photo: "hamburger.jpg"
-  }
-];
+import { getAppState } from "../../containers/app/reducer";
+import { cartReducer, getCartState } from "./reducer";
+import { getAccountState } from "../../screens/account/reducer";
+import { getCheckoutState } from "../../screens/checkout/reducer";
 
-const ActionStripContainer = styled(Card)``;
-
-const LocationCard = props => {
-  return (
-    <Card bg="lightGray">
-      <Box pt={2} pb={3} px={3}>
-        <Flex>
-          <Flex style={{ flex: 4 }}>
-            <Text fontSize={2} bold>
-              Add an Address
-            </Text>
-          </Flex>
-          <Flex>
-            <Icon color="gray" mt={1} size={14} name="chevronDown" />
-          </Flex>
-        </Flex>
-        <Flex mb={2}>
-          <Text color="gray" fontSize={0}>
-            A correct address means faster delivery.
-          </Text>
-        </Flex>
-
-        <Box>
-          <Autocomplete
-            style={{
-              background: "white",
-              width: "100%"
-            }}
-            value={props.currentDeliveryAddress}
-            onChange={e => {
-              props.onSetDeliveryAddress(e.target.value);
-            }}
-            getItemValue={address => address.body}
-            items={props.userAddresses}
-            renderItem={(address, isHighlighted) => {
-              return (
-                <Card
-                  borderColor="white"
-                  key={address.id}
-                  style={{
-                    background: isHighlighted ? "#007aff" : "white",
-                    color: isHighlighted ? "white" : "inherit",
-                    borderBottom: address.id != 2 ? "1px solid #ececec" : null
-                  }}
-                  px={2}
-                  pt={2}
-                >
-                  {address.body}
-                </Card>
-              );
-            }}
-            inputProps={{
-              onFocus: e => e.target.select()
-            }}
-            renderInput={props => (
-              <input
-                id="location"
-                style={{
-                  height: "40px",
-                  display: "block",
-                  width: "100%",
-                  padding: "0 10px",
-                  fontSize: "90%",
-                  border: "1px solid #efefef"
-                }}
-                placeholder="Example: Room 2, Cali Villa, Alaska"
-                {...props}
-              />
-            )}
-            menuStyle={{
-              borderRadius: "3px",
-              boxShadow: "0 2px 12px rgba(0, 0, 0, 0.1)",
-              background: "rgba(255, 255, 255, 1)",
-              padding: "5px 0 10px",
-              width: "100%",
-              top: "40px",
-              left: 0,
-              fontSize: "85%",
-              position: "absolute",
-              zIndex: 999,
-              overflow: "auto"
-            }}
-            wrapperStyle={{
-              display: "block",
-              position: "relative",
-              zIndex: 9999,
-              width: "100%"
-            }}
-            onSelect={val => props.onSetDeliveryAddress(val)}
-          />
-        </Box>
-      </Box>
-    </Card>
-  );
-};
-
-const ActionStrip = props => {
-  return (
-    <ActionStripContainer
-      boxShadowSize="md"
-      bg={props.bg}
-      px={3}
-      py={2}
-      {...props}
-    >
-      <Flex>
-        <Flex justify="center" mr={3} flexDirection="column">
-          <Icon color={props.color} size={20} name={props.icon} />
-        </Flex>
-        <Flex
-          style={{
-            flex: 5
-          }}
-        >
-          <Text fontSize={1} color={props.color}>
-            {props.message}
-          </Text>
-        </Flex>
-        <Flex justify="center" flexDirection="column">
-          <Icon color={props.color} size={20} name={props.actionIcon} />
-        </Flex>
-      </Flex>
-    </ActionStripContainer>
-  );
-};
-
-ActionStrip.propTypes = {
-  actionIcon: PropTypes.string,
-  color: PropTypes.string
-};
-
-ActionStrip.defaultProps = {
-  actionIcon: "arrowRight",
-  color: "gray",
-  bg: "white"
-};
-
-const PaymentCard = props => {
-  return (
-    <Card bg="lightGray">
-      <Box pt={2} pb={3} px={3}>
-        <Text fontSize={2} mb={2} bold>
-          Change Payment Method
-        </Text>
-        <Box>
-          <Box mb={1}>
-            <label>
-              <ActionStrip
-                bg={props.activePaymentMethod === "STEEM" ? "blue" : "white"}
-                icon={
-                  props.activePaymentMethod === "STEEM" ? "check" : "creditCard"
-                }
-                color={props.activePaymentMethod !== "STEEM" ? "blue" : "white"}
-                message="Pay with STEEM"
-                onClick={e => props.onSetActivePaymentMethod("STEEM")}
-              />
-              <input
-                type="radio"
-                name="payment-method"
-                value="STEEM"
-                style={{ display: "none" }}
-              />
-            </label>
-          </Box>
-          <Text fontSize={0} color="gray" mb={1} align="center">
-            or
-          </Text>
-          <label>
-            <ActionStrip
-              bg={props.activePaymentMethod === "cash" ? "blue" : "white"}
-              icon={
-                props.activePaymentMethod === "cash" ? "check" : "creditCard"
-              }
-              color={props.activePaymentMethod !== "cash" ? "blue" : "white"}
-              onClick={e => props.onSetActivePaymentMethod("cash")}
-              message="Pay with Cash"
-            />
-            <input
-              type="radio"
-              name="payment-method"
-              value="cash"
-              style={{ display: "none" }}
-            />
-          </label>
-        </Box>
-      </Box>
-    </Card>
-  );
-};
-
-const TimeCard = props => {
-  return (
-    <Card bg="lightGray">
-      <Box pt={2} pb={3} px={3}>
-        <Text fontSize={2} mb={2} bold>
-          Time
-        </Text>
-        <Box>
-          <Box mb={2}>
-            <ActionStrip icon="clock" message="As soon as possible" />
-          </Box>
-        </Box>
-      </Box>
-    </Card>
-  );
-};
-
-const CheckoutInfo = props => {
-  return (
-    <Flex flexDirection="column" {...props}>
-      <Text fontSize={2} mb={3} bold>
-        Complete Checkout
-      </Text>
-      <Box mb={3}>
-        <LocationCard {...props} />
-      </Box>
-
-      <Box mb={3}>
-        <PaymentCard {...props} />
-      </Box>
-
-      {/* <Box mb={3}>
-        <TimeCard {...props} />
-      </Box> */}
-    </Flex>
-  );
-};
-
-const Summary = props => {
-  return (
-    <Flex flexDirection="column" {...props}>
-      <Flex mb={3}>
-        <Text style={{ flex: 4 }} fontSize={3} bold>
-          Summary
-        </Text>
-
-        <Flex onClick={props.onSummaryToggleClick}>
-          <Flex flexDirection="column" justify="center">
-            <Text mr={1} color="blue" fontSize={1}>
-              {props.isMinimized ? "See Details" : "Hide Details"}
-            </Text>
-          </Flex>
-
-          <Flex flexDirection="column" justify="center">
-            <Icon
-              size={14}
-              name="chevronDownThick"
-              style={{
-                transform: props.isMinimized ? "rotate(0)" : "rotate(180deg)",
-                transition: "transform 0.3s ease-in-out"
-              }}
-              color="blue"
-            />
-          </Flex>
-        </Flex>
-      </Flex>
-
-      <Flex
-        flexDirection="column"
-        style={{
-          height: props.isMinimized ? 0 : "60px",
-          overflowY: "hidden",
-          transition: "height 0.3s ease-in-out"
-        }}
-      >
-        <Flex mb={2}>
-          <Text fontSize={1} regular>
-            Subtotal
-          </Text>
-          <Text color="gray" ml="auto" fontSize={1} regular>
-            {props.subtotal}
-          </Text>
-        </Flex>
-
-        <Flex mb={3}>
-          <Text fontSize={1} regular>
-            VAT
-          </Text>
-          <Text color="gray" ml="auto" fontSize={1} regular>
-            {props.vat}
-          </Text>
-        </Flex>
-      </Flex>
-
-      <Flex>
-        <Text color="gray" fontSize={1} bold>
-          Total
-        </Text>
-        <Text ml="auto" fontSize={1} bold>
-          N{roundToDecimalPlaces(props.total)}
-        </Text>
-      </Flex>
-    </Flex>
-  );
-};
-
-Summary.propTypes = {
-  isMinimized: PropTypes.bool,
-  onSummaryToggleClick: PropTypes.func
-};
-
-Summary.defaultProps = {
-  isMinimized: true
-};
-
-const Modal = posed.div({
-  fullscreen: {
-    scale: 1,
-    transition: "tween"
-  },
-  idle: {
-    scale: 0,
-    transition: "tween"
-  }
-});
-
-const StyledModal = styled(Modal)`
-  background: #f5f5f5;
-  width: 100%;
-  min-height: 80vh;
-  border-radius: 4px;
-`;
+import AccountService from "../../services/AccountService";
+import { roundToDecimalPlaces } from "../../util/util";
 
 class Cart extends React.PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       isModalOpen: false,
       isSummaryMinimized: true,
-      paymentMethod: "STEEM"
+      paymentMethod: "STEEM",
+      isPaymentMinimized: true,
+      isPaymentModeMinimized: true
     };
+
     this.setActivePaymentMethod = this.setActivePaymentMethod.bind(this);
+    this.setActivePaymentMode = this.setActivePaymentMode.bind(this);
     this.setCurrentDeliveryAddress = this.setCurrentDeliveryAddress.bind(this);
+    this.onFundingSubmit = this.onFundingSubmit.bind(this);
+    this.onCartSubmit = this.onCartSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -406,157 +89,172 @@ class Cart extends React.PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.setActivePaymentMethod = null;
+    this.setActivePaymentMode = null;
+    this.setCurrentDeliveryAddress = null;
+    this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+    this.onFundingSubmit = null;
+    this.onCartSubmit = null;
+  }
+
   render() {
-    const subtotal = roundToDecimalPlaces(
-      this.props.cart.items.reduce(
-        (total, item) =>
-          total + parseFloat(item.price) * parseInt(item.qty, 10),
-        0
-      )
-    );
-    const vat = roundToDecimalPlaces(
-      this.props.cart.items.reduce(
-        (total, item) => total + parseFloat(item.vat) * parseInt(item.qty, 10),
-        0
-      )
-    );
-    const total = roundToDecimalPlaces(
-      parseFloat(subtotal, 10) + parseFloat(vat, 10)
-    );
-    return this.props.cart.items.length ? (
-      <Flex mt={3} px={3} flexDirection="column">
-        <StyledModal
-          pose={this.props.cart.isCartModalOpen ? "fullscreen" : "idle"}
-          style={{
-            display: !this.props.cart.isCartModalOpen ? "none" : "block"
-          }}
-        >
-          <Flex alignItems="center" justify="center">
-            <Flex p={2} flexDirection="column" width={[1, 0.9, 0.7, 0.7]}>
-              <Flex mb={2}>
-                <Text fontSize={3} bold style={{ flex: 0.999 }}>
-                  {`${this.props.cart.items.length - 1} More`}
-                  {this.props.cart.items.length - 1 === 1 ? "Treat" : "Treats"}
-                </Text>
+    const subtotal = this.getPaymentSubtotal();
+    const {
+      account,
+      cart,
+      checkout,
+      history,
+      setFundingAmount,
+      setFundingMethod,
+      setFundingModalStatus
+    } = this.props;
+    const { paymentMethod, paymentMode, deliveryAddress } = checkout;
+    const { items, isCartModalOpen } = cart;
+    const {
+      fundingAmount,
+      fundingMethod,
+      isAttemptingFunding,
+      isFundingModalOpen,
+      user
+    } = account;
 
-                <IconButton
-                  size={32}
-                  color="#999"
-                  borderColor="transparent"
-                  name="close"
-                  onClick={e => this.props.setCartModalStatus(false)}
-                />
-              </Flex>
+    const vat = this.getPaymentVat();
+    const total = this.getTotal(paymentMethod);
 
-              <Flex flexDirection="column">
-                <Feed
-                  items={this.props.cart.items.filter(
-                    (item, index) => index !== 0
-                  )}
-                  highlightSelectedItem={false}
-                />
-              </Flex>
-            </Flex>
-          </Flex>
-        </StyledModal>
-        <Flex alignItems="center" justify="center">
-          <Flex
-            style={{
-              display: this.props.cart.isCartModalOpen ? "none" : "block"
+    return items.length ? (
+      <Flex flexDirection="column">
+        <CartModal
+          isCartModalOpen={isCartModalOpen}
+          cartItems={items}
+          onSetCartModalStatus={status => this.props.setCartModalStatus(status)}
+        />
+        {isFundingModalOpen && (
+          <SteemFundingModal
+            fundingAmount={fundingAmount}
+            fundingMethod={fundingMethod}
+            isAttemptingFunding={isAttemptingFunding}
+            isFundingModalOpen={isFundingModalOpen}
+            onFundingSubmit={e => this.onFundingSubmit(e)}
+            onSetFundingAmount={data => setFundingAmount(data)}
+            onSetFundingMethod={data => {
+              setFundingAmount({
+                fundingAmount: this.getPaymentAmount(fundingMethod)
+              });
+              setFundingMethod(data);
             }}
-            width={[1, 0.9, 0.7, 0.7]}
-          >
-            <Flex mb={3}>
-              <Flex style={{ flex: 2 }}>
-                <Text fontSize={3} mr={2} bold>
-                  My Order
-                </Text>
-                <Text regular color="gray" mt={2} fontSize={0}>
-                  ( {this.props.cart.items.length}{" "}
-                  {this.props.cart.items.length == 1 ? "Item" : "Items"} )
-                </Text>
-              </Flex>
-              <Flex alignItems="flex-end" mt={2}>
-                <UILink
-                  onClick={e =>
-                    confirm("Take this action?") && this.props.clearCart()}
-                >
-                  <Text fontSize={0}>Clear Order</Text>
-                </UILink>
-              </Flex>
-            </Flex>
+            onClose={e => {
+              this.props.setFundingModalStatus({
+                isFundingModalOpen: false
+              });
 
-            <Feed items={[this.props.cart.items[0]]} />
-            {this.props.cart.items.length > 1 && (
-              <Flex mb={3}>
-                <OutlineButton
-                  py={2}
-                  onClick={e => this.props.setCartModalStatus(true)}
-                  fullWidth
-                >
-                  See {this.props.cart.items.length - 1} more &nbsp;
-                  {this.props.cart.items.length == 2 ? "treat" : "treats"}.
-                </OutlineButton>
-              </Flex>
-            )}
-            <CheckoutInfo
-              onSetDeliveryAddress={this.setCurrentDeliveryAddress}
-              currentDeliveryAddress={this.props.checkout.deliveryAddress}
-              onSetActivePaymentMethod={this.setActivePaymentMethod}
-              activePaymentMethod={this.props.checkout.paymentMethod}
-              userAddresses={this.props.account.user.addresses}
-            />
-            <Summary
-              onSummaryToggleClick={e =>
-                this.setState({
-                  isSummaryMinimized: !this.state.isSummaryMinimized
-                })}
-              isMinimized={this.state.isSummaryMinimized}
-              total={total}
-              subtotal={subtotal}
-              vat={vat}
-              mb={4}
-            />
-            <GreenButton
-              onClick={e => this.props.history.push("/checkout")}
-              mb={4}
-              fullWidth
+              this.props.setFundingAttemptingStatus({
+                isAttemptingFunding: false
+              });
+
+              if (this.paymentStatusInterval) {
+                this.paymentStatusInterval = clearInterval(
+                  this.paymentStatusInterval
+                );
+              }
+            }}
+          />
+        )}
+
+        <Flex mt={3} px={3} flexDirection="column">
+          <Flex alignItems="center" justify="center">
+            <Flex
+              style={{
+                display:
+                  isCartModalOpen || isFundingModalOpen ? "none" : "block"
+              }}
+              width={[1, 0.9, 0.7, 0.7]}
             >
-              Complete Checkout
-            </GreenButton>
+              <Flex mb={3}>
+                <Flex style={{ flex: 2 }}>
+                  <Text fontSize={3} mr={2} bold>
+                    My Order
+                  </Text>
+                  <Text regular color="gray" mt={2} fontSize={0}>
+                    ( {items.length} {items.length == 1 ? "Item" : "Items"} )
+                  </Text>
+                </Flex>
+                <Flex alignItems="flex-end" mt={2}>
+                  <UILink
+                    onClick={e =>
+                      confirm("Take this action?") && this.props.clearCart()}
+                  >
+                    <Text fontSize={0}>Clear Order</Text>
+                  </UILink>
+                </Flex>
+              </Flex>
+
+              <Feed items={[items[0]]} />
+
+              {items.length > 1 && (
+                <Flex mb={3}>
+                  <OutlineButton
+                    py={2}
+                    onClick={e => this.props.setCartModalStatus(true)}
+                    fullWidth
+                  >
+                    See {items.length - 1} more &nbsp;
+                    {items.length == 2 ? "treat" : "treats"}.
+                  </OutlineButton>
+                </Flex>
+              )}
+
+              <CheckoutInfo
+                rates={this.props.app.rates}
+                amount={this.getPaymentTotal()}
+                history={history}
+                isUserAuthenticated={user !== null}
+                getWalletBalance={wallet => this.getWalletBalance(wallet)}
+                onSetDeliveryAddress={this.setCurrentDeliveryAddress}
+                currentDeliveryAddress={deliveryAddress}
+                onPaymentToggleClick={e =>
+                  this.setState({
+                    isPaymentMinimized: !this.state.isPaymentMinimized
+                  })}
+                onPaymentModeToggleClick={e =>
+                  this.setState({
+                    isPaymentModeMinimized: !this.state.isPaymentModeMinimized
+                  })}
+                isPaymentMinimized={this.state.isPaymentMinimized}
+                isPaymentModeMinimized={this.state.isPaymentModeMinimized}
+                onSetActivePaymentMethod={this.setActivePaymentMethod}
+                onSetActivePaymentMode={this.setActivePaymentMode}
+                activePaymentMethod={paymentMethod}
+                activePaymentMode={paymentMode}
+                userAddresses={user !== null ? user.addresses : []}
+              />
+
+              <Summary
+                onSummaryToggleClick={e =>
+                  this.setState({
+                    isSummaryMinimized: !this.state.isSummaryMinimized
+                  })}
+                isMinimized={this.state.isSummaryMinimized}
+                total={total}
+                subtotal={subtotal}
+                paymentMethod={paymentMethod}
+                vat={vat}
+                mb={2}
+              />
+              <GreenButton
+                disabled={!this.isValidForm()}
+                onClick={e => this.onCartSubmit(e)}
+                mb={4}
+                fullWidth
+              >
+                Complete Checkout
+              </GreenButton>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
     ) : (
-      <Flex
-        px={3}
-        flexDirection="column"
-        justify="center"
-        style={{
-          height: "80%",
-          position: "absolute",
-          width: "100%"
-        }}
-      >
-        <Flex
-          flexDirection="column"
-          justify="center"
-          alignItems="center"
-          style={{
-            textAlign: "center"
-          }}
-        >
-          <Text fontSize={4} mb={3} bold>
-            Please fill me.
-          </Text>
-          <Text mb={3}>Add tons of delightful treats to your cart below.</Text>
-          <Flex justify="center" alignItems="center">
-            <OutlineButton onClick={e => this.props.history.push("/")}>
-              See treats for your cart
-            </OutlineButton>
-          </Flex>
-        </Flex>
-      </Flex>
+      <CartEmptyState onShowTreatsButtonClick={e => history.push("/")} />
     );
   }
 
@@ -572,6 +270,168 @@ class Cart extends React.PureComponent {
     });
   }
 
+  setActivePaymentMode(mode) {
+    this.props.setPaymentMode({
+      paymentMode: mode
+    });
+  }
+
+  getValidWallet() {
+    return this.getWalletBalance("SBD") < this.getPaymentAmount("SBD")
+      ? "STEEM"
+      : "SBD";
+  }
+
+  getTotal(paymentMethod) {
+    let total = this.getPaymentTotal();
+
+    if (paymentMethod === "naira") return total;
+
+    return this.getPaymentAmount(paymentMethod);
+  }
+
+  getWallet(wallet) {
+    return this.props.account.user !== null
+      ? this.props.account.user.wallets.filter(
+          currentWallet => currentWallet.title === wallet
+        )[0]
+      : null;
+  }
+
+  getWalletBalance(wallet) {
+    return this.props.account.user !== null
+      ? this.props.account.user.wallets.filter(
+          currentWallet => currentWallet.title === wallet
+        )[0].balance
+      : 0;
+  }
+
+  getPaymentSubtotal() {
+    return roundToDecimalPlaces(
+      this.props.cart.items.reduce(
+        (total, item) =>
+          total + parseFloat(item.price) * parseInt(item.qty, 10),
+        0
+      )
+    );
+  }
+
+  getPaymentVat() {
+    return roundToDecimalPlaces(
+      this.props.cart.items.reduce(
+        (total, item) => total + parseFloat(item.vat) * parseInt(item.qty, 10),
+        0
+      )
+    );
+  }
+
+  getPaymentTotal() {
+    return roundToDecimalPlaces(
+      parseFloat(this.getPaymentSubtotal(), 10) +
+        parseFloat(this.getPaymentVat(), 10)
+    );
+  }
+
+  getPaymentAmount(paymentCurrency = "SBD") {
+    let paymentAmount = this.getPaymentTotal();
+    return paymentCurrency === "SBD"
+      ? roundToDecimalPlaces(paymentAmount / this.props.app.rates["SBD"], 3)
+      : roundToDecimalPlaces(paymentAmount / this.props.app.rates["STEEM"], 3);
+  }
+
+  onCartSubmit(e) {
+    const total = this.getTotal();
+
+    if (this.props.checkout.paymentMode === "on-demand") {
+      if (this.props.checkout.paymentMethod === "naira") {
+        alert(`Sorry, we only accept cash for pay on delivery at the moment.`);
+        return false;
+      } else {
+        if (this.props.checkout.paymentMethod === "STEEM") {
+          if (this.getWalletBalance("STEEM") < total) {
+            this.props.setPaymentMethod({
+              paymentMethod: "SBD"
+            });
+
+            if (this.getWalletBalance("SBD") < total) {
+              this.props.setFundingAmount({
+                fundingAmount: total
+              });
+
+              return this.props.setFundingModalStatus({
+                isFundingModalOpen: true
+              });
+            }
+          }
+        } else {
+          if (this.getWalletBalance("SBD") < total) {
+            this.props.setPaymentMethod({
+              paymentMethod: "STEEM"
+            });
+
+            if (this.getWalletBalance("STEEM") < total) {
+              this.props.setFundingAmount({
+                fundingAmount: total
+              });
+              return this.props.setFundingModalStatus({
+                isFundingModalOpen: true
+              });
+            }
+          }
+        }
+      }
+    }
+
+    this.props.history.push("/checkout");
+  }
+
+  onFundingSubmit(event) {
+    event.preventDefault();
+
+    AccountService.processFundingRequest({
+      account: this.props.account,
+
+      handleFetchTransactionToken: this.props.fetchTransactionToken,
+
+      handleSetFundingAttemptingStatus: data =>
+        this.props.setFundingAttemptingStatus(data),
+
+      handleSetTransactionsCount: data => this.props.setTransactionsCount(data),
+
+      handleFetchTransactionsCount: (data, cb) =>
+        this.props.fetchTransactionsCount(data, cb),
+
+      handlesSetUser: data => this.props.setUser(data),
+
+      handleSetFundingModalStatus: data =>
+        this.props.setFundingModalStatus(data),
+
+      handleSetupPaymentStatusInterval: cb => {
+        this.paymentStatusInterval = setInterval(() => {
+          cb();
+        }, 7000);
+      },
+      handleTeardownPaymentStatusInterval: () => {
+        this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+      }
+    });
+  }
+
+  getWalletBalance(wallet) {
+    return this.props.account.user !== null
+      ? this.props.account.user.wallets.filter(
+          currentWallet => currentWallet.title === wallet
+        )[0].balance
+      : 0;
+  }
+
+  isValidForm() {
+    return (
+      this.props.checkout.deliveryAddress.length > 1 &&
+      this.props.account.user !== null
+    );
+  }
+
   static fetchData(store, { path }) {
     return store.dispatch(fetchCart(path));
   }
@@ -582,11 +442,13 @@ class Cart extends React.PureComponent {
 }
 
 const mapStateToProps = state => {
+  const account = getAccountState(state).toJS();
+
   return {
     app: getAppState(state).toJS(),
     cart: getCartState(state).toJS(),
     checkout: getCheckoutState(state).toJS(),
-    account: getAccountState(state).toJS()
+    account
   };
 };
 
@@ -596,7 +458,18 @@ const mapDispatchToProps = dispatch => {
     setFooterVisibility: data => dispatch(setFooterVisibility(data)),
     onLoadCart: data => dispatch(fetchCart(data)),
     setCartModalStatus: data => dispatch(setCartModalStatus(data)),
+    setFundingModalStatus: data => dispatch(setFundingModalStatus(data)),
+    setFundingAmount: data => dispatch(setFundingAmount(data)),
+    setFundingMethod: data => dispatch(setFundingMethod(data)),
     setPaymentMethod: data => dispatch(setPaymentMethod(data)),
+    setPaymentMode: data => dispatch(setPaymentMode(data)),
+    setFundingAttemptingStatus: data =>
+      dispatch(setFundingAttemptingStatus(data)),
+    fetchTransactionsCount: (data, cb) =>
+      dispatch(fetchTransactionsCount(data, cb)),
+    fetchTransactionToken: cb => dispatch(fetchTransactionToken(cb)),
+    setUser: data => dispatch(setUser(data)),
+    setTransactionsCount: data => dispatch(setTransactionsCount(data)),
     setDeliveryAddress: data => dispatch(setDeliveryAddress(data)),
     clearCart: data => dispatch(clearCart())
   };

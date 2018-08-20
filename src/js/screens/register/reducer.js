@@ -1,14 +1,20 @@
 import { fromJS } from "immutable";
 
-import { REDUCER_NAME } from "./constants";
+import { REDUCER_NAME, SET_REGISTRATION_ATTEMPTING_STATUS } from "./constants";
 
 const initialState = fromJS({
   title: "",
-  html: ""
+  html: "",
+  isAttemptingRegistration: false
 });
 
 export const registerReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_REGISTRATION_ATTEMPTING_STATUS:
+      return state.set(
+        "isAttemptingRegistration",
+        action.data.isAttemptingRegistration
+      );
     default:
       return state;
   }

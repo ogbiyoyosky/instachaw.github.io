@@ -4,8 +4,11 @@ import {
   ADD_USER_ORDER,
   SET_ORDERS,
   SET_USER,
-  SET_PAYMENT_MODAL_STATUS,
-  SET_PAYMENT_AMOUNT,
+  SET_TRANSACTIONS_COUNT,
+  SET_FUNDING_MODAL_STATUS,
+  SET_FUNDING_AMOUNT,
+  SET_FUNDING_METHOD,
+  SET_FUNDING_ATTEMPTING_STATUS,
   SET_STEEMIT_USERNAME,
   SET_ACCOUNT,
   REDUCER_NAME
@@ -14,9 +17,12 @@ import {
 const initialState = fromJS({
   title: "",
   html: "",
-  isPaymentModalOpen: false,
-  paymentAmount: 20,
+  isFundingModalOpen: false,
+  fundingAmount: 0.001,
+  fundingMethod: "SBD",
+  isAttemptingFunding: false,
   orders: [],
+  transactionsCount: 0,
   wallets: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user")).wallets
     : [],
@@ -41,17 +47,26 @@ export const accountReducer = (state = initialState, action) => {
     case SET_USER:
       return state.set("user", action.data.user);
 
+    case SET_TRANSACTIONS_COUNT:
+      return state.set("transactionsCount", action.data.transactionsCount);
+
     case SET_ORDERS:
       return state.set("orders", action.data.orders);
 
-    case SET_PAYMENT_MODAL_STATUS:
-      return state.set("isPaymentModalOpen", action.data.isPaymentModalOpen);
+    case SET_FUNDING_MODAL_STATUS:
+      return state.set("isFundingModalOpen", action.data.isFundingModalOpen);
 
     case SET_STEEMIT_USERNAME:
       return state.set("steemitUsername", action.data.steemitUsername);
 
-    case SET_PAYMENT_AMOUNT:
-      return state.set("paymentAmount", action.data.paymentAmount);
+    case SET_FUNDING_AMOUNT:
+      return state.set("fundingAmount", action.data.fundingAmount);
+
+    case SET_FUNDING_METHOD:
+      return state.set("fundingMethod", action.data.fundingMethod);
+
+    case SET_FUNDING_ATTEMPTING_STATUS:
+      return state.set("isAttemptingFunding", action.data.isAttemptingFunding);
 
     default:
       return state;

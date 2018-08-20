@@ -16,7 +16,11 @@ const OrdersFeed = props => {
                   {moment(order.created_at).format("h:mm a, MMM Do")}
                 </Text>
                 {props.isOrderCancellable && (
-                  <Link onClick={e => props.onCancelOrder(order.id)}>
+                  <Link
+                    onClick={e =>
+                      confirm("Really want to cancel this order?") &&
+                      props.onCancelOrder(order.id)}
+                  >
                     <Text fontSize={0}>Cancel order</Text>
                   </Link>
                 )}

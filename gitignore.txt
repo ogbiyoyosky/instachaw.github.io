@@ -1,0 +1,12 @@
+node_modules/
+icons/
+templates/
+webpack/
+server/
+service/
+*.log
+.sass-cache/
+src
+/*.js
+/*.json
+/nbproject/

@@ -1,7 +1,12 @@
 import {
   SET_ACCOUNT,
-  SET_PAYMENT_MODAL_STATUS,
-  SET_PAYMENT_AMOUNT,
+  SET_USER,
+  SET_TRANSACTIONS_COUNT,
+  SET_FUNDING_MODAL_STATUS,
+  SET_FUNDING_AMOUNT,
+  SET_FUNDING_METHOD,
+  SET_PAYMENT_CURRENCY,
+  SET_FUNDING_ATTEMPTING_STATUS,
   SET_STEEMIT_USERNAME,
   ADD_USER_ORDER,
   SET_ORDERS
@@ -49,6 +54,41 @@ export const fetchOrders = () => {
   };
 };
 
+export const fetchTransactionToken = (cb = () => {}) => {
+  return dispatch => {
+    sendRequest({
+      endpoint: `http://localhost:3333/api/v1/transactions/generateToken`,
+      method: "POST"
+    })
+      .then(response => {
+        if (typeof response !== "undefined" && typeof response !== null) {
+          return cb(response.token, response.transactionsCount);
+        }
+      })
+      .catch(e => console.log(e));
+  };
+};
+
+export const fetchTransactionsCount = ({ userID }, cb = () => {}) => {
+  return dispatch => {
+    sendRequest({
+      endpoint: `http://localhost:3333/api/v1/transactions?type=getCount&uid=${userID}`,
+      method: "GET"
+    })
+      .then(response => {
+        if (typeof response !== "undefined" && typeof response !== null) {
+          dispatch(
+            setTransactionsCount({
+              transactionsCount: response
+            })
+          );
+          cb(response);
+        }
+      })
+      .catch(e => console.log(e));
+  };
+};
+
 export const cancelOrder = data => {
   return dispatch => {
     sendRequest({
@@ -64,16 +104,37 @@ export const cancelOrder = data => {
   };
 };
 
-export const setPaymentModalStatus = data => {
+export const setTransactionsCount = data => {
   return {
-    type: SET_PAYMENT_MODAL_STATUS,
+    type: SET_TRANSACTIONS_COUNT,
     data
   };
 };
 
-export const setPaymentAmount = data => {
+export const setFundingModalStatus = data => {
   return {
-    type: SET_PAYMENT_AMOUNT,
+    type: SET_FUNDING_MODAL_STATUS,
+    data
+  };
+};
+
+export const setFundingAmount = data => {
+  return {
+    type: SET_FUNDING_AMOUNT,
+    data
+  };
+};
+
+export const setFundingMethod = data => {
+  return {
+    type: SET_FUNDING_METHOD,
+    data
+  };
+};
+
+export const setFundingAttemptingStatus = data => {
+  return {
+    type: SET_FUNDING_ATTEMPTING_STATUS,
     data
   };
 };
@@ -88,6 +149,13 @@ export const setSteemitUsername = data => {
 export const setOrders = data => {
   return {
     type: SET_ORDERS,
+    data
+  };
+};
+
+export const setUser = data => {
+  return {
+    type: SET_USER,
     data
   };
 };

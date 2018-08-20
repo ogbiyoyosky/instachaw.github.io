@@ -63,7 +63,7 @@ export default class App extends React.Component {
   componentDidMount() {
     // install service worker
     initServiceWorker();
-    // initOffline();
+    initOffline();
 
     window.addEventListener("beforeinstallprompt", e => {
       e.preventDefault();

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { SyncLoader } from "react-spinners";
 import reducerInjector from "../../redux/reducerInjector";
 import { withRouter, Link } from "react-router-dom";
 
@@ -10,24 +11,21 @@ import { setFooterVisibility } from "../../containers/footer/actions";
 
 import { fetchRegister, attemptRegistration } from "./actions";
 import { REDUCER_NAME } from "./constants";
-import { registerReducer } from "./reducer";
+import { registerReducer, getRegisterState } from "./reducer";
 
 import {
   Card,
   Heading,
   Flex,
-  Icon,
-  Input,
-  Label,
-  InputField,
   Text,
   Link as UILink,
   Box,
-  Button,
   BlockLink,
   OutlineButton,
   IconButton
 } from "pcln-design-system";
+import { Button, Input, Label } from "../../components/UI/atoms";
+import { BrandLogo } from "../../components/UI/atoms";
 import styled from "styled-components";
 
 class Register extends React.PureComponent {
@@ -36,8 +34,10 @@ class Register extends React.PureComponent {
     this.state = {
       email: "",
       username: "",
+      name: "",
       password: "",
-      phone: ""
+      phone: "",
+      registrationNotice: ""
     };
     this.handleRegistrationSubmit = this.handleRegistrationSubmit.bind(this);
     this.navigateToLocation = this.navigateToLocation.bind(this);
@@ -72,21 +72,17 @@ class Register extends React.PureComponent {
         justify="center"
         style={{
           position: "absolute",
-          width: "100%"
+          height: "100%",
+          left: "50%",
+          transform: "translateX(-50%)"
         }}
+        width={[1, 0.9, 0.7]}
       >
         <form method="get" onSubmit={this.handleRegistrationSubmit}>
           <Flex flexDirection="column" justify="center" alignItems="center">
-            <Heading.h2
-              fontSize={4}
-              mb={3}
-              regular
-              style={{
-                textAlign: "center"
-              }}
-            >
-              Create an account
-            </Heading.h2>
+            <Flex mb={3} alignItems="center" justify="center">
+              <BrandLogo height="45px" color="red" />
+            </Flex>
 
             <Box mb={3}>
               <Label mb={1} fontSize={0}>
@@ -99,6 +95,7 @@ class Register extends React.PureComponent {
                   })}
                 value={this.state.email}
                 id="email"
+                type="email"
                 autoFocus
               />
             </Box>
@@ -120,6 +117,21 @@ class Register extends React.PureComponent {
 
             <Box mb={3}>
               <Label mb={1} fontSize={0}>
+                Fullname <sup style={{ color: "red" }}>*</sup>
+              </Label>
+              <Input
+                onChange={e =>
+                  this.setState({
+                    name: e.target.value
+                  })}
+                value={this.state.name}
+                id="name"
+              />
+              <Text fontSize={0}>Something like 'John Robert'.</Text>
+            </Box>
+
+            <Box mb={3}>
+              <Label mb={1} fontSize={0}>
                 Username <sup style={{ color: "red" }}>*</sup>
               </Label>
               <Input
@@ -132,7 +144,7 @@ class Register extends React.PureComponent {
               />
             </Box>
 
-            <Box mb={3}>
+            <Box mb={this.state.registrationNotice.length > 1 ? 1 : 3}>
               <Label mb={1} fontSize={0}>
                 Password <sup style={{ color: "red" }}>*</sup>
               </Label>
@@ -147,9 +159,27 @@ class Register extends React.PureComponent {
               />
             </Box>
 
+            {this.state.registrationNotice.length > 0 && (
+              <Box mb={3}>
+                <Text align="right" fontSize={0} color="red">
+                  {this.state.registrationNotice}
+                </Text>
+              </Box>
+            )}
+
             <Box>
-              <Button type="submit" fullWidth>
-                Register
+              <Button
+                disabled={
+                  this.props.register.isAttemptingRegistration ||
+                  !this.isValidForm()
+                }
+                fullWidth
+              >
+                {!this.props.register.isAttemptingRegistration ? (
+                  <Text>Create account instantly</Text>
+                ) : (
+                  <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
+                )}
               </Button>
               <Text my={1} align="center">
                 or
@@ -162,12 +192,12 @@ class Register extends React.PureComponent {
                 onClick={e => this.navigateToLocation("/login")}
               >
                 <Text
-                  color="gray"
+                  color="blue"
                   style={{
                     textDecoration: "underline"
                   }}
                 >
-                  Login
+                  Proceed to Login
                 </Text>
               </BlockLink>
             </Box>
@@ -179,31 +209,55 @@ class Register extends React.PureComponent {
 
   handleRegistrationSubmit(e) {
     e.preventDefault();
-    const { username, email, password, phone } = this.state;
+    const { username, name, email, password, phone } = this.state;
 
-    this.props.attemptRegistration({
-      username,
-      email,
-      password,
-      phone
-    });
-
-    this.navigateToLocation("/");
+    this.props.attemptRegistration(
+      {
+        username,
+        name,
+        email,
+        password,
+        phone
+      },
+      response => {
+        if (typeof response !== "undefined") {
+          typeof response.user === "undefined"
+            ? this.setState({
+                registrationNotice: response[0].message
+              })
+            : this.navigateToLocation("/");
+        }
+      }
+    );
   }
 
   navigateToLocation(location) {
     this.props.history.push(location);
   }
+
+  isValidForm() {
+    let fields = ["username", "name", "email", "password", "phone"];
+
+    return (
+      this.state[fields[0]].length &&
+      this.state[fields[1]].length &&
+      this.state[fields[2]].length &&
+      this.state[fields[3]].length &&
+      this.state[fields[4]].length
+    );
+  }
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    register: getRegisterState(state).toJS()
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onLoadRegister: data => dispatch(fetchRegister(data)),
-    attemptRegistration: data => dispatch(attemptRegistration(data)),
+    attemptRegistration: (data, cb) => dispatch(attemptRegistration(data, cb)),
     setHeaderVisibility: data => dispatch(setHeaderVisibility(data)),
     setFooterVisibility: data => dispatch(setFooterVisibility(data))
   };

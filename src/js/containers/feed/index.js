@@ -3,19 +3,24 @@ import PropTypes from "prop-types";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { SyncLoader } from "react-spinners";
+import LazyLoad from "react-lazyload";
+import { SyncLoader, ClipLoader } from "react-spinners";
 import Skeleton from "react-loading-skeleton";
 import {
   Flex,
   Text,
   Button,
   Box,
+  Link as UILink,
+  Heading,
   Card,
   Icon,
   Image,
   IconButton
 } from "pcln-design-system";
+import { OutlineButton, TransparentButton } from "../../components/UI/atoms";
 import { REDUCER_NAME } from "./constants";
+import { getAppState } from "../../containers/app/reducer";
 import { getCartState } from "../../screens/cart/reducer";
 import {
   addCartItem,
@@ -25,7 +30,7 @@ import {
 } from "../../screens/cart/actions";
 import { getCartItemFromFeed, roundToDecimalPlaces } from "../../util/util";
 
-export const FeedItemCard = props => {
+const FeedItemCard = props => {
   return (
     <Box>
       <Card
@@ -48,7 +53,10 @@ export const FeedItemCard = props => {
 
           <FeedItemArticle
             item={props.item}
+            isOptionsOpen={id => props.isOptionsOpen(id)}
+            onPricesOptionsExpansion={id => props.onPricesOptionsExpansion(id)}
             priceInSTEEM={props.getSTEEMEquivalent(props.item.price)}
+            priceInSBD={props.getSBDEquivalent(props.item.price)}
           />
 
           {props.showControls && (
@@ -67,20 +75,33 @@ export const FeedItemCard = props => {
   );
 };
 
-export const FeedItemThumbnail = props => {
+const FeedItemThumbnail = props => {
+  const THUMB_URL =
+    "http://res.cloudinary.com/instachaw/image/upload/c_scale,w_150/v1534208541/store-1";
   return (
     <Box width={1 / 4} mr={3}>
       <Link to={"/treat/" + props.item.id}>
-        <Image
-          style={{ borderRadius: "4px" }}
-          src={`${window.location.origin}/img/${props.item.photo}`}
-        />
+        <Box>
+          <LazyLoad
+            height={300}
+            placeholder={
+              <Flex flexDirection="column" justify="center" alignItems="center">
+                <ClipLoader width={12} loading={true} color="#c3c3c3" />
+              </Flex>
+            }
+          >
+            <Image
+              style={{ borderRadius: "4px" }}
+              src={`${THUMB_URL}/${props.item.photo}`}
+            />
+          </LazyLoad>
+        </Box>
       </Link>
     </Box>
   );
 };
 
-export const FeedItemArticle = props => {
+const FeedItemArticle = props => {
   return (
     <Box>
       <Flex>
@@ -90,71 +111,108 @@ export const FeedItemArticle = props => {
             textDecoration: "none"
           }}
         >
-          <Text color="gray" fontSize={1}>
+          <Heading color="gray" fontSize={2}>
             {props.item.title}
-          </Text>
+          </Heading>
         </Link>
       </Flex>
-      <Flex flexDirection="flex-end">
-        <Text color="green" mr={1} fontSize={0}>
+      <Flex mb={2}>
+        <Text bold color="green" mr={1} fontSize={1}>
           N{props.item.price}
         </Text>
-        <Text bold color="green" fontSize={0}>
-          ({props.priceInSTEEM} STEEM)
+        <UILink
+          p={0}
+          onClick={e => props.onPricesOptionsExpansion(props.item.id)}
+        >
+          <Flex>
+            <Text fontSize={1} mr={1}>
+              {!props.isOptionsOpen(props.item.id) ? "More" : "Less"}
+            </Text>
+            <Flex flexDirection="column" alignItems="center" justify="center">
+              <Icon
+                size={12}
+                name="chevronDown"
+                style={{
+                  transition: "transform 0.5s ease",
+                  transform: !props.isOptionsOpen(props.item.id)
+                    ? `rotate(0deg)`
+                    : `rotate(180deg)`
+                }}
+              />
+            </Flex>
+          </Flex>
+        </UILink>
+      </Flex>
+      <Flex
+        flexDirection="column"
+        style={{
+          height: !props.isOptionsOpen(props.item.id) ? 0 : "35px",
+          overflowY: "hidden"
+        }}
+      >
+        <Text color="blue" mb={1} fontSize={0}>
+          <b>{!isNaN(props.priceInSTEEM) && props.priceInSTEEM}</b> STEEM
+        </Text>
+        <Text color="gray" fontSize={0}>
+          <b>{!isNaN(props.priceInSBD) && props.priceInSBD}</b> SBD
         </Text>
       </Flex>
     </Box>
   );
 };
 
-export const FeedItemControls = props => {
+const FeedItemControls = props => {
   return (
     <Box ml="auto">
       {getCartItemFromFeed(props.item, props.cartItems) && (
         <Flex flexDirection="column">
-          <IconButton
-            size={20}
-            color="#555"
-            borderColor="gray"
-            name="plus"
+          <TransparentButton
+            py={0}
             onClick={e => props.onIncrementCartItemQty(props.item)}
-            mb={1}
-          />
+          >
+            <Icon size={28} color="#999" name="circlePlus" mb={1} />
+          </TransparentButton>
           <Text color="gray" fontSize={0} bold style={{ textAlign: "center" }}>
             {getCartItemFromFeed(props.item, props.cartItems).qty}
           </Text>
 
           {getCartItemFromFeed(props.item, props.cartItems).qty !== 1 ? (
-            <IconButton
-              size={20}
-              color="#555"
-              borderColor="gray"
-              name="minus"
+            <TransparentButton
+              py={0}
               onClick={e => props.onDecrementCartItemQty(props.item)}
-              mt={1}
-            />
+            >
+              <Icon size={24} color="#999" name="circleMinus" mt={1} />
+            </TransparentButton>
           ) : (
-            <IconButton
-              size={20}
-              color="#999"
-              p={3}
-              borderColor="#999"
-              name="close"
+            <TransparentButton
+              py={0}
               onClick={e => props.onRemoveCartItem(props.item)}
-              mt={1}
-            />
+            >
+              <Icon
+                size={30}
+                color="#999"
+                style={{ transform: "rotate(45deg)" }}
+                name="circlePlus"
+                mt={1}
+              />
+            </TransparentButton>
           )}
         </Flex>
       )}
 
       {!getCartItemFromFeed(props.item, props.cartItems) && (
-        <IconButton
-          size={32}
-          color="#555"
-          borderColor="lightGray"
-          name="plus"
-          onClick={e => props.onAddCartItem(props.item)}
-        />
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justify="center"
+          style={{
+            height: "100%"
+          }}
+        >
+          <TransparentButton onClick={e => props.onAddCartItem(props.item)}>
+            <Icon size={32} color="#999" name="circlePlus" />
+          </TransparentButton>
+        </Flex>
       )}
     </Box>
   );
@@ -169,6 +227,25 @@ class Feed extends React.PureComponent {
     this.onDecrementCartItemQty = this.onDecrementCartItemQty.bind(this);
     this.renderItems = this.renderItems.bind(this);
     this.getSTEEMEquivalent = this.getSTEEMEquivalent.bind(this);
+    this.getSBDEquivalent = this.getSBDEquivalent.bind(this);
+    this.handlePricesOptionsExpansion = this.handlePricesOptionsExpansion.bind(
+      this
+    );
+
+    this.state = {
+      itemsExpanded: []
+    };
+  }
+
+  componentWillUnmount() {
+    this.onAddCartItem = null;
+    this.onRemoveCartItem = null;
+    this.onIncrementCartItemQty = null;
+    this.onDecrementCartItemQty = null;
+    this.renderItems = null;
+    this.getSTEEMEquivalent = null;
+    this.getSBDEquivalent = null;
+    this.handlePricesOptionsExpansion = null;
   }
 
   renderItems() {
@@ -178,8 +255,15 @@ class Feed extends React.PureComponent {
           <FeedItemCard
             key={index}
             item={item}
+            isOptionsOpen={id => {
+              return this.state.itemsExpanded.includes(id);
+            }}
+            onPricesOptionsExpansion={id => {
+              return this.handlePricesOptionsExpansion(id);
+            }}
             isLoading={this.props.isLoading}
             getSTEEMEquivalent={this.getSTEEMEquivalent}
+            getSBDEquivalent={this.getSBDEquivalent}
             cartItems={this.props.cart.items}
             highlightSelectedItem={this.props.highlightSelectedItem}
             verticalSpacing={this.props.verticalSpacing}
@@ -236,6 +320,10 @@ class Feed extends React.PureComponent {
         <InfiniteScroll
           dataLength={this.props.items.length} //This is important field to render the next data
           next={this.props.onFetchNextItems}
+          style={{
+            height: "inherit !important",
+            overflow: "hidden !important"
+          }}
           hasMore={this.props.items.length < this.props.itemsCount}
           loader={
             <Flex justify="center" alignItems="center">
@@ -248,10 +336,29 @@ class Feed extends React.PureComponent {
       </Flex>
     );
   }
+
+  handlePricesOptionsExpansion(id) {
+    if (!this.state.itemsExpanded.includes(id)) {
+      this.setState({
+        itemsExpanded: [...this.state.itemsExpanded, id]
+      });
+    } else {
+      this.setState({
+        itemsExpanded: this.state.itemsExpanded.filter(itemID => itemID !== id)
+      });
+    }
+  }
+
   getSTEEMEquivalent(naira) {
-    const STEEM_PRICE = 400;
+    const STEEM_PRICE = this.props.app.rates["STEEM"];
 
     return roundToDecimalPlaces(naira / STEEM_PRICE, 3);
+  }
+
+  getSBDEquivalent(naira) {
+    const SBD_PRICE = this.props.app.rates["SBD"];
+
+    return roundToDecimalPlaces(naira / SBD_PRICE, 3);
   }
 
   onAddCartItem(item) {
@@ -293,7 +400,8 @@ Feed.defaultProps = {
 
 const mapStateToProps = state => {
   return {
-    cart: getCartState(state).toJS()
+    cart: getCartState(state).toJS(),
+    app: getAppState(state).toJS()
   };
 };
 

@@ -6,6 +6,7 @@ import {
   SET_SEARCH_FOCUS,
   SET_SEARCH_RESULTS,
   SET_HOME_FEED_LOADING_STATE,
+  SET_FETCHED_HOME_FEED_STATE,
   SET_SEARCH_RESULTS_LOADING_STATE,
   REDUCER_NAME
 } from "./constants";
@@ -18,6 +19,7 @@ const initialState = fromJS({
   searchResults: [],
   search: "",
   isHomeFeedLoading: true,
+  hasFetchedHomeFeed: false,
   isLoadingSearchResults: false
 });
 
@@ -41,6 +43,8 @@ export const homeReducer = (state = initialState, action) => {
       );
     case SET_HOME_FEED_LOADING_STATE:
       return state.set("isHomeFeedLoading", action.data.isHomeFeedLoading);
+    case SET_FETCHED_HOME_FEED_STATE:
+      return state.set("hasFetchedHomeFeed", action.data.hasFetchedHomeFeed);
     default:
       return state;
   }

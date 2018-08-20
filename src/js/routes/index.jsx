@@ -3,33 +3,70 @@ import { Switch, Route, withRouter } from "react-router";
 import { Redirect } from "react-router-dom";
 import { TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux";
+import Loadable from "react-loadable";
 
 import { getRoutesState } from "./reducer";
 import { fetchRoutes } from "./actions";
 import ScrollToTop from "../components/navigation/scrollToTop";
 import Layout from "../containers/layout/index";
 import FadeTransition from "../components/transitions/fade";
+import { LoadingDisplay as Loading } from "../components/UI/molecules";
 
-import HomeScreen from "../screens/home";
-import PageScreen from "../screens/page";
-import CartScreen from "../screens/cart";
-import CheckoutScreen from "../screens/checkout";
-import TreatScreen from "../screens/treat";
-import AccountScreen from "../screens/account";
-import LoginScreen from "../screens/login";
-import RegisterScreen from "../screens/register";
-import ResetScreen from "../screens/reset";
+const Home = Loadable({
+  loader: () => import("../screens/home"),
+  loading: Loading
+});
+
+const Page = Loadable({
+  loader: () => import("../screens/page"),
+  loading: Loading
+});
+
+const Cart = Loadable({
+  loader: () => import("../screens/cart"),
+  loading: Loading
+});
+
+const Checkout = Loadable({
+  loader: () => import("../screens/checkout"),
+  loading: Loading
+});
+
+const Treat = Loadable({
+  loader: () => import("../screens/treat"),
+  loading: Loading
+});
+
+const Account = Loadable({
+  loader: () => import("../screens/account"),
+  loading: Loading
+});
+
+const Login = Loadable({
+  loader: () => import("../screens/login"),
+  loading: Loading
+});
+
+const Register = Loadable({
+  loader: () => import("../screens/register"),
+  loading: Loading
+});
+
+const ResetPassword = Loadable({
+  loader: () => import("../screens/reset"),
+  loading: Loading
+});
 
 const routeComponents = {
-  Home: HomeScreen,
-  Page: PageScreen,
-  Cart: CartScreen,
-  Checkout: CheckoutScreen,
-  Treat: TreatScreen,
-  Account: AccountScreen,
-  Login: LoginScreen,
-  Register: RegisterScreen,
-  ResetPassword: ResetScreen
+  Home,
+  Page,
+  Cart,
+  Checkout,
+  Treat,
+  Account,
+  Login,
+  Register,
+  ResetPassword
 };
 
 class Routes extends React.PureComponent {
@@ -84,7 +121,7 @@ class Routes extends React.PureComponent {
             )}
           />
           <Route
-            render={props => <PageScreen {...props} path={"/page-not-found"} />}
+            render={props => <Page {...props} path={"/page-not-found"} />}
           />
         </ScrollToTop>
       </Layout>

@@ -3,7 +3,8 @@ import {
   SET_SEARCH,
   SET_SEARCH_FOCUS,
   SET_SEARCH_RESULTS,
-  SET_SEARCH_RESULTS_LOADING_STATE
+  SET_SEARCH_RESULTS_LOADING_STATE,
+  SET_FETCHED_HOME_FEED_STATE
 } from "./constants";
 import {
   isLoading,
@@ -38,6 +39,13 @@ const loadHome = data => {
 const setSearchResults = data => {
   return {
     type: SET_SEARCH_RESULTS,
+    data
+  };
+};
+
+export const setFetchedHomeFeedState = data => {
+  return {
+    type: SET_FETCHED_HOME_FEED_STATE,
     data
   };
 };

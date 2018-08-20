@@ -4,6 +4,7 @@ import {
   SET_PAYMENT_METHOD,
   SET_PAYMENT_MODE,
   SET_DELIVERY_ADDRESS,
+  SET_CHECKOUT_ATTEMPTING_STATUS,
   SET_CHECKOUT_STATUS
 } from "./constants";
 import { getPageData } from "../../../../service/service";
@@ -20,20 +21,40 @@ import { addUserOrder } from "../../screens/account/actions";
 
 export const attemptOrderPlacement = (data, callback) => {
   return dispatch => {
+    dispatch(
+      setCheckoutAttemptingStatus({
+        isAttemptingCheckout: true
+      })
+    );
+
     sendRequest({
       endpoint: "http://localhost:3333/api/v1/orders",
       method: "POST",
       payload: JSON.stringify(data)
     })
       .then(response => {
-        if (typeof response !== "undefined" && typeof response !== null) {
-          console.log(response);
+        if (typeof response !== "undefined" && response !== null) {
           dispatch(
             addUserOrder({
               order: response
             })
           );
-          callback();
+
+          dispatch(
+            setCheckoutAttemptingStatus({
+              isAttemptingCheckout: false
+            })
+          );
+
+          callback(response);
+        } else {
+          setTimeout(() => {
+            dispatch(
+              setCheckoutAttemptingStatus({
+                isAttemptingCheckout: false
+              })
+            );
+          }, 1000);
         }
       })
       .catch(e => console.log(e));
@@ -64,6 +85,13 @@ export const setPaymentMode = data => {
 export const setDeliveryAddress = data => {
   return {
     type: SET_DELIVERY_ADDRESS,
+    data
+  };
+};
+
+export const setCheckoutAttemptingStatus = data => {
+  return {
+    type: SET_CHECKOUT_ATTEMPTING_STATUS,
     data
   };
 };

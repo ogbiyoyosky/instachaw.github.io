@@ -10,25 +10,25 @@ import {
   SET_LOGIN_ATTEMPTING_STATUS,
   SET_LOGGED_IN_STATUS
 } from "./constants";
-import { SET_USER } from "../../screens/account/constants";
+import { setUser } from "../../screens/account/actions";
 import { sendRequest } from "../../services/ApiService";
 
 export const attemptLogin = (data, cb) => {
   return dispatch => {
+    dispatch(
+      setLoginAttemptingStatus({
+        isAttemptingLogin: true
+      })
+    );
+
     return sendRequest({
       endpoint: "http://localhost:3333/api/v1/auth",
       method: "POST",
       payload: JSON.stringify(data)
     })
       .then(response => {
-        dispatch(
-          setLoginAttemptingStatus({
-            isAttemptingLogin: true
-          })
-        );
-
         if (typeof response !== "undefined" && typeof response !== null) {
-          if (response.user && response.user.length) {
+          if (typeof response.user !== "undefined") {
             const { user, token } = response;
             let userData = {
               ...user,
@@ -37,16 +37,21 @@ export const attemptLogin = (data, cb) => {
 
             localStorage.setItem("user", JSON.stringify(userData));
 
-            dispatch({
-              type: SET_USER,
-              data: {
+            dispatch(
+              setUser({
                 user: userData
-              }
-            });
+              })
+            );
 
             dispatch(
               setLoginStatus({
                 isLoggedIn: true
+              })
+            );
+
+            dispatch(
+              setLoginAttemptingStatus({
+                isAttemptingLogin: false
               })
             );
           } else {
@@ -56,7 +61,7 @@ export const attemptLogin = (data, cb) => {
                   isAttemptingLogin: false
                 })
               );
-            }, 500);
+            }, 1000);
           }
         } else {
           setTimeout(() => {
@@ -76,13 +81,19 @@ export const attemptLogin = (data, cb) => {
 
 export const attemptLogout = () => {
   return dispatch => {
-    localStorage.removeItem("user");
-
     dispatch(
       setLoginStatus({
         isLoggedIn: false
       })
     );
+
+    dispatch(
+      setUser({
+        user: null
+      })
+    );
+
+    localStorage.removeItem("user");
   };
 };
 

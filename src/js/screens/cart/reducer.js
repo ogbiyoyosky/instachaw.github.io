@@ -15,15 +15,15 @@ const initialState = fromJS({
   title: "",
   html: "",
   items: [
-    /*{
-      id: 1,
-      title: "Cheese Hamburger",
-      price: 2.99,
-      vat: 0.01,
-      description: "Cheese Hamburgers are delectable",
-      photo: "hamburger.jpg",
-      qty: 1
-    }*/
+    // {
+    //   id: 1,
+    //   title: "Cheese Hamburger",
+    //   price: 800,
+    //   vat: 0.01,
+    //   description: "Cheese Hamburgers are delectable",
+    //   photo: "hamburger.jpg",
+    //   qty: 1
+    // }
   ],
   isCartModalOpen: false
 });

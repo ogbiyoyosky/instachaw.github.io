@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { SyncLoader } from "react-spinners";
 import reducerInjector from "../../redux/reducerInjector";
 import { withRouter, Link } from "react-router-dom";
 
@@ -17,17 +18,14 @@ import {
   Heading,
   Flex,
   Icon,
-  Input,
-  Label,
   InputField,
   Text,
   Link as UILink,
   Box,
-  Button,
-  BlockLink,
-  OutlineButton,
-  IconButton
+  BlockLink
 } from "pcln-design-system";
+import { Button, Input, Label } from "../../components/UI/atoms";
+import { BrandLogo } from "../../components/UI/atoms";
 import styled from "styled-components";
 import posed from "react-pose";
 import { tween } from "popmotion";
@@ -82,7 +80,7 @@ class Reset extends React.PureComponent {
 
   render() {
     return (
-      <Box
+      <Flex
         style={{
           height: "100%"
         }}
@@ -146,14 +144,16 @@ class Reset extends React.PureComponent {
         <Flex
           px={3}
           flexDirection="column"
-          justify="center"
+          justifyContent="center"
+          alignItems="center"
           style={{
-            width: "100%",
-            transform: "translateY(-50%)",
-            top: "50%",
             position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translateY(-50%) translateX(-50%)",
             display: !this.props.reset.isResetStatusModalOpen ? "block" : "none"
           }}
+          width={[1, 0.9, 0.7]}
         >
           <form
             method="get"
@@ -163,18 +163,11 @@ class Reset extends React.PureComponent {
             }}
           >
             <Flex flexDirection="column" justify="center" alignItems="center">
-              <Text
-                fontSize={4}
-                mb={3}
-                style={{
-                  textAlign: "center"
-                }}
-                bold
-              >
-                Reset Password Instantly
-              </Text>
+              <Flex mb={3} alignItems="center" justify="center">
+                <BrandLogo height="45px" color="red" />
+              </Flex>
 
-              <Box mb={3}>
+              <Box mb={this.props.reset.recoveryNotice.length > 0 ? 1 : 3}>
                 <Label mb={1} fontSize={0}>
                   Email or Username
                 </Label>
@@ -189,21 +182,33 @@ class Reset extends React.PureComponent {
                 />
               </Box>
 
-              <Box>
-                <Button fullWidth>Reset My Password</Button>
-              </Box>
               {typeof this.props.reset.recoveryNotice != "undefined" &&
                 this.props.reset.recoveryNotice.length > 0 && (
-                  <Box mt={2}>
-                    <Text fontSize={1} color="red">
+                  <Box mb={2}>
+                    <Text fontSize={1} align="right" color="red">
                       {this.props.reset.recoveryNotice}
                     </Text>
                   </Box>
                 )}
+
+              <Box>
+                <Button
+                  disabled={
+                    this.props.reset.isAttemptingReset || !this.isValidForm()
+                  }
+                  fullWidth
+                >
+                  {!this.props.reset.isAttemptingReset ? (
+                    <Text>Reset My Password</Text>
+                  ) : (
+                    <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
+                  )}
+                </Button>
+              </Box>
             </Flex>
           </form>
         </Flex>
-      </Box>
+      </Flex>
     );
   }
 
@@ -223,6 +228,10 @@ class Reset extends React.PureComponent {
 
   navigateToLocation(location) {
     this.props.history.push(location);
+  }
+
+  isValidForm() {
+    return this.state.uid.length > 1;
   }
 }
 

@@ -11,23 +11,27 @@ import {
   toggleSearchFocus,
   attemptSearchQuery,
   setSearch,
+  setFetchedHomeFeedState,
   setSearchResultsLoadingState
 } from "./actions";
 import { homeReducer, getHomeState } from "./reducer";
 import { getAppState } from "../../containers/app/reducer";
 import { getTreatState } from "../../screens/treat/reducer";
-import { debounce } from "lodash";
+import { debounce } from "../../util/util";
 import {
   Flex,
   Text,
   Box,
   Icon,
+  Image,
   IconButton,
   InputField,
   Heading,
   Input,
   Label
 } from "pcln-design-system";
+import LazyLoad from "react-lazyload";
+import { ClipLoader } from "react-spinners";
 import { SearchBar } from "../../components/UI/molecules";
 import Feed from "../../containers/feed";
 import styled from "styled-components";
@@ -119,13 +123,26 @@ class Home extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { onLoadHome, fetchTreats, treat, match, app } = this.props;
+    const {
+      onLoadHome,
+      fetchTreats,
+      setFetchedHomeFeedState,
+      home,
+      treat,
+      match,
+      app
+    } = this.props;
     const { currentTreatPage, activeTreat } = treat;
     if (app.url !== match.url) {
       onLoadHome(match.path);
     }
 
-    fetchTreats({ page: currentTreatPage, activeTreat });
+    if (!treat.treats.length || !home.hasFetchedHomeFeed) {
+      fetchTreats({ page: currentTreatPage, activeTreat });
+      setFetchedHomeFeedState({
+        hasFetchedHomeFeed: true
+      });
+    }
   }
 
   // returns the JSX that will be rendered for this component
@@ -145,63 +162,85 @@ class Home extends React.PureComponent {
       isLoadingTreats
     } = this.props.treat;
     return (
-      <Flex
-        style={{ minHeight: "100vh" }}
-        my={4}
-        className="transition-item"
-        flexDirection="column"
-        bg="lightGray"
-      >
-        {isSearchFocused && (
-          <Overlay>
-            <SearchFeed
-              onCloseButtonClick={e =>
-                this.props.onToggleSearchFocus({
-                  isSearchFocused: !isSearchFocused
-                })}
-              onSearchBarChange={this.onSearchBarChange}
-              isLoadingSearchResults={isLoadingSearchResults}
-              searchResults={searchResults}
-              searchValue={this.props.home.search}
-            />
-          </Overlay>
-        )}
-        <Flex justify="center" alignItems="center">
-          <Box mt={3} px={3} width={[1, 0.9, 0.7, 0.7]}>
-            <SearchBar
-              id="search"
-              isSearchBarFocused={this.props.home.isSearchFocused}
-              onSearchBarChange={query => this.onSearchBarChange(query)}
-              style={{
-                background: "#fcfcfc"
-              }}
-              value={this.props.home.search}
-              onFocus={this.handleSearchStateChange}
-            />
-          </Box>
-        </Flex>
-        <Flex justify="center" alignItems="center">
-          <Box px={3} width={[1, 0.9, 0.7, 0.7]}>
-            <Text bold color="darkGray" fontSize={4} my={3}>
-              My Tastes
-            </Text>
-            <Box>
-              <Feed
-                items={treats}
-                itemsCount={treatsCount}
-                isLoading={isLoadingTreats}
-                onFetchNextItems={() => {
-                  this.props.setTreatsLoadingStatus({
-                    isLoadingTreats: true
-                  });
-                  this.props.fetchTreats({ page: currentTreatPage });
+      !this.props.app.isLoading && (
+        <Flex
+          style={{ minHeight: "100vh" }}
+          my={4}
+          className="transition-item"
+          flexDirection="column"
+          bg="lightGray"
+        >
+          {isSearchFocused && (
+            <Overlay>
+              <SearchFeed
+                onCloseButtonClick={e =>
+                  this.props.onToggleSearchFocus({
+                    isSearchFocused: !isSearchFocused
+                  })}
+                onSearchBarChange={this.onSearchBarChange}
+                isLoadingSearchResults={isLoadingSearchResults}
+                searchResults={searchResults}
+                searchValue={this.props.home.search}
+              />
+            </Overlay>
+          )}
+          <Flex justify="center" alignItems="center">
+            <Box mt={3} px={3} width={[1, 0.9, 0.7, 0.7]}>
+              <SearchBar
+                id="search"
+                isSearchBarFocused={this.props.home.isSearchFocused}
+                onSearchBarChange={query => this.onSearchBarChange(query)}
+                style={{
+                  background: "#fcfcfc"
                 }}
+                value={this.props.home.search}
+                onFocus={this.handleSearchStateChange}
               />
             </Box>
-          </Box>
+          </Flex>
+          <Flex justify="center" alignItems="center">
+            <Box px={3} width={[1, 0.9, 0.7, 0.7]}>
+              <Text bold color="darkGray" fontSize={4} my={3}>
+                Make your choices.
+              </Text>
+              <Box>
+                <Flex flexDirection="row-reverse" mb={1}>
+                  <Box width="100px">
+                    <LazyLoad
+                      height={200}
+                      placeholder={
+                        <Flex justify="center" alignItems="center">
+                          <ClipLoader
+                            width={10}
+                            loading={true}
+                            color="#c3c3c3"
+                          />
+                        </Flex>
+                      }
+                    >
+                      <Image
+                        src={`${window.location
+                          .origin}/src/img/kilimanjaro-logo.png`}
+                      />
+                    </LazyLoad>
+                  </Box>
+                </Flex>
+                <Feed
+                  items={treats}
+                  itemsCount={treatsCount}
+                  isLoading={isLoadingTreats}
+                  onFetchNextItems={() => {
+                    this.props.setTreatsLoadingStatus({
+                      isLoadingTreats: true
+                    });
+                    this.props.fetchTreats({ page: currentTreatPage });
+                  }}
+                />
+              </Box>
+            </Box>
+          </Flex>
         </Flex>
-        }
-      </Flex>
+      )
     );
   }
 
@@ -265,6 +304,7 @@ const mapDispatchToProps = dispatch => {
     setTreatsLoadingStatus: data => dispatch(setTreatsLoadingStatus(data)),
     attemptSearchQuery: data => dispatch(attemptSearchQuery(data)),
     setSearch: data => dispatch(setSearch(data)),
+    setFetchedHomeFeedState: data => dispatch(setFetchedHomeFeedState(data)),
     setSearchResultsLoadingState: data =>
       dispatch(setSearchResultsLoadingState(data))
   };

@@ -8,6 +8,7 @@ import { getPageData } from "../../../../service/service";
 import {
   SET_RESET,
   SET_RESET_MODAL_STATUS,
+  SET_RESET_ATTEMPTING_STATUS,
   SET_RECOVERY_EMAIL,
   SET_RECOVERY_NOTICE
 } from "./constants";
@@ -15,32 +16,54 @@ import { sendRequest } from "../../services/ApiService";
 
 export const attemptPasswordReset = data => {
   return dispatch => {
+    dispatch(
+      setResetAttemptingStatus({
+        isAttemptingReset: true
+      })
+    );
     sendRequest({
       endpoint: "http://localhost:3333/api/v1/auth/forgotPassword",
       method: "POST",
       payload: JSON.stringify(data)
     })
       .then(response => {
-        if (typeof response.messages !== "undefined") {
-          dispatch(
-            setRecoveryNotice({
-              notice: response.messages[0].message
-            })
-          );
-        }
+        if (typeof response !== "undefined") {
+          if (typeof response.messages !== "undefined") {
+            dispatch(
+              setRecoveryNotice({
+                notice: response.messages[0].message
+              })
+            );
+            setTimeout(() => {
+              dispatch(
+                setResetAttemptingStatus({
+                  isAttemptingReset: false
+                })
+              );
+            }, 1000);
+          }
 
-        if (typeof response.data !== "undefined") {
-          dispatch(
-            setRecoveryEmail({
-              email: response.data.user[0].email
-            })
-          );
+          if (typeof response.data !== "undefined") {
+            dispatch(
+              setRecoveryEmail({
+                email: response.data.user[0].email
+              })
+            );
 
-          dispatch(
-            setResetModalStatus({
-              isResetStatusModalOpen: true
-            })
-          );
+            dispatch(
+              setResetModalStatus({
+                isResetStatusModalOpen: true
+              })
+            );
+          }
+        } else {
+          setTimeout(() => {
+            dispatch(
+              setResetAttemptingStatus({
+                isAttemptingReset: false
+              })
+            );
+          }, 1000);
         }
       })
       .catch(e => console.log(e));
@@ -79,6 +102,13 @@ const loadReset = data => {
 const setResetModalStatus = data => {
   return {
     type: SET_RESET_MODAL_STATUS,
+    data
+  };
+};
+
+const setResetAttemptingStatus = data => {
+  return {
+    type: SET_RESET_ATTEMPTING_STATUS,
     data
   };
 };

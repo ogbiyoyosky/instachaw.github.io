@@ -1,5 +1,7 @@
-import Molecules from './molecules';
+import Atoms from "./atoms";
+import Molecules from "./molecules";
 
 export default {
-    Molecules
-}
+  Atoms,
+  Molecules
+};

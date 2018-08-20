@@ -3,6 +3,7 @@ import { fromJS } from "immutable";
 import {
   SET_CHECKOUT,
   SET_CHECKOUT_STATUS,
+  SET_CHECKOUT_ATTEMPTING_STATUS,
   SET_PAYMENT_METHOD,
   SET_PAYMENT_MODE,
   SET_DELIVERY_ADDRESS,
@@ -12,14 +13,15 @@ import {
 const initialState = fromJS({
   title: "",
   html: "",
+  isAttemptingCheckout: false,
   isCheckoutStatusModalOpen: false,
   deliveryAddress:
     localStorage.getItem("user") &&
-    JSON.parse(localStorage.getItem("user")).addresses.length
+    JSON.parse(localStorage.getItem("user")).addresses.length > 0
       ? JSON.parse(localStorage.getItem("user")).addresses[0].body
       : "",
-  paymentMethod: "STEEM",
-  paymentMode: "on-demand"
+  paymentMethod: "naira",
+  paymentMode: "on-delivery"
 });
 
 export const checkoutReducer = (state = initialState, action) => {
@@ -42,6 +44,12 @@ export const checkoutReducer = (state = initialState, action) => {
       return state.set(
         "isCheckoutStatusModalOpen",
         action.data.isCheckoutStatusModalOpen
+      );
+
+    case SET_CHECKOUT_ATTEMPTING_STATUS:
+      return state.set(
+        "isAttemptingCheckout",
+        action.data.isAttemptingCheckout
       );
 
     default:

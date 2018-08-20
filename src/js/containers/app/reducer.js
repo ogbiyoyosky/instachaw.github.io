@@ -7,6 +7,8 @@ import {
   SET_META,
   SET_TITLE,
   SET_URL,
+  SET_RATES,
+  SET_DATA_FETCHING_STATUS,
   REDUCER_NAME
 } from "./constants";
 
@@ -14,6 +16,9 @@ const initialState = fromJS({
   deferredPrompt: null,
   isLoading: false,
   isError: false,
+  rates: {},
+  hasFetchedRates: false,
+  isFetchingData: true,
   meta: {},
   title: "",
   url: ""
@@ -33,6 +38,10 @@ export function appReducer(state = initialState, action) {
       return state.set("title", action.data);
     case SET_URL:
       return state.set("url", action.data);
+    case SET_RATES:
+      return state.set("rates", action.data.rates);
+    case SET_DATA_FETCHING_STATUS:
+      return state.set("isFetchingData", action.data.isFetchingData);
     default:
       return state;
   }

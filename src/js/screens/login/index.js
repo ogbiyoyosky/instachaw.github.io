@@ -19,25 +19,21 @@ import {
   Heading,
   Flex,
   Icon,
-  Input,
-  Label,
-  InputField,
   Text,
   Link as UILink,
   Box,
-  Button,
-  BlockLink,
-  OutlineButton,
-  IconButton
+  BlockLink
 } from "pcln-design-system";
 import styled from "styled-components";
+import { Button, Input, Label } from "../../components/UI/atoms";
+import { BrandLogo } from "../../components/UI/atoms";
 
 class Login extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      uid: "minnie.sins",
-      password: "hando",
+      uid: "",
+      password: "",
       loginNotice: ""
     };
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
@@ -73,21 +69,16 @@ class Login extends React.PureComponent {
         style={{
           height: "80%",
           position: "absolute",
-          width: "100%"
+          left: "50%",
+          transform: "translateX(-50%)"
         }}
+        width={[1, 0.9, 0.7]}
       >
         <form method="get" onSubmit={this.handleLoginSubmit}>
+          <Flex mb={3} alignItems="center" justify="center">
+            <BrandLogo height="45px" color="red" />
+          </Flex>
           <Flex flexDirection="column" justify="center" alignItems="center">
-            <Text
-              fontSize={4}
-              mb={4}
-              style={{
-                textAlign: "center"
-              }}
-            >
-              Login to <strong>Delight</strong>
-            </Text>
-
             <Box mb={3}>
               <Label mb={1} fontSize={0}>
                 Email or Username
@@ -104,7 +95,7 @@ class Login extends React.PureComponent {
               />
             </Box>
 
-            <Box mb={3}>
+            <Box mb={this.state.loginNotice.length > 0 ? 1 : 3}>
               <Flex>
                 <Label
                   style={{
@@ -143,8 +134,10 @@ class Login extends React.PureComponent {
             </Box>
 
             {this.state.loginNotice.length > 0 && (
-              <Box>
-                <Text color="red">{this.state.loginNotice}</Text>
+              <Box mb={3}>
+                <Text align="right" fontSize={0} color="darkRed">
+                  {this.state.loginNotice}
+                </Text>
               </Box>
             )}
 
@@ -161,7 +154,7 @@ class Login extends React.PureComponent {
                   <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
                 )}
               </Button>
-              <Text my={3} align="center">
+              <Text my={2} align="center">
                 or
               </Text>
               <BlockLink
@@ -172,7 +165,7 @@ class Login extends React.PureComponent {
                 onClick={e => this.navigateToLocation("/register")}
               >
                 <Text
-                  color="gray"
+                  color="blue"
                   style={{
                     textDecoration: "underline"
                   }}
@@ -197,12 +190,15 @@ class Login extends React.PureComponent {
         password
       },
       response => {
-        console.log(response[0].message);
-        // response.user == undefined
-        //   ? this.setState({
-        //       loginNotice: response.message
-        //     })
-        //   : this.navigateToLocation("/");
+        if (typeof response !== "undefined") {
+          if (typeof response.user === "undefined") {
+            this.setState({
+              loginNotice: response[0].message
+            });
+          } else {
+            this.navigateToLocation("/");
+          }
+        }
       }
     );
   }

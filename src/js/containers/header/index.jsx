@@ -32,30 +32,24 @@ import {
   Text
 } from "pcln-design-system";
 import HamburgerMenu from "../../components/navigation/hamburgerMenu";
+import { BrandLogo, TransparentButton } from "../../components/UI/atoms";
 import Styled from "styled-components";
 import posed from "react-pose";
 import { tween } from "popmotion";
 
-const TransparentButton = Styled(Button)`
-  background: transparent;
-
-  :hover, :focus {
-    background: transparent;
-  }
-`;
-
 const NeutralButton = Styled(TransparentButton)`
-  background: white;
-  color: gray
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
 
   :focus, :visited, :active {
-    background: white;
-    color: gray
+    color: #fff;
+    border: 1px solid #fff;
   }
 `;
 
 const MenuToggle = props => (
-  <Flex width={1 / 3} pl={3} align="center">
+  <Flex width={0.15} pl={1} align="center">
     <TransparentButton onClick={props.handleClick}>
       <HamburgerMenu
         isOpen={props.isMenuOpen}
@@ -72,32 +66,39 @@ const MenuToggle = props => (
 );
 
 const Brand = props => (
-  <Flex alignItems="center" justify="center" width={1 / 3} py={1}>
+  <Flex width={1} alignItems="center" justify="center" py={1}>
     <Flex justify="center" flexDirection="column">
-      <Text color="lightGray" bold>
-        Delight
-      </Text>
+      <Flex alignItems="center" justify="center">
+        <BrandLogo />
+      </Flex>
     </Flex>
   </Flex>
 );
 
 const LoginButton = props => (
-  <Flex ml="auto" pr={3} py={1}>
-    <RouterLink to="/login" style={{ textDecoration: "none" }}>
-      <Flex alignItems="center">
-        <NeutralButton py={1} px={2}>
-          <Flex>
-            <Icon mt={1} mr={1} name="user" size={14} />
-            <Text>Login</Text>
-          </Flex>
-        </NeutralButton>
+  <Flex
+    width={1 / 4}
+    flexDirection="column"
+    alignItems="center"
+    justify="center"
+    pr={3}
+  >
+    <NeutralButton py={1} onClick={e => props.onClick(e)}>
+      <Flex width={1} px={2} alignItems="center" justify="center">
+        <Text fontSize={1}>Login</Text>
       </Flex>
-    </RouterLink>
+    </NeutralButton>
   </Flex>
 );
 
 const UserButton = props => (
-  <Flex ml="auto" pr={3} py={1}>
+  <Flex
+    flexDirection="column"
+    justify="center"
+    alignItems="center"
+    mr={3}
+    py={1}
+  >
     <Link
       onClick={e => {
         e.preventDefault();
@@ -105,13 +106,13 @@ const UserButton = props => (
       }}
       style={{ textDecoration: "none" }}
     >
-      <Flex alignItems="center">
-        <TransparentButton py={1} px={0}>
+      <Flex flexDirection="column" width={1} alignItems="center">
+        <TransparentButton py={0} px={0}>
           <Flex>
-            <Text fontSize={1} regular>
-              {props.username}
-            </Text>
-            <Icon mt={1} ml={1} name="arrowRight" size={14} />
+            <Icon name="user" size={28} />
+            <Flex flexDirection="column" alignItems="center" justify="center">
+              <Icon name="chevronDown" size={14} />
+            </Flex>
           </Flex>
         </TransparentButton>
       </Flex>
@@ -307,7 +308,9 @@ class Header extends React.PureComponent {
               <Brand />
               {location.pathname !== "/login" ? (
                 !loginData.isLoggedIn ? (
-                  <LoginButton />
+                  <LoginButton
+                    onClick={e => this.props.history.push("/login")}
+                  />
                 ) : (
                   <UserButton
                     onClick={e =>

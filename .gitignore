@@ -10,3 +10,4 @@ src/script.js.map
 *.sublime-*
 sw.js
 .idea/
+/nbproject/private/

@@ -1,5 +1,7 @@
 import React from "react";
+import LazyLoad from "react-lazyload";
 import { connect } from "react-redux";
+import { Parallax } from "react-parallax";
 import { Link } from "react-router-dom";
 import reducerInjector from "../../redux/reducerInjector";
 import { setActiveTreat, setTreatTitle, onLoadTreat } from "./actions";
@@ -17,12 +19,14 @@ import {
   Flex,
   Image,
   Text,
-  RedButton,
   GreenButton,
   OutlineButton,
   IconButton,
+  Icon,
   Box
 } from "pcln-design-system";
+import { TransparentButton, Button } from "../../components/UI/atoms";
+import { ClipLoader } from "react-spinners";
 import { getCartItemFromFeed } from "../../util/util";
 
 class Treat extends React.PureComponent {
@@ -52,36 +56,71 @@ class Treat extends React.PureComponent {
   }
 
   render() {
-    this.props.activeTreat === {} && <div>Loading....</div>;
-    return (
-      <Flex flexDirection="column">
-        <Flex style={{ height: "40vh" }} mb={4} bg="lightGray">
-          <Image
-            style={{ borderRadius: "4px" }}
-            src={`${window.location.origin}/img/${this.props.activeTreat
-              .photo}`}
-          />
-        </Flex>
-        <Flex justify="center" alignItems="center">
+    const IMG_URL =
+      "https://res.cloudinary.com/instachaw/image/upload/c_scale,w_800,h_500/v1534208541/store-1";
+    return this.props.activeTreat === {} ? (
+      <div>Loading....</div>
+    ) : (
+      <Flex flexDirection="column" mt={"40px"}>
+        <LazyLoad
+          height={400}
+          placeholder={
+            <Flex
+              style={{
+                background: "#f5f5f5",
+                height: "500px"
+              }}
+              flexDirection="column"
+              justify="center"
+              alignItems="center"
+            >
+              <ClipLoader width={150} loading={true} color="#888" />
+            </Flex>
+          }
+        >
+          {this.props.activeTreat !== {} && (
+            <Parallax bgImage={`${IMG_URL}/${this.props.activeTreat.photo}`}>
+              <Flex
+                flexDirection="column"
+                alignItems="center"
+                justify="center"
+                style={{
+                  height: 300,
+                  backgroundColor: "#888",
+                  zIndex: -1,
+                  position: "relative"
+                }}
+              >
+                <Flex alignItems="center" justify="center">
+                  <ClipLoader width={150} loading={true} color="#e5e5e5" />
+                </Flex>
+              </Flex>
+            </Parallax>
+          )}
+        </LazyLoad>
+        <Flex justify="center" mt={3} mb={6} alignItems="center">
           <Box width={[1, 0.9, 0.7, 0.7]}>
             <Flex flexDirection="column" px={3}>
               <Flex alignItems="center" flexDirection="column">
                 <Text align="center" bold fontSize={3}>
                   {this.props.activeTreat.title}
                 </Text>
-                <p style={{ textAlign: "center", color: "#666" }}>
-                  {this.props.activeTreat.description}
-                </p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: this.props.activeTreat.description
+                  }}
+                  style={{ textAlign: "center", color: "#666" }}
+                />
               </Flex>
               {!getCartItemFromFeed(
                 this.props.activeTreat,
                 this.props.cart.items
               ) ? (
-                <RedButton
+                <Button
                   onClick={e => this.props.addCartItem(this.props.activeTreat)}
                 >
                   Add to Cart
-                </RedButton>
+                </Button>
               ) : (
                 <Flex flexDirection="column">
                   <Flex mb={2}>
@@ -90,34 +129,43 @@ class Treat extends React.PureComponent {
                         this.props.activeTreat,
                         this.props.cart.items
                       ).qty !== 1 ? (
-                        <IconButton
-                          size={24}
-                          color="#999"
-                          p={3}
-                          borderColor="#999"
-                          name="minus"
+                        <TransparentButton
                           onClick={e =>
                             this.props.decrementCartItemQty(
                               this.props.activeTreat
                             )}
-                          mb={1}
-                        />
+                        >
+                          <Icon
+                            size={24}
+                            color="#999"
+                            name="circleMinus"
+                            mb={1}
+                          />
+                        </TransparentButton>
                       ) : (
-                        <IconButton
-                          size={24}
-                          color="#999"
-                          p={3}
-                          borderColor="#999"
-                          name="close"
-                          onClick={e =>
-                            this.props.removeCartItem(this.props.activeTreat)}
-                          mb={1}
-                        />
+                        <TransparentButton>
+                          <Icon
+                            size={32}
+                            color="#999"
+                            name="circlePlus"
+                            style={{
+                              transform: "rotate(45deg)"
+                            }}
+                            onClick={e =>
+                              this.props.removeCartItem(this.props.activeTreat)}
+                            mb={1}
+                          />
+                        </TransparentButton>
                       )}
                     </Flex>
 
-                    <Flex width={0.9} flexDirection="column">
-                      <Text color="gray" align="center" fontSize={1}>
+                    <Flex
+                      width={0.9}
+                      flexDirection="column"
+                      alignItems="center"
+                      justify="center"
+                    >
+                      <Text color="gray" align="center" bold fontSize={2}>
                         {
                           getCartItemFromFeed(
                             this.props.activeTreat,
@@ -136,25 +184,18 @@ class Treat extends React.PureComponent {
                     </Flex>
 
                     <Flex alignItems="right" justifyContent="right">
-                      <IconButton
-                        size={24}
-                        color="#999"
-                        p={3}
-                        borderColor="#999"
-                        name="plus"
+                      <TransparentButton
                         onClick={e =>
                           this.props.incrementCartItemQty(
                             this.props.activeTreat
                           )}
-                        mb={1}
-                      />
+                      >
+                        <Icon size={34} color="#999" name="circlePlus" mb={1} />
+                      </TransparentButton>
                     </Flex>
                   </Flex>
 
-                  <GreenButton
-                    onClick={e =>
-                      this.props.addCartItem(this.props.activeTreat)}
-                  >
+                  <GreenButton onClick={e => this.props.history.push("/cart")}>
                     Proceed To Checkout
                   </GreenButton>
                 </Flex>

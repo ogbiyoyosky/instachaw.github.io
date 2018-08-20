@@ -5,41 +5,72 @@ import {
   setUrl
 } from "../../containers/app/actions";
 import { getPageData } from "../../../../service/service";
-import { SET_REGISTER } from "./constants";
-import { SET_USER } from "../../containers/app/constants";
+import { SET_REGISTER, SET_REGISTRATION_ATTEMPTING_STATUS } from "./constants";
+import { setUser } from "../../screens/account/actions";
 import { setLoginStatus } from "../../screens/login/actions";
 import { sendRequest } from "../../services/ApiService";
 
-export const attemptRegistration = data => {
+export const attemptRegistration = (data, cb) => {
   return dispatch => {
-    sendRequest({
+    dispatch(
+      setRegistrationAttemptingStatus({
+        isAttemptingRegistration: true
+      })
+    );
+
+    return sendRequest({
       endpoint: "http://localhost:3333/api/v1/users",
       method: "POST",
       payload: JSON.stringify(data)
     })
       .then(response => {
         if (typeof response !== "undefined" && typeof response !== null) {
-          const { user, token } = response;
-          let userData = {
-            ...user,
-            token
-          };
+          if (typeof response.user !== "undefined") {
+            const { user, token } = response;
+            let userData = {
+              ...user,
+              token
+            };
 
-          localStorage.setItem("user", JSON.stringify(userData));
+            dispatch(
+              setUser({
+                user: userData
+              })
+            );
 
-          dispatch({
-            type: SET_USER,
-            data: {
-              user: userData
-            }
-          });
+            localStorage.setItem("user", JSON.stringify(userData));
 
-          dispatch(
-            setLoginStatus({
-              isLoggedIn: true
-            })
-          );
+            dispatch(
+              setLoginStatus({
+                isLoggedIn: true
+              })
+            );
+
+            dispatch(
+              setRegistrationAttemptingStatus({
+                isAttemptingRegistration: false
+              })
+            );
+          } else {
+            setTimeout(() => {
+              dispatch(
+                setRegistrationAttemptingStatus({
+                  isAttemptingRegistration: false
+                })
+              );
+            }, 1000);
+          }
+        } else {
+          setTimeout(() => {
+            dispatch(
+              setRegistrationAttemptingStatus({
+                isAttemptingRegistration: false
+              })
+            );
+          }, 1000);
         }
+
+        return cb(response);
       })
       .catch(e => console.log(e));
   };
@@ -64,6 +95,13 @@ export const fetchRegister = data => {
         console.error(error);
         throw error;
       });
+  };
+};
+
+export const setRegistrationAttemptingStatus = data => {
+  return {
+    type: SET_REGISTRATION_ATTEMPTING_STATUS,
+    data
   };
 };
 
