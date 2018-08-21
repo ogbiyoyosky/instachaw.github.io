@@ -2,9 +2,9 @@
     "/": {
         "name": "Home",
         "meta": {
-            "title": "Delight PWA"
+            "title": "Fastest Deliveries in your Hood &mdash; Instachaw"
         },
-        "title": "Delight",
+        "title": "Fastest Deliveries in your Hood &mdash; Instachaw",
         "images": [],
         "buttons": [{"url": "/settings", "title": "Settings"}],
         "html": "<p>Delight is a PWA under development</p>",
@@ -15,7 +15,7 @@
     "/cart": {
         "name": "Cart",
         "meta": {
-            "title": "Cart"
+            "title": "Cart &mdash; Instachaw"
         },
         "title": "Cart PWA",
         "html": "<p>Cart Page</p>",
@@ -26,7 +26,7 @@
     "/checkout": {
         "name": "Checkout",
         "meta": {
-            "title": "Checkout"
+            "title": "Complete Checkout &mdash; Instachaw"
         },
         "title": "Checkout PWA",
         "html": "<p>Checkout Page</p>",
@@ -48,7 +48,7 @@
     "/account": {
         "name": "Account",
         "meta": {
-            "title": "Account"
+            "title": "Your account"
         },
         "title": "Account",
         "html": "<p>Account Page</p>",
@@ -59,7 +59,7 @@
     "/login": {
         "name": "Login",
         "meta": {
-            "title": "Login"
+            "title": "Login &mdash; Instachaw"
         },
         "title": "Login",
         "html": "<p>Login Page</p>",
@@ -70,7 +70,7 @@
     "/register": {
         "name": "Register",
         "meta": {
-            "title": "Register"
+            "title": "Register &mdash; Instachaw"
         },
         "title": "Register",
         "html": "<p>Registration Page</p>",
@@ -81,7 +81,7 @@
     "/resetPassword": {
         "name": "ResetPassword",
         "meta": {
-            "title": "Reset Password"
+            "title": "Reset Password &mdash; Instachaw"
         },
         "title": "Reset Password",
         "html": "<p>Reset Page</p>",
@@ -92,7 +92,7 @@
     "/page-not-found": {
         "name": "Page",
         "meta": {
-            "title": "Page Not Found"
+            "title": "Page Not Found &mdash; Instachaw"
         },
         "title": "Page Not Found",
         "html": "<p>The page you were looking for could not be found. Please contact an administrator.</p>",

@@ -77,7 +77,7 @@ const FeedItemCard = props => {
 
 const FeedItemThumbnail = props => {
   const THUMB_URL =
-    "http://res.cloudinary.com/instachaw/image/upload/c_scale,w_150/v1534208541/store-1";
+    "https://res.cloudinary.com/instachaw/image/upload/c_scale,w_150/v1534208541/store-1";
   return (
     <Box width={1 / 4} mr={3}>
       <Link to={"/treat/" + props.item.id}>

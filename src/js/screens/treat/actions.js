@@ -53,7 +53,7 @@ const fetchTreats = data => {
           } else {
             dispatch(
               setTreats(
-                data.activeTreat
+                typeof data.activeTreat !== "undefined"
                   ? response.items.filter(
                       item => item.id !== data.activeTreat.id
                     )
