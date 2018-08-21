@@ -129,8 +129,7 @@ let web = {
             filename: "../sw.js",
             minify: true,
             staticFileGlobs: [
-                `/${outputFolder}/**/*.{css,js}`,
-                `/${outputFolder}/img/**`
+                `dist/**`
             ],
             stripPrefix: `/${outputFolder}`
         })
@@ -162,7 +161,7 @@ let web = {
           }),        
   
     ]).
-    concat(isDeploy ? [] : [new BundleAnalyzerPlugin()]),
+    concat(isDeploy ? [] : [/*new BundleAnalyzerPlugin()*/]),
     module: {
         rules: [{
                 enforce: "pre",

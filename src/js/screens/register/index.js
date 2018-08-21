@@ -96,7 +96,6 @@ class Register extends React.PureComponent {
                 value={this.state.email}
                 id="email"
                 type="email"
-                autoFocus
               />
             </Box>
 
@@ -120,6 +119,7 @@ class Register extends React.PureComponent {
                 Fullname <sup style={{ color: "red" }}>*</sup>
               </Label>
               <Input
+                type="text"
                 onChange={e =>
                   this.setState({
                     name: e.target.value
@@ -135,6 +135,7 @@ class Register extends React.PureComponent {
                 Username <sup style={{ color: "red" }}>*</sup>
               </Label>
               <Input
+                type="text"
                 onChange={e =>
                   this.setState({
                     username: e.target.value

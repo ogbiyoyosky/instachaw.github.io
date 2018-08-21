@@ -91,7 +91,6 @@ class Login extends React.PureComponent {
                 value={this.state.uid}
                 required
                 id="username"
-                autoFocus
               />
             </Box>
 

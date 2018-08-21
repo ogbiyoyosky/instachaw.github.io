@@ -6,7 +6,6 @@ server/
 service/
 *.log
 .sass-cache/
-src
-
+src/
 /*.json
 /nbproject/
