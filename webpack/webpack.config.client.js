@@ -76,6 +76,20 @@ let web = {
                 removeRedundantAttributes: true
             }
         }),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, '../templates/index.ejs'),
+            path: '../',
+            chunks: ['vendor', isDev ? 'client.js' : 'main.js'],
+            filename: '../404.html',
+            inject: 'body',
+            chunksSortMode: 'manual',
+            minify: {
+                collapseWhitespace: true,
+                collapseInlineTagWhitespace: true,
+                removeComments: true,
+                removeRedundantAttributes: true
+            }
+        }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
