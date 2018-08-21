@@ -66,11 +66,10 @@ export default class App extends React.Component {
     initOffline();
 
     window.addEventListener("beforeinstallprompt", e => {
-      e.preventDefault();
-      // store the event so it can be triggered later.
-      this.store.dispatch(setDeferredPrompt(e));
-
-      return false;
+      // e.preventDefault();
+      // // store the event so it can be triggered later.
+      // this.store.dispatch(setDeferredPrompt(e));
+      // return false;
     });
   }
 

@@ -14,7 +14,11 @@ const Meta = ({ meta, url }) => {
 
   return (
     <Helmet>
-      <title>{meta.title}</title>
+      <title
+        dangerouslySetInnerHTML={{
+          __html: meta.title
+        }}
+      />
       <meta name="description" content={meta.description} />
       <meta name="keywords" content={meta.keywords} />
       <meta property="og:title" content={meta.title} />
