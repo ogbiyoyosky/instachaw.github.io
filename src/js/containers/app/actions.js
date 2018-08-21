@@ -13,9 +13,9 @@ import {
 import { sendRequest } from "../../services/ApiService";
 
 const HOST_URL =
-window.location.origin === "https://instachaw.com"
-  ? "https://api.instachaw.com"
-  : "http://localhost:3333";
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
 
 export const isLoading = data => {
   return {
@@ -81,7 +81,7 @@ export const setDataFetchingStatus = data => {
 
 export const fetchRates = () => {
   return dispatch => {
-    let endpoint = `api/v1/rates`
+    let endpoint = `api/v1/rates`;
     dispatch(
       setDataFetchingStatus({
         isFetchingData: true
