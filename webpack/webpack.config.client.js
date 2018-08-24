@@ -130,7 +130,7 @@ let web = {
             minify: true,
             dontCacheBustUrlsMatching: /\.\w{8}\./,
             staticFileGlobs: [
-                `dist/*.{gz}`,
+                `dist/**.gz`,
                 `dist/img/**`
             ],
             stripPrefix: `/${outputFolder}`
