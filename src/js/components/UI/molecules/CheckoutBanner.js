@@ -24,7 +24,7 @@ const CheckoutBanner = props => {
       >
         <Flex flexDirection="column" alignItems="center" justify="center">
           <Text color="white" fontSize={2} align="center">
-            Take me to the next step (1/3)
+            Take me to the next step (2/3)
           </Text>
         </Flex>
 

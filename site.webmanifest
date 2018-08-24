@@ -13,7 +13,10 @@
             "type": "image/png"
         }
     ],
+    "start_url": "/",
     "theme_color": "#2f2e33",
     "background_color": "#2f2e33",
-    "display": "standalone"
+    "orientation": "portrait",
+    "display": "fullscreen",
+    "gcm_sender_id": "223144374677"    
 }
