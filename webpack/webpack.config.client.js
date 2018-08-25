@@ -130,7 +130,7 @@ let web = {
             minify: true,
             dontCacheBustUrlsMatching: /\.\w{8}\./,
             staticFileGlobs: [
-                `/index.html`,
+                `index.html`,
                 // `dist/**.{js.gz}`,
                 `dist/img/**`
             ],
