@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Feed from "../../../containers/feed";
-import moment from "moment";
+import fecha from "fecha";
 import { Card, Flex, Link, Heading, Text } from "pcln-design-system";
 
 const OrdersFeed = props => {
@@ -13,7 +13,7 @@ const OrdersFeed = props => {
             <Card p={3} bg="lightGray" flexDirection="column">
               <Flex flexDirection="row" mb={1}>
                 <Text color="gray" style={{ flex: 3 }} fontSize={0}>
-                  {moment(order.created_at).format("h:mm a, MMM Do")}
+                  {fecha(order.created_at).format("h:mm a, MMM Do")}
                 </Text>
                 {props.isOrderCancellable && (
                   <Link

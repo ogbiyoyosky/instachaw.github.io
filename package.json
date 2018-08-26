@@ -64,7 +64,7 @@
   },
   "scripts": {
     "deploy": "cross-env DEPLOY=true npm run build",
-    "deploy:client": "cross-env DEPLOY=true rm -rf ./dist && npm run build:client",
+    "deploy:client": "cross-env NODE_ENV=deploy rm -rf ./dist && npm run build:client",
     "build": "cross-env NODE_ENV=production webpack",
     "build:client": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.client.js",
     "build:dev": "webpack",
@@ -79,6 +79,7 @@
     "express": "^4.15.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.5",
+    "fecha": "^2.3.3",
     "handlebars": "^4.0.6",
     "hoist-non-react-statics": "^2.3.1",
     "https": "^1.0.0",

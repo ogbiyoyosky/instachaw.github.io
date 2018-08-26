@@ -1,7 +1,7 @@
 import React from "react";
-import posed from "react-pose";
 import { tween } from "popmotion";
 import styled from "styled-components";
+import posed from "react-pose";
 
 const Modal = posed.div({
   fullscreen: {

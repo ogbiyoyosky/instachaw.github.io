@@ -82,11 +82,11 @@ export const setDataFetchingStatus = data => {
 export const fetchRates = () => {
   return dispatch => {
     let endpoint = `api/v1/rates`;
-    dispatch(
-      setDataFetchingStatus({
-        isFetchingData: true
-      })
-    );
+    // dispatch(
+    //   setDataFetchingStatus({
+    //     isFetchingData: true
+    //   })
+    // );
 
     sendRequest({
       endpoint: `${HOST_URL}/${endpoint}`,
@@ -104,11 +104,11 @@ export const fetchRates = () => {
               hasFetchedRates: true
             })
           );
-          dispatch(
-            setDataFetchingStatus({
-              isFetchingData: false
-            })
-          );
+          // dispatch(
+          //   setDataFetchingStatus({
+          //     isFetchingData: false
+          //   })
+          // );
         }
       })
       .catch(e => console.log(e));

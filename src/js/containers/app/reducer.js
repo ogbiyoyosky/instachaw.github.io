@@ -16,9 +16,12 @@ const initialState = fromJS({
   deferredPrompt: null,
   isLoading: false,
   isError: false,
-  rates: {},
+  rates: {
+    SBD: 290.0,
+    STEEM: 280.0
+  },
   hasFetchedRates: false,
-  isFetchingData: true,
+  isFetchingData: false,
   meta: {},
   title: "",
   url: ""

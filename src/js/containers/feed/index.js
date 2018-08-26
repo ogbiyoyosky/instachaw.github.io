@@ -173,7 +173,18 @@ const FeedItemControls = props => {
             animation: isActiveCartItem && "fadeInUp 0.5s ease"
           }}
           onClick={e => props.onIncrementCartItemQty(props.item)}
+          ariaLabelledBy="#addItemButtonText"
         >
+          <span
+            style={{
+              display: "none",
+              height: 0,
+              overflow: "hidden"
+            }}
+            id="addItemButtonText"
+          >
+            Add item button
+          </span>
           <Icon size={28} color="#999" name="circlePlus" mb={1} />
         </TransparentButton>
         <Text
@@ -201,7 +212,19 @@ const FeedItemControls = props => {
             transition: "0.4s opacity ease"
           }}
           onClick={e => props.onDecrementCartItemQty(props.item)}
+          ariaLabelledBy="#decreaseQuantityButtonText"
         >
+          <span
+            style={{
+              display: "none",
+              height: 0,
+              overflow: "hidden"
+            }}
+            id="decreaseQuantityButtonText"
+          >
+            Decrease quantity button
+          </span>
+
           <Icon size={24} color="#999" name="circleMinus" mt={1} />
         </TransparentButton>
 
@@ -217,7 +240,19 @@ const FeedItemControls = props => {
               "fadeInUp 0.5s ease",
             transition: "0.4s opacity ease"
           }}
+          ariaLabelledBy="#removeItemButtonText"
         >
+          <span
+            style={{
+              display: "none",
+              height: 0,
+              overflow: "hidden"
+            }}
+            id="removeItemButtonText"
+          >
+            Remove item button
+          </span>
+
           <Icon
             size={30}
             color="#999"
@@ -239,7 +274,20 @@ const FeedItemControls = props => {
           animation: !isActiveCartItem && "fadeInUp 0.5s ease"
         }}
       >
-        <TransparentButton onClick={e => props.onAddCartItem(props.item)}>
+        <TransparentButton
+          onClick={e => props.onAddCartItem(props.item)}
+          ariaLabelledBy="#incrementText"
+        >
+          <span
+            style={{
+              display: "none",
+              height: 0,
+              overflow: "hidden"
+            }}
+            id="incrementText"
+          >
+            Increase quantity button
+          </span>
           <Icon size={32} color="#999" name="circlePlus" />
         </TransparentButton>
       </Flex>

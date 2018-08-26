@@ -21,9 +21,7 @@ let web = {
     target: "web",
     devtool: isDev ? "eval" : "hidden-source-map",
     context: path.resolve(__dirname, "../src"),
-    externals: [{
-        xmlhttprequest: "{XMLHttpRequest:XMLHttpRequest}"
-    }],
+    externals: [],
     entry: {
         "vendor": [
             "react",
@@ -34,8 +32,7 @@ let web = {
             "react-transition-group",
             "react-helmet",
             "redux-immutable",
-            "redux-thunk",
-            "moment"
+            "redux-thunk"
         ],
 
         "main.js": [
@@ -96,9 +93,8 @@ let web = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: "vendor",
-            children: 2,
             filename: "vendor.[hash].js",
-            minChunks: 2
+            minChunks: Infinity
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
         new webpack.DefinePlugin({
@@ -131,6 +127,7 @@ let web = {
             dontCacheBustUrlsMatching: /\.\w{8}\./,
             staticFileGlobs: [
                 `index.html`,
+                `404.html`,
                 // `dist/**.{js.gz}`,
                 `dist/img/**`
             ],
@@ -163,8 +160,7 @@ let web = {
               minRatio: 0.8
           }),        
   
-    ]).
-    concat(isDeploy ? [] : [/*new BundleAnalyzerPlugin()*/]),
+    ]),
     module: {
         rules: [{
                 enforce: "pre",
@@ -201,5 +197,7 @@ let web = {
         extensions: [".js", ".jsx"]
     }
 };
+
+isDev && web.plugins.push(new BundleAnalyzerPlugin())
 
 module.exports = web;
