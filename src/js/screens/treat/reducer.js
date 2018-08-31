@@ -17,8 +17,8 @@ const initialState = fromJS({
   treats: [],
   treatsCount: 0,
   activeTreat: {},
-  currentTreatPage: 1,
-  isLoadingTreats: true
+  currentTreatPage: {},
+  isLoadingTreats: false
 });
 
 export const treatReducer = (state = initialState, action) => {
@@ -29,15 +29,51 @@ export const treatReducer = (state = initialState, action) => {
         .set("html", action.data.html);
 
     case SET_TREATS:
-      return state.set("treats", state.get("treats").push(...action.data));
+      let treats = state.get("treats").toJS();
+
+      let loadedStoreItems = treats.filter(
+        treatSet => Number(treatSet.store_id) === Number(action.store_id)
+      );
+
+      if (loadedStoreItems.length > 0) {
+        return state.set(
+          "treats",
+          state
+            .get("treats")
+            .filter(
+              treatSet => Number(treatSet.store_id) !== Number(action.store_id)
+            )
+            .push({
+              store_id: action.store_id,
+              items: [...loadedStoreItems[0].items, ...action.data]
+            })
+        );
+      }
+
+      return state.set(
+        "treats",
+        state.get("treats").push({
+          store_id: action.store_id,
+          items: action.data
+        })
+      );
     case SET_TREATS_COUNT:
       return state.set("treatsCount", action.data.treatsCount);
     case SET_CURRENT_TREATS_PAGE:
-      return state.set("currentTreatPage", action.data.currentTreatPage);
+      return state.setIn(
+        ["currentTreatPage", action.data.store_id],
+        action.data.currentTreatPage
+      );
     case SET_TREATS_LOADING_STATUS:
       return state.set("isLoadingTreats", action.data.isLoadingTreats);
     case SET_TREAT:
-      return state.set("treats", state.get("treats").push(action.data));
+      return state.set(
+        "treats",
+        state.get("treats").push({
+          store_id: action.store_id,
+          items: action.data
+        })
+      );
     case SET_ACTIVE_TREAT:
       return state.set("activeTreat", action.data.treat);
     default:

@@ -14,7 +14,7 @@ const Modal = posed.div({
   }
 });
 
-const StyledModal = styled(Modal)`
+export const StyledModal = styled(Modal)`
   background: #f5f5f5;
   width: 100%;
   height: 100vh;

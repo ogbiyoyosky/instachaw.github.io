@@ -119,7 +119,7 @@ class Cart extends React.PureComponent {
       user
     } = account;
 
-    const vat = this.getPaymentVat();
+    const vat = isNaN(this.getPaymentVat()) ? 0 : this.getPaymentVat();
     const total = this.getTotal(paymentMethod);
 
     return items.length ? (
@@ -326,9 +326,10 @@ class Cart extends React.PureComponent {
   }
 
   getPaymentTotal() {
+    let vat = parseFloat(this.getPaymentVat(), 10);
+    vat = isNaN(vat) ? 0 : vat;
     return roundToDecimalPlaces(
-      parseFloat(this.getPaymentSubtotal(), 10) +
-        parseFloat(this.getPaymentVat(), 10)
+      parseFloat(this.getPaymentSubtotal(), 10) + vat
     );
   }
 

@@ -8,8 +8,9 @@ const CheckoutBanner = props => {
       flexDirection="column"
       style={{
         position: "fixed",
-        bottom: "80px",
-        transform: props.isVisible ? "translateX(0)" : "translateX(-100%)",
+        bottom: props.bottom,
+        zIndex: props.isVisible ? 30 : -30,
+        transform: props.isVisible ? "translateX(0)" : "translateX(-120%)",
         transition: "transform 0.5s ease-in"
       }}
       width={1}
@@ -56,7 +57,8 @@ CheckoutBanner.propTypes = {
 };
 
 CheckoutBanner.defaultProps = {
-  isVisible: false
+  isVisible: false,
+  bottom: "80px"
 };
 
 export default CheckoutBanner;

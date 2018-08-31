@@ -17,6 +17,11 @@ const Home = Loadable({
   loading: Loading
 });
 
+const Store = Loadable({
+  loader: () => import("../screens/store"),
+  loading: Loading
+});
+
 const Page = Loadable({
   loader: () => import("../screens/page"),
   loading: Loading
@@ -59,6 +64,7 @@ const ResetPassword = Loadable({
 
 const routeComponents = {
   Home,
+  Store,
   Page,
   Cart,
   Checkout,
@@ -84,39 +90,39 @@ class Routes extends React.PureComponent {
           <Route
             render={({ location, history }) => (
               <TransitionGroup>
-                {/*<FadeTransition key={location.key}>*/}
-                <Switch location={location}>
-                  {routes.map(route => {
-                    return !this.isProtectedRoute(routes, location) ? (
-                      <Route
-                        key={route.url}
-                        exact
-                        path={route.url}
-                        location={location}
-                        history={history}
-                        component={getRouteComponent(route.name).component}
-                      />
-                    ) : location.pathname !== "/login" &&
-                    !localStorage.getItem("user") ? (
-                      <Redirect
-                        to={{
-                          pathname: "/login"
-                        }}
-                        key={route.url}
-                      />
-                    ) : (
-                      <Route
-                        key={route.url}
-                        exact
-                        path={route.url}
-                        location={location}
-                        history={history}
-                        component={getRouteComponent(route.name).component}
-                      />
-                    );
-                  })}
-                </Switch>
-                {/*</FadeTransition>*/}
+                <FadeTransition key={location.key}>
+                  <Switch location={location}>
+                    {routes.map(route => {
+                      return !this.isProtectedRoute(routes, location) ? (
+                        <Route
+                          key={route.url}
+                          exact
+                          path={route.url}
+                          location={location}
+                          history={history}
+                          component={getRouteComponent(route.name).component}
+                        />
+                      ) : location.pathname !== "/login" &&
+                      !localStorage.getItem("user") ? (
+                        <Redirect
+                          to={{
+                            pathname: "/login"
+                          }}
+                          key={route.url}
+                        />
+                      ) : (
+                        <Route
+                          key={route.url}
+                          exact
+                          path={route.url}
+                          location={location}
+                          history={history}
+                          component={getRouteComponent(route.name).component}
+                        />
+                      );
+                    })}
+                  </Switch>
+                </FadeTransition>
               </TransitionGroup>
             )}
           />

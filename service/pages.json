@@ -12,6 +12,17 @@
         "pathname": "/",
         "protected": false
     },
+    "/store/:id": {
+        "name": "Store",
+        "meta": {
+            "title": "Store"
+        },
+        "title": "Store title",
+        "html": "<p>Store Page</p>",
+        "url": "/store/:id",
+        "pathname": "/store",
+        "protected": false        
+    },
     "/cart": {
         "name": "Cart",
         "meta": {

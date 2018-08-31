@@ -3,8 +3,6 @@ import { fromJS } from "immutable";
 import {
   SET_HOME,
   SET_SEARCH,
-  SET_SEARCH_FOCUS,
-  SET_SEARCH_RESULTS,
   SET_HOME_FEED_LOADING_STATE,
   SET_FETCHED_HOME_FEED_STATE,
   SET_SEARCH_RESULTS_LOADING_STATE,
@@ -30,17 +28,6 @@ export const homeReducer = (state = initialState, action) => {
         .set("title", action.data.title)
         .set("html", action.data.html)
         .set("buttons", action.data.buttons);
-    case SET_SEARCH:
-      return state.set("search", action.data.search);
-    case SET_SEARCH_FOCUS:
-      return state.set("isSearchFocused", action.data.isSearchFocused);
-    case SET_SEARCH_RESULTS:
-      return state.set("searchResults", action.data.results);
-    case SET_SEARCH_RESULTS_LOADING_STATE:
-      return state.set(
-        "isLoadingSearchResults",
-        action.data.isLoadingSearchResults
-      );
     case SET_HOME_FEED_LOADING_STATE:
       return state.set("isHomeFeedLoading", action.data.isHomeFeedLoading);
     case SET_FETCHED_HOME_FEED_STATE:

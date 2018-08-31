@@ -1,5 +1,6 @@
 import React from "react";
 import LazyLoad from "react-lazyload";
+import Skeleton from "react-loading-skeleton";
 import { connect } from "react-redux";
 import { Parallax } from "react-parallax";
 import { Link } from "react-router-dom";
@@ -14,6 +15,7 @@ import {
 } from "../cart/actions";
 import { getAppState } from "../../containers/app/reducer";
 import { getCartState } from "../cart/reducer";
+import { getStoreState } from "../store/reducer";
 import { treatReducer, getTreatState } from "./reducer";
 import {
   Flex,
@@ -45,21 +47,61 @@ class Treat extends React.PureComponent {
     } = this.props;
     let id = match.params.id;
 
-    if (app.url === match.url) {
-      onLoadTreat(match.path);
-    }
-
     setActiveTreat({
       id,
       ...treats
     });
+
+    if (app.url === match.url) {
+      onLoadTreat(match.path);
+    }
   }
 
   render() {
-    const IMG_URL =
-      "https://res.cloudinary.com/instachaw/image/upload/c_scale,w_800,h_500/v1534208541/store-1";
-    return this.props.activeTreat === {} ? (
-      <div>Loading....</div>
+    const IMG_URL = `https://res.cloudinary.com/instachaw/image/upload/c_fit,w_800,h_500/v1534208541/store-${this
+      .props.activeTreat.store_id}`;
+    return this.props.treats.isLoadingTreats ? (
+      <Flex flexDirection="column" mb={3} width={1}>
+        <Box
+          style={{
+            height: "350px",
+            width: "100%"
+          }}
+          mb={3}
+        >
+          <Skeleton width="100%" />
+        </Box>
+
+        <Box mb={3}>
+          <Flex alignItems="center" justify="center">
+            <Box style={{ height: "16px", width: "50%" }}>
+              <Skeleton width={"100%"} />
+            </Box>
+          </Flex>
+        </Box>
+        <Box mb={1}>
+          <Flex alignItems="center" justify="center">
+            <Box mb={1} style={{ height: "13px", width: "75%" }}>
+              <Skeleton width={"100%"} />
+            </Box>
+          </Flex>
+        </Box>
+        <Box mb={4}>
+          <Flex alignItems="center" justify="center">
+            <Box style={{ height: "13px", width: "75%" }}>
+              <Skeleton width={"100%"} />
+            </Box>
+          </Flex>
+        </Box>
+
+        <Box>
+          <Flex width={1} alignItems="center" justify="center">
+            <Box style={{ height: "40px", width: "70%" }}>
+              <Skeleton width={"100%"} />
+            </Box>
+          </Flex>
+        </Box>
+      </Flex>
     ) : (
       <Flex flexDirection="column" mt={"40px"}>
         <LazyLoad
@@ -215,6 +257,7 @@ class Treat extends React.PureComponent {
 const mapStateToProps = state => {
   return {
     app: getAppState(state).toJS(),
+    store: getStoreState(state).toJS(),
     treats: getTreatState(state).toJS(),
     cart: getCartState(state).toJS(),
     activeTreat: getTreatState(state).toJS().activeTreat

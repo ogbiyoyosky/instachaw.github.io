@@ -21,6 +21,7 @@ import {
 import { OutlineButton, TransparentButton } from "../../components/UI/atoms";
 import { REDUCER_NAME } from "./constants";
 import { getAppState } from "../../containers/app/reducer";
+import { getStoreState } from "../../screens/store/reducer";
 import { getCartState } from "../../screens/cart/reducer";
 import {
   addCartItem,
@@ -49,7 +50,7 @@ const FeedItemCard = props => {
         }
       >
         <Flex>
-          <FeedItemThumbnail item={props.item} />
+          <FeedItemThumbnail item={props.item} storeID={props.storeID} />
 
           <FeedItemArticle
             item={props.item}
@@ -76,8 +77,7 @@ const FeedItemCard = props => {
 };
 
 const FeedItemThumbnail = props => {
-  const THUMB_URL =
-    "https://res.cloudinary.com/instachaw/image/upload/c_scale,w_150/v1534208541/store-1";
+  const THUMB_URL = `https://res.cloudinary.com/instachaw/image/upload/c_fill,w_150,h_100/v1534208541/store-${props.storeID}`;
   return (
     <Box width={1 / 4} mr={3}>
       <Link to={"/treat/" + props.item.id}>
@@ -314,6 +314,10 @@ class Feed extends React.PureComponent {
     };
   }
 
+  componentDidUpdate() {
+    // console.log(this.props.items);
+  }
+
   componentWillUnmount() {
     this.onAddCartItem = null;
     this.onRemoveCartItem = null;
@@ -328,29 +332,33 @@ class Feed extends React.PureComponent {
   renderItems() {
     return (
       <Box>
-        {this.props.items.map((item, index) => (
-          <FeedItemCard
-            key={index}
-            item={item}
-            isOptionsOpen={id => {
-              return this.state.itemsExpanded.includes(id);
-            }}
-            onPricesOptionsExpansion={id => {
-              return this.handlePricesOptionsExpansion(id);
-            }}
-            isLoading={this.props.isLoading}
-            getSTEEMEquivalent={this.getSTEEMEquivalent}
-            getSBDEquivalent={this.getSBDEquivalent}
-            cartItems={this.props.cart.items}
-            highlightSelectedItem={this.props.highlightSelectedItem}
-            verticalSpacing={this.props.verticalSpacing}
-            onDecrementCartItemQty={this.onDecrementCartItemQty}
-            onAddCartItem={this.onAddCartItem}
-            onIncrementCartItemQty={this.onIncrementCartItemQty}
-            onRemoveCartItem={this.onRemoveCartItem}
-            showControls={this.props.showControls}
-          />
-        ))}
+        {this.props.items.map(
+          (item, index) =>
+            typeof item === "object" && (
+              <FeedItemCard
+                key={index}
+                item={item}
+                storeID={this.props.store.activeStore.id}
+                isOptionsOpen={id => {
+                  return this.state.itemsExpanded.includes(id);
+                }}
+                onPricesOptionsExpansion={id => {
+                  return this.handlePricesOptionsExpansion(id);
+                }}
+                isLoading={this.props.isLoading}
+                getSTEEMEquivalent={this.getSTEEMEquivalent}
+                getSBDEquivalent={this.getSBDEquivalent}
+                cartItems={this.props.cart.items}
+                highlightSelectedItem={this.props.highlightSelectedItem}
+                verticalSpacing={this.props.verticalSpacing}
+                onDecrementCartItemQty={this.onDecrementCartItemQty}
+                onAddCartItem={this.onAddCartItem}
+                onIncrementCartItemQty={this.onIncrementCartItemQty}
+                onRemoveCartItem={this.onRemoveCartItem}
+                showControls={this.props.showControls}
+              />
+            )
+        )}
 
         {this.props.isLoading &&
           Array.from("12345").map((num, i) => {
@@ -478,6 +486,7 @@ Feed.defaultProps = {
 const mapStateToProps = state => {
   return {
     cart: getCartState(state).toJS(),
+    store: getStoreState(state).toJS(),
     app: getAppState(state).toJS()
   };
 };

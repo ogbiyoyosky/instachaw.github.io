@@ -563,10 +563,9 @@ class Checkout extends React.PureComponent {
   }
 
   getPaymentTotal() {
-    return roundToDecimalPlaces(
-      parseFloat(this.getPaymentSubtotal(), 10) +
-        parseFloat(this.getPaymentVat(), 10)
-    );
+    let vat = parseFloat(this.getPaymentVat(), 10);
+    vat = isNaN(vat) ? 0 : vat;
+    return roundToDecimalPlaces(parseFloat(this.getPaymentSubtotal(), 10));
   }
 
   handleCheckoutSubmit(event) {

@@ -18,7 +18,9 @@ const Meta = ({ meta, url }) => {
         dangerouslySetInnerHTML={{
           __html: meta.title
         }}
-      />
+      >
+        {meta.title}
+      </title>
       <meta name="description" content={meta.description} />
       <meta name="keywords" content={meta.keywords} />
       <meta property="og:title" content={meta.title} />

@@ -28,19 +28,23 @@ const HOST_URL =
 const fetchTreats = data => {
   let endpoint = TREATS_ENDPOINT;
 
-  setTreatsLoadingStatus({
-    isLoadingTreats: true
-  });
-
   return dispatch => {
-    let endpointSuffix = data.id ? data.id : `?page=${data.page}`;
-    let endpoint = `api/v1/items/${endpointSuffix}`;
+    dispatch(
+      setTreatsLoadingStatus({
+        isLoadingTreats: true
+      })
+    );
+
+    let endpointSuffix = data.id
+      ? `/${data.id}`
+      : `?page=${data.page}&store_id=${data.store_id}`;
+    let endpoint = `api/v1/items${endpointSuffix}`;
     sendRequest({
       endpoint: `${HOST_URL}/${endpoint}`,
       method: "GET"
     })
       .then(response => {
-        if (typeof response !== "undefined" && typeof response !== null) {
+        if (response !== undefined && response !== null) {
           if (data.id) {
             dispatch(setTreat(response));
             dispatch(setTreatTitle(response.title));
@@ -50,6 +54,11 @@ const fetchTreats = data => {
                 treat: response
               }
             });
+            dispatch(
+              setTreatsLoadingStatus({
+                isLoadingTreats: false
+              })
+            );
           } else {
             dispatch(
               setTreats(
@@ -57,7 +66,8 @@ const fetchTreats = data => {
                   ? response.items.filter(
                       item => item.id !== data.activeTreat.id
                     )
-                  : response.items
+                  : response.items,
+                data.store_id
               )
             );
             dispatch(
@@ -65,8 +75,10 @@ const fetchTreats = data => {
                 treatsCount: response.itemsCount
               })
             );
+
             dispatch(
               setCurrentTreatsPage({
+                store_id: data.store_id,
                 currentTreatPage: data.page + 1
               })
             );
@@ -130,10 +142,11 @@ const setTreat = data => {
   };
 };
 
-const setTreats = data => {
+const setTreats = (data, store_id) => {
   return {
     type: SET_TREATS,
-    data
+    data,
+    store_id
   };
 };
 

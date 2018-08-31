@@ -11,7 +11,8 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CompressionWebpackPlugin = require("compression-webpack-plugin");
-const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
+// const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
+const {GenerateSW} = require('workbox-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const StyleLintPlugin = require("stylelint-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
@@ -106,6 +107,35 @@ let web = {
             filename: `[name]`,
             allChunks: true
         }),
+        new GenerateSW({
+            swDest: './sw.js',
+            include: [/\.html$/, /\.js$/],
+            exclude: [/\.gz$/],
+            importWorkboxFrom: isDev ? 'local' : 'cdn',
+            dontCacheBustUrlsMatching: /\.\w{8}\./,
+            runtimeCaching: [{
+                // Match any same-origin request that contains 'api'.
+                urlPattern: /api/,
+                // Apply a network-first strategy.
+                handler: 'networkFirst',
+                options: {
+                  // Fall back to the cache after 10 seconds.
+                  networkTimeoutSeconds: 10,
+                  // Use a custom cache name for this route.
+                  cacheName: `instachaw-${process.env.NODE_ENV}-api-cache`,
+                  // Configure custom cache expiration.
+                  expiration: {
+                    maxEntries: 5,
+                    maxAgeSeconds: 60,
+                  },
+                  // Configure which responses are considered cacheable.
+                  cacheableResponse: {
+                    statuses: [0, 200],
+                    headers: {'x-test': 'true'},
+                  }
+                },
+              }]
+          }),
         new CopyWebpackPlugin([{
                 from: "./img/",
                 to: "img/"
@@ -120,19 +150,19 @@ let web = {
             }
         ]),
         new StyleLintPlugin(),
-        new SWPrecacheWebpackPlugin({
-            cacheId: "instachaw",
-            filename: "../sw.js",
-            minify: true,
-            dontCacheBustUrlsMatching: /\.\w{8}\./,
-            staticFileGlobs: [
-                `index.html`,
-                `404.html`,
-                // `dist/**.{js.gz}`,
-                `dist/img/**`
-            ],
-            stripPrefix: `/${outputFolder}`
-        })
+        // new SWPrecacheWebpackPlugin({
+        //     cacheId: "instachaw",
+        //     filename: "../sw.js",
+        //     minify: true,
+        //     dontCacheBustUrlsMatching: /\.\w{8}\./,
+        //     staticFileGlobs: [
+        //         // `index.html`,
+        //         // `404.html`,
+        //         // `dist/**.{js.gz}`,
+        //         `dist/img/**`
+        //     ],
+        //     stripPrefix: `/${outputFolder}`
+        // }),
     ].concat(isDev ? [] : [
         new webpack.optimize.UglifyJsPlugin({
             compress: {

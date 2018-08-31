@@ -9,6 +9,7 @@ import { appReducer } from "../containers/app/reducer";
 import { headerReducer } from "../containers/header/reducer";
 import { footerReducer } from "../containers/footer/reducer";
 import { homeReducer } from "../screens/home/reducer";
+import { storeReducer } from "../screens/store/reducer";
 import { pageReducer } from "../screens/page/reducer";
 import { treatReducer } from "../screens/treat/reducer";
 import { cartReducer } from "../screens/cart/reducer";
@@ -22,6 +23,7 @@ export default function createReducer(injectedReducers) {
   return combineReducers({
     routes: routesReducer,
     app: appReducer,
+    store: storeReducer,
     treat: treatReducer,
     cart: cartReducer,
     checkout: checkoutReducer,
