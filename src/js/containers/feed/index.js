@@ -50,7 +50,7 @@ const FeedItemCard = props => {
         }
       >
         <Flex>
-          <FeedItemThumbnail item={props.item} storeID={props.storeID} />
+          <FeedItemThumbnail item={props.item} />
 
           <FeedItemArticle
             item={props.item}
@@ -77,7 +77,8 @@ const FeedItemCard = props => {
 };
 
 const FeedItemThumbnail = props => {
-  const THUMB_URL = `https://res.cloudinary.com/instachaw/image/upload/c_fill,w_150,h_100/v1534208541/store-${props.storeID}`;
+  const THUMB_URL = `https://res.cloudinary.com/instachaw/image/upload/c_fill,w_150,h_100/v1534208541/store-${props
+    .item.store_id}`;
   return (
     <Box width={1 / 4} mr={3}>
       <Link to={"/treat/" + props.item.id}>
