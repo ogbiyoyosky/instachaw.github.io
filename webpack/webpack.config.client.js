@@ -108,11 +108,10 @@ let web = {
             allChunks: true
         }),
         new GenerateSW({
-            swDest: './sw.js',
+            swDest: '../sw.js',
             include: [/\.html$/, /\.js$/],
             exclude: [/\.gz$/],
             importWorkboxFrom: isDev ? 'local' : 'cdn',
-            dontCacheBustUrlsMatching: /\.\w{8}\./,
             clientsClaim: true,
             skipWaiting: true,
             runtimeCaching: [{
