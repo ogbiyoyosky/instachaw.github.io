@@ -113,6 +113,8 @@ let web = {
             exclude: [/\.gz$/],
             importWorkboxFrom: isDev ? 'local' : 'cdn',
             dontCacheBustUrlsMatching: /\.\w{8}\./,
+            clientsClaim: true,
+            skipWaiting: true,
             runtimeCaching: [{
                 // Match any same-origin request that contains 'api'.
                 urlPattern: /api/,

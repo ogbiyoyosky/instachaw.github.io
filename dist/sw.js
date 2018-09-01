@@ -17,6 +17,9 @@ importScripts(
   "/dist/precache-manifest.cceb74ae4af82a7e5f6aed52ea7d89d3.js"
 );
 
+workbox.skipWaiting();
+workbox.clientsClaim();
+
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
  * requests for URLs in the manifest.
