@@ -15,7 +15,7 @@ import Routes from "../../routes/index";
 const initServiceWorker = () => {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
-      .register("/dist/sw.js")
+      .register("/sw.js")
       .then(reg => {
         console.log("Successfully registered service worker", reg);
       })
