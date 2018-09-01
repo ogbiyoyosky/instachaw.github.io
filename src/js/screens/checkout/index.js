@@ -618,16 +618,11 @@ class Checkout extends React.PureComponent {
           origin: item.origin,
           locale: item.locale,
           classification: item.classification,
-          item_id: item.id
+          item_id: item.id,
+          store_id: item.store_id
         };
       })
     };
-
-    // return console.log({
-    //   data,
-    //   wallet: this.getValidWallet(),
-    //   balance: this.getWalletBalance(this.getValidWallet())
-    // });
 
     let { setCheckoutStatusModalVisibility } = this.props;
     var self = this;
