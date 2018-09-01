@@ -110,7 +110,7 @@ class Register extends React.PureComponent {
                   })}
                 value={this.state.phone}
                 id="phone"
-                type="number"
+                type="phone"
               />
             </Box>
 
