@@ -76,7 +76,9 @@ class Login extends React.PureComponent {
       >
         <form method="get" onSubmit={this.handleLoginSubmit}>
           <Flex mb={3} alignItems="center" justify="center">
-            <BrandLogo height="45px" color="red" />
+            <Link to="/">
+              <BrandLogo height="45px" color="red" />
+            </Link>
           </Flex>
           <Flex flexDirection="column" justify="center" alignItems="center">
             <Box mb={3}>

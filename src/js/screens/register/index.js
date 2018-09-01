@@ -81,7 +81,9 @@ class Register extends React.PureComponent {
         <form method="get" onSubmit={this.handleRegistrationSubmit}>
           <Flex flexDirection="column" justify="center" alignItems="center">
             <Flex mb={3} alignItems="center" justify="center">
-              <BrandLogo height="45px" color="red" />
+              <Link to="/">
+                <BrandLogo height="45px" color="red" />
+              </Link>
             </Flex>
 
             <Box mb={3}>

@@ -7,7 +7,7 @@ import { Card, Flex, Link, Heading, Text } from "pcln-design-system";
 const OrdersFeed = props => {
   return (
     <Flex flexDirection="column">
-      {props.orders !== undefined ? (
+      {typeof props.orders !== "undefined" ? (
         props.orders.length > 0 &&
         props.orders.map((order, i) => {
           let date = fecha.parse(order.created_at, "YY-MM-DD HH:mm:ss");
