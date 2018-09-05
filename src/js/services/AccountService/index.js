@@ -61,7 +61,7 @@ class AccountService {
 
         handleSetupPaymentStatusInterval(() => {
           counter = counter + 1;
-          if (counter > 9) {
+          if (counter > 14) {
             handleTeardownPaymentStatusInterval();
           }
 

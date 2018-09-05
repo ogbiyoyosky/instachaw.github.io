@@ -426,7 +426,7 @@ class Account extends React.PureComponent {
         handleSetupPaymentStatusInterval: cb => {
           this.state.paymentStatusInterval = setInterval(() => {
             cb();
-          }, 10000);
+          }, 20000);
         },
 
         handleTeardownPaymentStatusInterval: () => this.clearPaymentInterval()
