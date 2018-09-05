@@ -16,6 +16,7 @@ const PaymentCard = props => {
   const nairaBalance = roundToDecimalPlaces(props.getWalletBalance("naira"), 3);
   const STEEM_RATE = props.rates["STEEM"];
   const SBD_RATE = props.rates["SBD"];
+  const hasNaira = nairaBalance > 0;
   const hasSTEEM = STEEMBalance > 0;
   const hasSBD = SBDBalance > 0;
 
@@ -45,7 +46,7 @@ const PaymentCard = props => {
             or
           </Text>
           <PaymentChoice
-            choice="naira"
+            choice="STEEM"
             isActivePaymentMethod={
               props.activePaymentMethod === "STEEM" ||
               props.activePaymentMethod === "SBD"
@@ -63,11 +64,18 @@ const PaymentCard = props => {
         </Box>
 
         {(hasSTEEM || hasSBD) && (
-          <Text color="gray" fontSize={0}>
+          <Text color="gray" fontSize={0} mb={1}>
             <b>{hasSTEEM && `${STEEMBalance} STEEM `}</b>
             {hasSTEEM && hasSBD && `& `}
             <b>{hasSBD && `${SBDBalance} SBD `}</b>
             available in wallet
+          </Text>
+        )}
+
+        {hasNaira && (
+          <Text color="gray" fontSize={0}>
+            You have <b>{hasNaira && `NGN ${nairaBalance}`} </b>
+            available.
           </Text>
         )}
       </Flex>

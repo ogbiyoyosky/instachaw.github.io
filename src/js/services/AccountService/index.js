@@ -1,3 +1,10 @@
+import { generateTransactionRef } from "../../util/util";
+
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 class AccountService {
   static processFundingRequest({
     account,
@@ -6,34 +13,37 @@ class AccountService {
     handleSetFundingAttemptingStatus,
     handleSetTransactionsCount,
     handleFetchTransactionsCount,
-    handleSetUser,
+    handlesSetUser,
     handleSetFundingModalStatus,
     handleSetupPaymentStatusInterval,
     handleTeardownPaymentStatusInterval
   }) {
     const { fundingMethod, user, transactionsCount, fundingAmount } = account;
-
-    const HOST_URL =
-      window.location.origin === "https://instachaw.com"
-        ? "https://api.instachaw.com"
-        : "http://localhost:3333";
-
-    const paymentQueryURL = "https://steemconnect.com/sign/transfer?";
     const paymentAddress = "instachaw";
-    const amount = `${fundingAmount} ${fundingMethod}`;
     const self = this;
+    var paymentQueryURL = "https://steemconnect.com/sign/transfer?";
+    var amount = `${fundingAmount} ${fundingMethod}`;
+
+    if (fundingMethod === "naira") {
+      paymentQueryURL = `${HOST_URL}/initializeTransaction`;
+      amount = fundingAmount;
+    }
+
     const newWindow = window.open("");
 
     return handleFetchTransactionToken(function(token, transactionsCount) {
       const memo = `Add ${fundingAmount} ${fundingMethod} to the account of ${user.username}`;
-      const redirect_uri = `${HOST_URL}/processTransaction?amt=${fundingAmount}&wlt=${fundingMethod}&uid=${user.id}&type=topup&memo=${memo}&tkn=${token}`;
-      const paymentQueryString = `to=${paymentAddress}&amount=${amount}&memo=${memo}&redirect_uri=${redirect_uri}`;
+      const redirectQueryString = `amt=${fundingAmount}&wlt=${fundingMethod}&uid=${user.id}&type=topup&memo=${memo}&tkn=${token}`;
+      const redirect_uri = `${HOST_URL}/processTransaction?${redirectQueryString}`;
+      let paymentQueryString = `to=${paymentAddress}&amount=${amount}&memo=${memo}&redirect_uri=${redirect_uri}`;
+
+      if (fundingMethod === "naira") {
+        paymentQueryString = `?ref=${generateTransactionRef()}&${redirectQueryString}&email=${user.email}`;
+      }
 
       newWindow.location = encodeURI(
         `${paymentQueryURL}${paymentQueryString}`.trim()
       );
-
-      //   newWindow.location = redirect_uri;
 
       handleSetFundingAttemptingStatus({
         isAttemptingFunding: true
@@ -45,13 +55,13 @@ class AccountService {
 
       let oldTransactionsCount = transactionsCount;
 
-      setTimeout(() => {
+      return setTimeout(() => {
         let counter = 0;
+        console.log(fundingAmount);
 
         handleSetupPaymentStatusInterval(() => {
           counter = counter + 1;
-
-          if (counter > 10) {
+          if (counter > 9) {
             handleTeardownPaymentStatusInterval();
           }
 
@@ -81,7 +91,7 @@ class AccountService {
                   })
                 );
 
-                handleSetUser({
+                handlesSetUser({
                   user: {
                     ...user,
                     wallets

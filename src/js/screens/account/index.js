@@ -42,10 +42,14 @@ import {
   OrdersFeed,
   TabBar
 } from "../../components/UI/molecules";
-import { SteemFundingModal } from "../../components/UI/ecosystems";
+import { BaseFundingModal } from "../../components/UI/ecosystems";
 
 import AccountService from "../../services/AccountService";
-import { toTitleCase, roundToDecimalPlaces } from "../../util/util";
+import {
+  toTitleCase,
+  roundToDecimalPlaces,
+  generateTransactionRef
+} from "../../util/util";
 
 const notifications = [
   {
@@ -97,7 +101,7 @@ const AccountTabComponent = props => {
                 </Flex>
 
                 <Flex flexDirection="column" mb={1} mr={4}>
-                  <Text align="center" fontSize={4} color="green">
+                  <Text align="center" fontSize={4} color="blue">
                     {roundToDecimalPlaces(props.getWalletBalance("SBD"), 3)}
                   </Text>
                   <Text
@@ -106,6 +110,19 @@ const AccountTabComponent = props => {
                     fontSize={1}
                   >
                     SBD
+                  </Text>
+                </Flex>
+
+                <Flex flexDirection="column" mb={1} mr={4}>
+                  <Text align="center" fontSize={4} color="green">
+                    {roundToDecimalPlaces(props.getWalletBalance("naira"), 3)}
+                  </Text>
+                  <Text
+                    style={{ textAlign: "center" }}
+                    color="gray"
+                    fontSize={1}
+                  >
+                    Naira
                   </Text>
                 </Flex>
 
@@ -135,20 +152,41 @@ const AccountTabComponent = props => {
                 </Flex>
               </Text>
               <Button
-                onClick={e =>
+                onClick={e => {
+                  props.setFundingMethod({
+                    fundingMethod: "naira"
+                  });
                   props.setFundingModalStatus({
                     isFundingModalOpen: true
-                  })}
+                  });
+                }}
+                mb={2}
+              >
+                Add cash (NGN) easily
+              </Button>
+
+              <OutlineButton
+                onClick={e => {
+                  props.setFundingMethod({
+                    fundingMethod:
+                      props.account.fundingMethod === "naira"
+                        ? "SBD"
+                        : props.account.fundingMethod
+                  });
+                  props.setFundingModalStatus({
+                    isFundingModalOpen: true
+                  });
+                }}
               >
                 Add SBD/STEEM painlessly
-              </Button>
+              </OutlineButton>
             </Flex>
           </Box>
         </Flex>
       </Flex>
 
       {props.account.isFundingModalOpen && (
-        <SteemFundingModal
+        <BaseFundingModal
           fundingAmount={props.account.fundingAmount}
           fundingMethod={props.account.fundingMethod}
           isAttemptingFunding={props.account.isAttemptingFunding}
@@ -170,8 +208,7 @@ const AccountTabComponent = props => {
             props.setFundingAttemptingStatus({
               isAttemptingFunding: false
             });
-
-            props.clearPaymentInterval();
+            props.clearPaymentInterval;
           }}
         />
       )}
@@ -260,10 +297,12 @@ class Account extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isModalOpen: false
+      isModalOpen: false,
+      paymentStatusInterval: null
     };
     this.onFundingSubmit = this.onFundingSubmit.bind(this);
     this.onCancelOrder = this.onCancelOrder.bind(this);
+    this.paymentStatusInterval = "";
   }
 
   componentDidMount() {
@@ -302,7 +341,11 @@ class Account extends React.PureComponent {
   componentWillUnmount() {
     this.onPaymentSubmit = null;
     this.onCancelOrder = null;
-    this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+    if (this.state.paymentStatusInterval) {
+      this.state.paymentStatusInterval = clearInterval(
+        this.state.paymentStatusInterval
+      );
+    }
   }
 
   render() {
@@ -340,7 +383,8 @@ class Account extends React.PureComponent {
                 ...this.props,
                 onFundingSubmit: this.onFundingSubmit,
                 onCancelOrder: this.onCancelOrder,
-                clearPaymentInterval: this.clearPaymentInterval
+                clearPaymentInterval: this.clearPaymentInterval,
+                payWithPayStack: this.payWithPayStack
               });
             }}
           />
@@ -351,37 +395,76 @@ class Account extends React.PureComponent {
 
   onFundingSubmit(event) {
     event.preventDefault();
+    const {
+      account,
+      fetchTransactionToken,
+      setFundingAttemptingStatus,
+      setTransactionsCount,
+      fetchTransactionsCount,
+      setUser,
+      setFundingModalStatus
+    } = this.props;
 
-    AccountService.processFundingRequest({
-      account: this.props.account,
+    if (account.fundingMethod === "naira") {
+      AccountService.processFundingRequest({
+        account,
 
-      handleFetchTransactionToken: this.props.fetchTransactionToken,
+        handleFetchTransactionToken: fetchTransactionToken,
 
-      handleSetFundingAttemptingStatus: data =>
-        this.props.setFundingAttemptingStatus(data),
+        handleSetFundingAttemptingStatus: data =>
+          setFundingAttemptingStatus(data),
 
-      handleSetTransactionsCount: data => this.props.setTransactionsCount(data),
+        handleSetTransactionsCount: data => setTransactionsCount(data),
 
-      handleFetchTransactionsCount: (data, cb) =>
-        this.props.fetchTransactionsCount(data, cb),
+        handleFetchTransactionsCount: (data, cb) =>
+          fetchTransactionsCount(data, cb),
 
-      handlesSetUser: data => this.props.setUser(data),
+        handlesSetUser: data => setUser(data),
 
-      handleSetFundingModalStatus: data =>
-        this.props.setFundingModalStatus(data),
+        handleSetFundingModalStatus: data => setFundingModalStatus(data),
 
-      handleSetupPaymentStatusInterval: cb => {
-        this.paymentStatusInterval = setInterval(() => {
-          cb();
-        }, 7000);
-      },
-      handleTeardownPaymentStatusInterval: () => props.clearPaymentInterval()
-    });
+        handleSetupPaymentStatusInterval: cb => {
+          this.state.paymentStatusInterval = setInterval(() => {
+            cb();
+          }, 10000);
+        },
+
+        handleTeardownPaymentStatusInterval: () => this.clearPaymentInterval()
+      });
+    } else {
+      AccountService.processFundingRequest({
+        account,
+
+        handleFetchTransactionToken: fetchTransactionToken,
+
+        handleSetFundingAttemptingStatus: data =>
+          setFundingAttemptingStatus(data),
+
+        handleSetTransactionsCount: data => setTransactionsCount(data),
+
+        handleFetchTransactionsCount: (data, cb) =>
+          fetchTransactionsCount(data, cb),
+
+        handlesSetUser: data => setUser(data),
+
+        handleSetFundingModalStatus: data => setFundingModalStatus(data),
+
+        handleSetupPaymentStatusInterval: cb => {
+          this.state.paymentStatusInterval = setInterval(() => {
+            cb();
+          }, 10000);
+        },
+
+        handleTeardownPaymentStatusInterval: () => this.clearPaymentInterval()
+      });
+    }
   }
 
   clearPaymentInterval() {
-    if (this.paymentStatusInterval) {
-      this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+    if (this.state.paymentStatusInterval) {
+      this.state.paymentStatusInterval = clearInterval(
+        this.state.paymentStatusInterval
+      );
     }
   }
 

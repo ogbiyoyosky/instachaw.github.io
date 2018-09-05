@@ -13,7 +13,7 @@ import {
   CheckoutInfo,
   Summary,
   CartModal,
-  SteemFundingModal
+  BaseFundingModal
 } from "../../components/UI/ecosystems";
 
 import { REDUCER_NAME } from "./constants";
@@ -43,6 +43,7 @@ import { getAppState } from "../../containers/app/reducer";
 import { cartReducer, getCartState } from "./reducer";
 import { getAccountState } from "../../screens/account/reducer";
 import { getCheckoutState } from "../../screens/checkout/reducer";
+import { getStoreState } from "../../screens/store/reducer";
 
 import AccountService from "../../services/AccountService";
 import { roundToDecimalPlaces } from "../../util/util";
@@ -55,6 +56,7 @@ class Cart extends React.PureComponent {
       isModalOpen: false,
       isSummaryMinimized: true,
       paymentMethod: "STEEM",
+      paymentStatusInterval: null,
       isPaymentMinimized: true,
       isPaymentModeMinimized: true
     };
@@ -130,7 +132,7 @@ class Cart extends React.PureComponent {
           onSetCartModalStatus={status => this.props.setCartModalStatus(status)}
         />
         {isFundingModalOpen && (
-          <SteemFundingModal
+          <BaseFundingModal
             fundingAmount={fundingAmount}
             fundingMethod={fundingMethod}
             isAttemptingFunding={isAttemptingFunding}
@@ -254,7 +256,15 @@ class Cart extends React.PureComponent {
         </Flex>
       </Flex>
     ) : (
-      <CartEmptyState onShowTreatsButtonClick={e => history.push("/")} />
+      <CartEmptyState
+        onShowTreatsButtonClick={e => {
+          history.push(
+            this.props.store.activeStore.id === undefined
+              ? "/store/1"
+              : `/store/${this.props.store.activeStore.id}`
+          );
+        }}
+      />
     );
   }
 
@@ -268,6 +278,8 @@ class Cart extends React.PureComponent {
     this.props.setPaymentMethod({
       paymentMethod: method
     });
+
+    this.selectPaymentMethodAction();
   }
 
   setActivePaymentMode(mode) {
@@ -340,13 +352,21 @@ class Cart extends React.PureComponent {
       : roundToDecimalPlaces(paymentAmount / this.props.app.rates["STEEM"], 3);
   }
 
-  onCartSubmit(e) {
+  selectPaymentMethodAction() {
     const total = this.getTotal();
-
     if (this.props.checkout.paymentMode === "on-demand") {
       if (this.props.checkout.paymentMethod === "naira") {
-        alert(`Sorry, we only accept cash for pay on delivery at the moment.`);
-        return false;
+        if (this.getWalletBalance("naira") < this.getTotal("naira")) {
+          this.props.setFundingAmount({
+            fundingAmount: this.getTotal("naira")
+          });
+
+          return this.props.setFundingModalStatus({
+            isFundingModalOpen: true
+          });
+        } else {
+          alert("You're doing great so far. Just tap the checkout button.");
+        }
       } else {
         if (this.props.checkout.paymentMethod === "STEEM") {
           if (this.getWalletBalance("STEEM") < total) {
@@ -382,6 +402,10 @@ class Cart extends React.PureComponent {
         }
       }
     }
+  }
+
+  onCartSubmit(e) {
+    this.selectPaymentMethodAction();
 
     this.props.history.push("/checkout");
   }
@@ -408,12 +432,14 @@ class Cart extends React.PureComponent {
         this.props.setFundingModalStatus(data),
 
       handleSetupPaymentStatusInterval: cb => {
-        this.paymentStatusInterval = setInterval(() => {
+        this.state.paymentStatusInterval = setInterval(() => {
           cb();
-        }, 7000);
+        }, 10000);
       },
       handleTeardownPaymentStatusInterval: () => {
-        this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
+        this.state.paymentStatusInterval = clearInterval(
+          this.state.paymentStatusInterval
+        );
       }
     });
   }
@@ -448,6 +474,7 @@ const mapStateToProps = state => {
   return {
     app: getAppState(state).toJS(),
     cart: getCartState(state).toJS(),
+    store: getStoreState(state).toJS(),
     checkout: getCheckoutState(state).toJS(),
     account
   };

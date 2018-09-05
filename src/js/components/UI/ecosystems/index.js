@@ -1,6 +1,7 @@
 import CartModal from "./CartModal";
 import CheckoutInfo from "./CheckoutInfo";
-import SteemFundingModal from "./SteemFundingModal";
+import PaystackFundingModal from "./PaystackFundingModal";
+import BaseFundingModal from "./BaseFundingModal";
 import Summary from "./Summary";
 
-export { CartModal, CheckoutInfo, SteemFundingModal, Summary };
+export { CartModal, CheckoutInfo, BaseFundingModal, Summary };

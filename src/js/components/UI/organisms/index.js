@@ -3,7 +3,7 @@ import AuthCard from "./AuthCard";
 import CartEmptyState from "./CartEmptyState";
 import PaymentCard from "./PaymentCard";
 import PaymentModeCard from "./PaymentModeCard";
-import SteemFundingForm from "./SteemFundingForm";
+import BaseFundingForm from "./BaseFundingForm";
 
 export {
   AuthCard,
@@ -11,5 +11,5 @@ export {
   CartEmptyState,
   PaymentCard,
   PaymentModeCard,
-  SteemFundingForm
+  BaseFundingForm
 };

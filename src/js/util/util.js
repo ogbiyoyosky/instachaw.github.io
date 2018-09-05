@@ -107,7 +107,9 @@ export function toTitleCase(str) {
  * Finds an item in a set of items
  * 
  * @param {*} item 
- * @param {*} cartItems 
+ * @param {*} cartItems
+ * 
+ * TODO: refactor into a more reusable entity. 
  */
 export function getCartItemFromFeed(item, cartItems) {
   return cartItems.length
@@ -115,6 +117,26 @@ export function getCartItemFromFeed(item, cartItems) {
         cartItem => parseInt(cartItem.id, 10) === parseInt(item.id, 10)
       )[0]
     : null;
+}
+
+/**
+ * Finds an item in a set of items
+ * 
+ * @return {string} text 
+ */
+export function generateTransactionRef() {
+  //you can put any unique reference implementation code here
+  let refString = "";
+  let stringPool =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.=";
+
+  for (let i = 0; i < 15; i++) {
+    refString += stringPool.charAt(
+      Math.floor(Math.random() * stringPool.length)
+    );
+  }
+
+  return refString;
 }
 
 var now = function() {

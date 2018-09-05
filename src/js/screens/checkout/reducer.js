@@ -21,7 +21,7 @@ const initialState = fromJS({
       ? JSON.parse(localStorage.getItem("user")).addresses[0].body
       : "",
   paymentMethod: "naira",
-  paymentMode: "on-delivery"
+  paymentMode: "on-demand"
 });
 
 export const checkoutReducer = (state = initialState, action) => {

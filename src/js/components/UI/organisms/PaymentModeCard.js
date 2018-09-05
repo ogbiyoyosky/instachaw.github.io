@@ -27,18 +27,6 @@ const PaymentModeCard = props => {
             transition: "height 0.3s ease-in-out"
           }}
         >
-          <Label htmlFor="on-delivery" regular fontSize={2}>
-            <Flex>
-              <Radio
-                value="on-delivery"
-                id="on-delivery"
-                name="payment-mode"
-                onChange={e => props.onSetActivePaymentMode(e.target.value)}
-                checked={props.activePaymentMode === "on-delivery"}
-              />
-              <Text ml={2}>Pay on delivery (later)</Text>
-            </Flex>
-          </Label>
           <Label regular fontSize={2}>
             <Flex>
               <Radio
@@ -48,7 +36,20 @@ const PaymentModeCard = props => {
                 onChange={e => props.onSetActivePaymentMode(e.target.value)}
                 checked={props.activePaymentMode === "on-demand"}
               />
-              <Text ml={2}>Pay on demand (immediately)</Text>
+              <Text ml={2}>Pay immediately (on demand)</Text>
+            </Flex>
+          </Label>
+
+          <Label htmlFor="on-delivery" regular fontSize={2}>
+            <Flex>
+              <Radio
+                value="on-delivery"
+                id="on-delivery"
+                name="payment-mode"
+                onChange={e => props.onSetActivePaymentMode(e.target.value)}
+                checked={props.activePaymentMode === "on-delivery"}
+              />
+              <Text ml={2}>Pay later (on delivery)</Text>
             </Flex>
           </Label>
         </Box>

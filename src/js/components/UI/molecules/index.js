@@ -5,6 +5,7 @@ import CheckoutBanner from "./CheckoutBanner";
 import LoadingDisplay from "./LoadingDisplay";
 import OrdersFeed from "./OrdersFeed";
 import NotificationFeed from "./NotificationFeed";
+import FundingConfirmationDisplay from "./FundingConfirmationDisplay";
 import SearchBar from "./SearchBar";
 import TabBar from "./TabBar";
 import PaymentChoice from "./PaymentChoice";
@@ -15,6 +16,7 @@ export {
   CardHeading,
   CheckoutBanner,
   LoadingDisplay,
+  FundingConfirmationDisplay,
   NotificationFeed,
   OrdersFeed,
   SearchBar,
