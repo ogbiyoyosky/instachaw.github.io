@@ -352,7 +352,7 @@ class Cart extends React.PureComponent {
       : roundToDecimalPlaces(paymentAmount / this.props.app.rates["STEEM"], 3);
   }
 
-  selectPaymentMethodAction() {
+  selectPaymentMethodAction(cb) {
     const total = this.getTotal();
     if (this.props.checkout.paymentMode === "on-demand") {
       if (this.props.checkout.paymentMethod === "naira") {
@@ -402,12 +402,15 @@ class Cart extends React.PureComponent {
         }
       }
     }
+    cb();
   }
 
   onCartSubmit(e) {
-    this.selectPaymentMethodAction();
+    e.preventDefault();
 
-    this.props.history.push("/checkout");
+    this.selectPaymentMethodAction(function() {
+      this.props.history.push("/checkout");
+    });
   }
 
   onFundingSubmit(event) {
