@@ -407,9 +407,10 @@ class Cart extends React.PureComponent {
 
   onCartSubmit(e) {
     e.preventDefault();
+    const self = this;
 
     this.selectPaymentMethodAction(function() {
-      this.props.history.push("/checkout");
+      self.props.history.push("/checkout");
     });
   }
 

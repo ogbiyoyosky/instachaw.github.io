@@ -2,9 +2,9 @@
     "/": {
         "name": "Home",
         "meta": {
-            "title": "Fastest Deliveries in your Hood &mdash; Instachaw"
+            "title": "Fastest Deliveries in your Hood——Instachaw"
         },
-        "title": "Fastest Deliveries in your Hood &mdash; Instachaw",
+        "title": "Fastest Deliveries in your Hood——Instachaw",
         "images": [],
         "buttons": [{"url": "/settings", "title": "Settings"}],
         "html": "<p>Delight is a PWA under development</p>",
@@ -15,7 +15,7 @@
     "/store/:id": {
         "name": "Store",
         "meta": {
-            "title": "Store"
+            "title": "Store——Instachaw"
         },
         "title": "Store title",
         "html": "<p>Store Page</p>",
@@ -26,7 +26,7 @@
     "/cart": {
         "name": "Cart",
         "meta": {
-            "title": "Cart &mdash; Instachaw"
+            "title": "Cart——Instachaw"
         },
         "title": "Cart PWA",
         "html": "<p>Cart Page</p>",
@@ -37,7 +37,7 @@
     "/checkout": {
         "name": "Checkout",
         "meta": {
-            "title": "Complete Checkout &mdash; Instachaw"
+            "title": "Complete Checkout——Instachaw"
         },
         "title": "Checkout PWA",
         "html": "<p>Checkout Page</p>",
@@ -59,7 +59,7 @@
     "/account": {
         "name": "Account",
         "meta": {
-            "title": "Your account"
+            "title": "See your account——Instachaw"
         },
         "title": "Account",
         "html": "<p>Account Page</p>",
@@ -70,7 +70,7 @@
     "/login": {
         "name": "Login",
         "meta": {
-            "title": "Login &mdash; Instachaw"
+            "title": "Login——Instachaw"
         },
         "title": "Login",
         "html": "<p>Login Page</p>",
@@ -81,7 +81,7 @@
     "/register": {
         "name": "Register",
         "meta": {
-            "title": "Register &mdash; Instachaw"
+            "title": "Get a free account——Instachaw"
         },
         "title": "Register",
         "html": "<p>Registration Page</p>",
@@ -92,7 +92,7 @@
     "/resetPassword": {
         "name": "ResetPassword",
         "meta": {
-            "title": "Reset Password &mdash; Instachaw"
+            "title": "Reset Password——Instachaw"
         },
         "title": "Reset Password",
         "html": "<p>Reset Page</p>",
@@ -103,7 +103,7 @@
     "/page-not-found": {
         "name": "Page",
         "meta": {
-            "title": "Page Not Found &mdash; Instachaw"
+            "title": "Page Not Found——Instachaw"
         },
         "title": "Page Not Found",
         "html": "<p>The page you were looking for could not be found. Please contact an administrator.</p>",
