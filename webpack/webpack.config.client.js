@@ -114,7 +114,16 @@ let web = {
             importWorkboxFrom: isDev ? 'local' : 'cdn',
             clientsClaim: true,
             skipWaiting: true,
-            runtimeCaching: [{
+            runtimeCaching: [
+                {
+                    urlPattern: /.*/,
+                    handler: 'networkFirst'
+                },
+                {
+                    urlPattern: new RegExp('^https://res.cloudinary.com/(.*)'),
+                    handler: 'cacheFirst'
+                },
+                {
                 // Match any same-origin request that contains 'api'.
                 urlPattern: /api/,
                 // Apply a network-first strategy.
