@@ -23,11 +23,7 @@ const initialState = fromJS({
   },
   hasFetchedRates: false,
   isFetchingData: false,
-  appNotifications: [
-    {
-      type: ""
-    }
-  ],
+  appNotifications: [],
   meta: {},
   title: "",
   url: ""
