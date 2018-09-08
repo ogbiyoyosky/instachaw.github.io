@@ -231,38 +231,64 @@ const NotificationsTabComponent = () => (
 );
 
 const OrdersTabComponent = props => {
+  let orders = props.account.orders.length > 1 ? props.account.orders : [];
+
+  let activeOrders = orders.filter(
+    order => order.deleted_at === null && order.confirmed_at === null
+  );
+
+  let receivedOrders = orders.filter(
+    order => order.deleted_at === null && order.confirmed_at !== null
+  );
+
+  let cancelledOrders = orders.filter(
+    order => order.deleted_at !== null && order.confirmed_at === null
+  );
+
   return (
     <Flex width={1} alignItems="center" justify="center">
       <Box width={[1, 0.9, 0.7]}>
-        <Box mb={3} py={3} px={4}>
-          <Heading.h3 mb={2} bold>
-            Active Orders.
-          </Heading.h3>
+        {activeOrders.length > 0 && (
+          <Box mb={3} py={3} px={4}>
+            <Heading.h3 mb={2} bold>
+              Orders On the Way.
+            </Heading.h3>
 
-          <OrdersFeed
-            onCancelOrder={props.onCancelOrder}
-            orders={
-              props.account.orders.length > 0 &&
-              props.account.orders.filter(order => order.deleted_at == null)
-            }
-            isOrderCancellable={true}
-          />
-        </Box>
+            <OrdersFeed
+              onCancelOrder={props.onCancelOrder}
+              orders={activeOrders}
+              isOrderCancellable={true}
+            />
+          </Box>
+        )}
 
-        <Box py={1} px={4}>
-          <Heading.h5 mb={2} bold>
-            Cancelled Orders.
-          </Heading.h5>
+        {receivedOrders.length > 0 && (
+          <Box mb={3} py={3} px={4}>
+            <Heading.h4 mb={2} bold>
+              Orders You Received.
+            </Heading.h4>
 
-          <OrdersFeed
-            onCancelOrder={props.onCancelOrder}
-            orders={
-              props.account.orders.length > 0 &&
-              props.account.orders.filter(order => order.deleted_at !== null)
-            }
-            isOrderCancellable={false}
-          />
-        </Box>
+            <OrdersFeed
+              onCancelOrder={props.onCancelOrder}
+              orders={receivedOrders}
+              isOrderCancellable={false}
+            />
+          </Box>
+        )}
+
+        {cancelledOrders.length > 0 && (
+          <Box py={1} px={4}>
+            <Heading.h5 mb={2} bold>
+              Orders You Cancelled.
+            </Heading.h5>
+
+            <OrdersFeed
+              onCancelOrder={props.onCancelOrder}
+              orders={cancelledOrders}
+              isOrderCancellable={false}
+            />
+          </Box>
+        )}
       </Box>
     </Flex>
   );

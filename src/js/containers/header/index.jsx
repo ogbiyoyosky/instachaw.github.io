@@ -75,6 +75,19 @@ const Brand = props => (
   </Flex>
 );
 
+const Message = props => (
+  <Flex width={1} py={1} {...props}>
+    <Flex justify="center" width={1} flexDirection="column">
+      <Flex alignItems="center" justify="center">
+        <Icon name="information" pr={2} size={26} />
+        <Flex flexDirection="column" justify="center" alignItems="center">
+          <Text>{props.text}</Text>
+        </Flex>
+      </Flex>
+    </Flex>
+  </Flex>
+);
+
 const LoginButton = props => (
   <Flex
     width={1 / 4}
@@ -113,6 +126,33 @@ const UserButton = props => (
             <Flex flexDirection="column" alignItems="center" justify="center">
               <Icon name="chevronDown" size={14} />
             </Flex>
+          </Flex>
+        </TransparentButton>
+      </Flex>
+    </Link>
+  </Flex>
+);
+
+const CloseButton = props => (
+  <Flex
+    flexDirection="column"
+    justify="center"
+    alignItems="center"
+    mr={3}
+    py={1}
+  >
+    <Link
+      onClick={e => {
+        e.preventDefault();
+        props.onClick();
+      }}
+      style={{ textDecoration: "none" }}
+    >
+      <Flex flexDirection="column" width={1} alignItems="center">
+        <TransparentButton py={0} px={0}>
+          <Flex>
+            <Icon name="close" size={30} />
+            <Flex flexDirection="column" alignItems="center" justify="center" />
           </Flex>
         </TransparentButton>
       </Flex>
@@ -317,13 +357,43 @@ class Header extends React.PureComponent {
                       this.props.onSetAccountMenuOpenState({
                         isAccountMenuOpen: true
                       })}
-                    username={account.user.username}
+                    username={account.user.username || ""}
                   />
                 )
               ) : null}
             </Flex>
           </Flex>
         </Flex>
+
+        {this.props.app.appNotifications.length > 0 && (
+          <Flex
+            bg="darkBlue"
+            style={{
+              transform: !this.props.app.appNotifications.length
+                ? "translateY(-90px)"
+                : "translateY(0)",
+              transition: "transform 0.5s ease-in",
+              display: !this.props.app.appNotifications.length
+                ? "none"
+                : "inherit",
+              position: "fixed",
+              width: "100%",
+              zIndex: 100
+            }}
+          >
+            <Flex width={1} justify="center" alignItems="center">
+              <Flex pl={3} width={[1, 0.9, 0.7, 0.7]}>
+                <Message text="Successfully logged in." color="white" />
+                <CloseButton
+                  onClick={e =>
+                    this.props.onSetAccountMenuOpenState({
+                      isAccountMenuOpen: true
+                    })}
+                />
+              </Flex>
+            </Flex>
+          </Flex>
+        )}
       </Flex>
     );
   }

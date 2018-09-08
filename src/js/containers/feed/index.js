@@ -184,13 +184,13 @@ const FeedItemControls = props => {
             }}
             id="addItemButtonText"
           >
-            Add item button
+            Increment item button
           </span>
-          <Icon size={28} color="#999" name="circlePlus" mb={1} />
+          <Icon size={28} color="red" name="circlePlus" mb={1} />
         </TransparentButton>
         <Text
           color="gray"
-          fontSize={0}
+          fontSize={3}
           bold
           style={{
             display: isActiveCartItem ? "block" : "none",

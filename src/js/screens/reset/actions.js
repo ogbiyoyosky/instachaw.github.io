@@ -14,7 +14,13 @@ import {
 } from "./constants";
 import { sendRequest } from "../../services/ApiService";
 
+const HOST_URL =
+  window.location.origin === "https://instachaw.com"
+    ? "https://api.instachaw.com"
+    : "http://localhost:3333";
+
 export const attemptPasswordReset = data => {
+  const endpoint = `api/v1/auth/forgotPassword`;
   return dispatch => {
     dispatch(
       setResetAttemptingStatus({
@@ -22,7 +28,7 @@ export const attemptPasswordReset = data => {
       })
     );
     sendRequest({
-      endpoint: "http://localhost:3333/api/v1/auth/forgotPassword",
+      endpoint: `${HOST_URL}/${endpoint}`,
       method: "POST",
       payload: JSON.stringify(data)
     })
