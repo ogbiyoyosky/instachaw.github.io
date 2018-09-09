@@ -9,7 +9,11 @@ import { getAppState } from "../../containers/app/reducer";
 import { setHeaderVisibility } from "../../containers/header/actions";
 import { setFooterVisibility } from "../../containers/footer/actions";
 
-import { fetchReset, attemptPasswordReset } from "./actions";
+import {
+  fetchReset,
+  attemptPasswordReset,
+  attemptPasswordUpdate
+} from "./actions";
 import { REDUCER_NAME } from "./constants";
 import { resetReducer, getResetState } from "./reducer";
 
@@ -52,7 +56,8 @@ class Reset extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      uid: ""
+      uid: "",
+      password: ""
     };
     this.handleResetSubmit = this.handleResetSubmit.bind(this);
     this.navigateToLocation = this.navigateToLocation.bind(this);
@@ -100,21 +105,43 @@ class Reset extends React.PureComponent {
               height: "100%"
             }}
           >
-            <Box mb={2}>
-              <Text align="center" fontSize={3} bold>
-                Password Reset Link Sent.
-              </Text>
+            {!this.props.match.params.token ? (
+              <Box>
+                <Box mb={2}>
+                  <Text align="center" fontSize={3} bold>
+                    Password Reset Link Sent.
+                  </Text>
 
-              <Text.p align="center" fontSize={3}>
-                We've sent a password reset link to your email.
-              </Text.p>
-            </Box>
+                  <Text.p align="center" fontSize={3}>
+                    We've sent a password reset link to your email.
+                  </Text.p>
+                </Box>
 
-            <Flex justify="center" mb={3}>
-              <Button onClick={e => this.openMailHost()}>
-                See it in your inbox
-              </Button>
-            </Flex>
+                <Flex justify="center" mb={3}>
+                  <Button onClick={e => this.openMailHost()}>
+                    See it in your inbox
+                  </Button>
+                </Flex>
+              </Box>
+            ) : (
+              <Box>
+                <Box mb={2}>
+                  <Text align="center" fontSize={3} bold>
+                    Password succesfully reset.
+                  </Text>
+
+                  <Text.p align="center" fontSize={3}>
+                    Your password was successfully updated.
+                  </Text.p>
+                </Box>
+
+                <Flex justify="center" mb={3}>
+                  <Button onClick={e => this.navigateToLocation("/login")}>
+                    Login now
+                  </Button>
+                </Flex>
+              </Box>
+            )}
 
             <Flex justify="center">
               <UILink onClick={e => this.props.history.push("/login")}>
@@ -155,58 +182,121 @@ class Reset extends React.PureComponent {
           }}
           width={[1, 0.9, 0.7]}
         >
-          <form
-            method="get"
-            onSubmit={e => {
-              e.preventDefault();
-              this.handleResetSubmit();
-            }}
-          >
-            <Flex flexDirection="column" justify="center" alignItems="center">
-              <Flex mb={3} alignItems="center" justify="center">
-                <BrandLogo height="45px" color="red" />
-              </Flex>
+          {!this.props.match.params.token ? (
+            <form
+              method="get"
+              onSubmit={e => {
+                e.preventDefault();
+                this.handleResetSubmit();
+              }}
+            >
+              <Flex flexDirection="column" justify="center" alignItems="center">
+                <Flex mb={3} alignItems="center" justify="center">
+                  <BrandLogo
+                    height="45px"
+                    color="red"
+                    onClick={e => this.navigateToLocation("/")}
+                  />
+                </Flex>
 
-              <Box mb={this.props.reset.recoveryNotice.length > 0 ? 1 : 3}>
-                <Label mb={1} fontSize={0}>
-                  Email or Username
-                </Label>
-                <Input
-                  onChange={e =>
-                    this.setState({
-                      uid: e.target.value
-                    })}
-                  value={this.state.uid}
-                  id="username"
-                  autoFocus
-                />
-              </Box>
+                <Box mb={this.props.reset.recoveryNotice.length > 0 ? 1 : 3}>
+                  <Label mb={1} fontSize={0}>
+                    Email or Username
+                  </Label>
+                  <Input
+                    onChange={e =>
+                      this.setState({
+                        uid: e.target.value
+                      })}
+                    value={this.state.uid}
+                    id="username"
+                    autoFocus
+                  />
+                </Box>
 
-              {typeof this.props.reset.recoveryNotice != "undefined" &&
-                this.props.reset.recoveryNotice.length > 0 && (
-                  <Box mb={2}>
-                    <Text fontSize={1} align="right" color="red">
-                      {this.props.reset.recoveryNotice}
-                    </Text>
-                  </Box>
-                )}
-
-              <Box>
-                <Button
-                  disabled={
-                    this.props.reset.isAttemptingReset || !this.isValidForm()
-                  }
-                  fullWidth
-                >
-                  {!this.props.reset.isAttemptingReset ? (
-                    <Text>Reset My Password</Text>
-                  ) : (
-                    <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
+                {typeof this.props.reset.recoveryNotice != "undefined" &&
+                  this.props.reset.recoveryNotice.length > 0 && (
+                    <Box mb={2}>
+                      <Text fontSize={1} align="right" color="red">
+                        {this.props.reset.recoveryNotice}
+                      </Text>
+                    </Box>
                   )}
-                </Button>
-              </Box>
-            </Flex>
-          </form>
+
+                <Box>
+                  <Button
+                    disabled={
+                      this.props.reset.isAttemptingReset || !this.isValidForm()
+                    }
+                    fullWidth
+                  >
+                    {!this.props.reset.isAttemptingReset ? (
+                      <Text>Reset My Password</Text>
+                    ) : (
+                      <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
+                    )}
+                  </Button>
+                </Box>
+              </Flex>
+            </form>
+          ) : (
+            <form
+              method="get"
+              onSubmit={e => {
+                e.preventDefault();
+                this.handleResetSubmit();
+              }}
+            >
+              <Flex flexDirection="column" justify="center" alignItems="center">
+                <Flex mb={3} alignItems="center" justify="center">
+                  <BrandLogo
+                    height="45px"
+                    color="red"
+                    onClick={e => this.props.history.push("/")}
+                  />
+                </Flex>
+
+                <Box mb={this.props.reset.recoveryNotice.length > 0 ? 1 : 3}>
+                  <Label mb={1} fontSize={0}>
+                    New password
+                  </Label>
+                  <Input
+                    onChange={e =>
+                      this.setState({
+                        password: e.target.value
+                      })}
+                    value={this.state.password}
+                    id="password"
+                    autoFocus
+                  />
+                </Box>
+
+                {typeof this.props.reset.recoveryNotice != "undefined" &&
+                  this.props.reset.recoveryNotice.length > 0 && (
+                    <Box mb={2}>
+                      <Text fontSize={1} align="right" color="red">
+                        {this.props.reset.recoveryNotice}
+                      </Text>
+                    </Box>
+                  )}
+
+                <Box>
+                  <Button
+                    disabled={
+                      this.props.reset.isAttemptingReset || !this.isValidForm()
+                    }
+                    fullWidth
+                  >
+                    {!this.props.reset.isAttemptingReset ? (
+                      <Text>Update My New Password</Text>
+                    ) : (
+                      <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
+                    )}
+                  </Button>
+                </Box>
+              </Flex>
+            </form>
+          )}
         </Flex>
       </Flex>
     );
@@ -219,11 +309,21 @@ class Reset extends React.PureComponent {
   }
 
   handleResetSubmit() {
-    const { uid } = this.state;
+    const self = this;
 
-    this.props.attemptPasswordReset({
-      uid
-    });
+    if (!this.props.match.params.token) {
+      this.props.attemptPasswordReset({
+        uid: this.state.uid
+      });
+    } else {
+      this.props.attemptPasswordUpdate(
+        {
+          password: this.state.password,
+          password_confirmation: this.state.password
+        },
+        this.props.match.params.token
+      );
+    }
   }
 
   navigateToLocation(location) {
@@ -231,7 +331,7 @@ class Reset extends React.PureComponent {
   }
 
   isValidForm() {
-    return this.state.uid.length > 1;
+    return this.state.uid.length > 1 || this.state.password.length > 1;
   }
 }
 
@@ -245,6 +345,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onLoadReset: data => dispatch(fetchReset(data)),
     attemptPasswordReset: data => dispatch(attemptPasswordReset(data)),
+    attemptPasswordUpdate: (data, token) =>
+      dispatch(attemptPasswordUpdate(data, token)),
     setHeaderVisibility: data => dispatch(setHeaderVisibility(data)),
     setFooterVisibility: data => dispatch(setFooterVisibility(data))
   };

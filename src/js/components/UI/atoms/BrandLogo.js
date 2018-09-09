@@ -11,6 +11,7 @@ const BrandLogo = props => (
       height: props.height,
       fill: theme.colors[props.color]
     }}
+    {...props}
   >
     <g id="XMLID_2397_">
       <path id="XMLID_2411_" className="st0" d="M585 212h41v153h-41z" />

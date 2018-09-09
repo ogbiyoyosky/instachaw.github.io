@@ -76,6 +76,57 @@ export const attemptPasswordReset = data => {
   };
 };
 
+export const attemptPasswordUpdate = (data, token) => {
+  const endpoint = `api/v1/auth/updatePassword/${token}`;
+  return dispatch => {
+    dispatch(
+      setResetAttemptingStatus({
+        isAttemptingReset: true
+      })
+    );
+    sendRequest({
+      endpoint: `${HOST_URL}/${endpoint}`,
+      method: "POST",
+      payload: JSON.stringify(data)
+    })
+      .then(response => {
+        if (typeof response !== "undefined") {
+          if (typeof response.messages !== "undefined") {
+            dispatch(
+              setRecoveryNotice({
+                notice: response.messages[0].message
+              })
+            );
+            setTimeout(() => {
+              dispatch(
+                setResetAttemptingStatus({
+                  isAttemptingReset: false
+                })
+              );
+            }, 1000);
+          }
+
+          if (typeof response.data !== "undefined") {
+            dispatch(
+              setResetModalStatus({
+                isResetStatusModalOpen: true
+              })
+            );
+          }
+        } else {
+          setTimeout(() => {
+            dispatch(
+              setResetAttemptingStatus({
+                isAttemptingReset: false
+              })
+            );
+          }, 1000);
+        }
+      })
+      .catch(e => console.log(e));
+  };
+};
+
 export const fetchReset = data => {
   return dispatch => {
     dispatch(isLoading(true));

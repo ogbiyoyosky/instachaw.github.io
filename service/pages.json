@@ -89,14 +89,14 @@
         "pathname": "/register",
         "protected": false    
     },
-    "/resetPassword": {
+    "/resetPassword/:token?": {
         "name": "ResetPassword",
         "meta": {
             "title": "Reset Password——Instachaw"
         },
         "title": "Reset Password",
         "html": "<p>Reset Page</p>",
-        "url": "/resetPassword",
+        "url": "/resetPassword/:token?",
         "pathname": "/resetPassword",
         "protected": false    
     },
