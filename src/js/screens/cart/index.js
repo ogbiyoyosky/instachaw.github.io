@@ -279,7 +279,11 @@ class Cart extends React.PureComponent {
       paymentMethod: method
     });
 
-    this.selectPaymentMethodAction();
+    this.props.setFundingMethod({
+      fundingMethod: method
+    });
+
+    this.selectPaymentMethodAction(method);
   }
 
   setActivePaymentMode(mode) {
@@ -311,7 +315,7 @@ class Cart extends React.PureComponent {
   }
 
   getWalletBalance(wallet) {
-    return this.props.account.user !== null
+    return typeof this.props.account.user === "object"
       ? this.props.account.user.wallets.filter(
           currentWallet => currentWallet.title === wallet
         )[0].balance
@@ -352,10 +356,11 @@ class Cart extends React.PureComponent {
       : roundToDecimalPlaces(paymentAmount / this.props.app.rates["STEEM"], 3);
   }
 
-  selectPaymentMethodAction(cb) {
+  selectPaymentMethodAction(method, cb) {
     const total = this.getTotal();
+
     if (this.props.checkout.paymentMode === "on-demand") {
-      if (this.props.checkout.paymentMethod === "naira") {
+      if (method === "naira") {
         if (this.getWalletBalance("naira") < this.getTotal("naira")) {
           this.props.setFundingAmount({
             fundingAmount: this.getTotal("naira")
@@ -368,7 +373,7 @@ class Cart extends React.PureComponent {
           alert("You're doing great so far. Just tap the checkout button.");
         }
       } else {
-        if (this.props.checkout.paymentMethod === "STEEM") {
+        if (method === "STEEM") {
           if (this.getWalletBalance("STEEM") < total) {
             this.props.setPaymentMethod({
               paymentMethod: "SBD"
@@ -402,6 +407,7 @@ class Cart extends React.PureComponent {
         }
       }
     }
+
     cb();
   }
 
@@ -409,9 +415,12 @@ class Cart extends React.PureComponent {
     e.preventDefault();
     const self = this;
 
-    this.selectPaymentMethodAction(function() {
-      self.props.history.push("/checkout");
-    });
+    this.selectPaymentMethodAction(
+      this.props.checkout.paymentMethod,
+      function() {
+        self.props.history.push("/checkout");
+      }
+    );
   }
 
   onFundingSubmit(event) {

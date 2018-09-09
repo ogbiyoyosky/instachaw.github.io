@@ -231,11 +231,13 @@ const NotificationsTabComponent = () => (
 );
 
 const OrdersTabComponent = props => {
-  let orders = props.account.orders.length > 1 ? props.account.orders : [];
+  let orders = props.account.orders.length > 0 ? props.account.orders : [];
 
   let activeOrders = orders.filter(
     order => order.deleted_at === null && order.confirmed_at === null
   );
+
+  console.log(activeOrders);
 
   let receivedOrders = orders.filter(
     order => order.deleted_at === null && order.confirmed_at !== null

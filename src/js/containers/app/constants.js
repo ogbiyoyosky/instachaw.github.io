@@ -4,6 +4,7 @@ export const SET_DEFERRED_PROMPT = "App/SET_DEFERRED_PROMPT";
 export const SET_META = "App/SET_META";
 export const SET_URL = "App/SET_URL";
 export const ADD_APP_NOTIFICATION = "App/ADD_APP_NOTIFICATION";
+export const DELETE_APP_NOTIFICATION = "App/DELETE_APP_NOTIFICATION";
 export const SET_TITLE = "App/SET_TITLE";
 export const SET_RATES = "App/SET_RATES";
 export const SET_RATES_FETCHED_STATUS = "App/SET_RATES_FETCHED_STATUS";

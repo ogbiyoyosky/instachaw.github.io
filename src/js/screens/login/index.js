@@ -6,6 +6,10 @@ import { withRouter, Link } from "react-router-dom";
 
 import reducerInjector from "../../redux/reducerInjector";
 
+import {
+  addAppNotification,
+  deleteAppNotification
+} from "../../containers/app/actions";
 import { getAppState } from "../../containers/app/reducer";
 import { setHeaderVisibility } from "../../containers/header/actions";
 import { setFooterVisibility } from "../../containers/footer/actions";
@@ -82,7 +86,13 @@ class Login extends React.PureComponent {
           </Flex>
           <Flex flexDirection="column" justify="center" alignItems="center">
             <Box mb={3}>
-              <Label mb={1} fontSize={0}>
+              <Label
+                mb={1}
+                fontSize={0}
+                style={{
+                  textTransform: "uppercase"
+                }}
+              >
                 Email or Username
               </Label>
               <Input
@@ -100,7 +110,8 @@ class Login extends React.PureComponent {
               <Flex>
                 <Label
                   style={{
-                    flex: 1
+                    flex: 1,
+                    textTransform: "uppercase"
                   }}
                   mb={1}
                   fontSize={0}
@@ -184,6 +195,7 @@ class Login extends React.PureComponent {
   handleLoginSubmit(e) {
     e.preventDefault();
     const { uid, password } = this.state;
+    const { deleteAppNotification } = this.props;
 
     this.props.attemptLogin(
       {
@@ -197,6 +209,14 @@ class Login extends React.PureComponent {
               loginNotice: response[0].message
             });
           } else {
+            this.props.addAppNotification({
+              message: "Successfully logged in!"
+            });
+            setTimeout(function() {
+              deleteAppNotification({
+                message: "Successfully logged in!"
+              });
+            }, 5000);
             this.navigateToLocation("/");
           }
         }
@@ -224,7 +244,9 @@ const mapDispatchToProps = dispatch => {
     onLoadLogin: data => dispatch(fetchLogin(data)),
     attemptLogin: (data, cb) => dispatch(attemptLogin(data, cb)),
     setHeaderVisibility: data => dispatch(setHeaderVisibility(data)),
-    setFooterVisibility: data => dispatch(setFooterVisibility(data))
+    setFooterVisibility: data => dispatch(setFooterVisibility(data)),
+    addAppNotification: data => dispatch(addAppNotification(data)),
+    deleteAppNotification: data => dispatch(deleteAppNotification(data))
   };
 };
 

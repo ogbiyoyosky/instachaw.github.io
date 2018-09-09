@@ -5,6 +5,10 @@ import { SyncLoader } from "react-spinners";
 import reducerInjector from "../../redux/reducerInjector";
 import { withRouter, Link } from "react-router-dom";
 
+import {
+  addAppNotification,
+  deleteAppNotification
+} from "../../containers/app/actions";
 import { getAppState } from "../../containers/app/reducer";
 import { setHeaderVisibility } from "../../containers/header/actions";
 import { setFooterVisibility } from "../../containers/footer/actions";
@@ -67,12 +71,11 @@ class Register extends React.PureComponent {
     return (
       <Flex
         px={3}
-        py={3}
+        py={4}
         flexDirection="column"
         justify="center"
         style={{
           position: "absolute",
-          height: "100%",
           left: "50%",
           transform: "translateX(-50%)"
         }}
@@ -87,8 +90,15 @@ class Register extends React.PureComponent {
             </Flex>
 
             <Box mb={3}>
-              <Label mb={1} fontSize={0}>
-                Email <sup style={{ color: "red" }}>*</sup>
+              <Label
+                mb={1}
+                fontSize={0}
+                style={{
+                  textTransform: "uppercase"
+                }}
+              >
+                Email
+                <sup style={{ color: "red", fontSize: "14px" }}>*</sup>
               </Label>
               <Input
                 onChange={e =>
@@ -102,39 +112,15 @@ class Register extends React.PureComponent {
             </Box>
 
             <Box mb={3}>
-              <Label mb={1} fontSize={0}>
-                Phone <sup style={{ color: "red" }}>*</sup>
-              </Label>
-              <Input
-                onChange={e =>
-                  this.setState({
-                    phone: e.target.value
-                  })}
-                value={this.state.phone}
-                id="phone"
-                type="phone"
-              />
-            </Box>
-
-            <Box mb={3}>
-              <Label mb={1} fontSize={0}>
-                Fullname <sup style={{ color: "red" }}>*</sup>
-              </Label>
-              <Input
-                type="text"
-                onChange={e =>
-                  this.setState({
-                    name: e.target.value
-                  })}
-                value={this.state.name}
-                id="name"
-              />
-              <Text fontSize={0}>Something like 'John Robert'.</Text>
-            </Box>
-
-            <Box mb={3}>
-              <Label mb={1} fontSize={0}>
-                Username <sup style={{ color: "red" }}>*</sup>
+              <Label
+                mb={1}
+                fontSize={0}
+                style={{
+                  textTransform: "uppercase"
+                }}
+              >
+                Username
+                <sup style={{ color: "red", fontSize: "14px" }}>*</sup>
               </Label>
               <Input
                 type="text"
@@ -147,9 +133,64 @@ class Register extends React.PureComponent {
               />
             </Box>
 
+            <Box mb={3}>
+              <Label
+                mb={1}
+                fontSize={0}
+                style={{
+                  textTransform: "uppercase"
+                }}
+              >
+                Full name{" "}
+                <sup style={{ color: "red", fontSize: "14px" }}>*</sup>
+              </Label>
+              <Input
+                type="text"
+                onChange={e =>
+                  this.setState({
+                    name: e.target.value
+                  })}
+                value={this.state.name}
+                id="name"
+                mb={1}
+              />
+              <Text fontSize={0}>
+                Example: <b>John Doe</b>.
+              </Text>
+            </Box>
+
+            <Box mb={3}>
+              <Label
+                mb={1}
+                fontSize={0}
+                style={{
+                  textTransform: "uppercase"
+                }}
+              >
+                Phone
+                <sup style={{ color: "red", fontSize: "14px" }}>*</sup>
+              </Label>
+              <Input
+                onChange={e =>
+                  this.setState({
+                    phone: e.target.value
+                  })}
+                value={this.state.phone}
+                id="phone"
+                type="tel"
+              />
+            </Box>
+
             <Box mb={this.state.registrationNotice.length > 1 ? 1 : 3}>
-              <Label mb={1} fontSize={0}>
-                Password <sup style={{ color: "red" }}>*</sup>
+              <Label
+                mb={1}
+                fontSize={0}
+                style={{
+                  textTransform: "uppercase"
+                }}
+              >
+                Password
+                <sup style={{ color: "red", fontSize: "18px" }}>*</sup>
               </Label>
               <Input
                 onChange={e =>
@@ -213,8 +254,13 @@ class Register extends React.PureComponent {
   handleRegistrationSubmit(e) {
     e.preventDefault();
     const { username, name, email, password, phone } = this.state;
+    const {
+      attemptRegistration,
+      addAppNotification,
+      deleteAppNotification
+    } = this.props;
 
-    this.props.attemptRegistration(
+    attemptRegistration(
       {
         username,
         name,
@@ -224,11 +270,23 @@ class Register extends React.PureComponent {
       },
       response => {
         if (typeof response !== "undefined") {
-          typeof response.user === "undefined"
-            ? this.setState({
-                registrationNotice: response[0].message
-              })
-            : this.navigateToLocation("/");
+          if (typeof response.user === "undefined") {
+            this.setState({
+              registrationNotice: response[0].message
+            });
+          } else {
+            this.navigateToLocation("/");
+
+            addAppNotification({
+              message: "Successfully created account."
+            });
+
+            setTimeout(function() {
+              deleteAppNotification({
+                message: "Successfully created account."
+              });
+            }, 5000);
+          }
         }
       }
     );
@@ -261,6 +319,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onLoadRegister: data => dispatch(fetchRegister(data)),
     attemptRegistration: (data, cb) => dispatch(attemptRegistration(data, cb)),
+    addAppNotification: data => dispatch(addAppNotification(data)),
+    deleteAppNotification: data => dispatch(deleteAppNotification(data)),
     setHeaderVisibility: data => dispatch(setHeaderVisibility(data)),
     setFooterVisibility: data => dispatch(setFooterVisibility(data))
   };

@@ -1,6 +1,8 @@
 import {
   APP_LOADING,
   APP_ERROR,
+  ADD_APP_NOTIFICATION,
+  DELETE_APP_NOTIFICATION,
   SET_DEFERRED_PROMPT,
   SET_META,
   SET_TITLE,
@@ -61,6 +63,20 @@ export const setMeta = data => {
 export const setRates = data => {
   return {
     type: SET_RATES,
+    data
+  };
+};
+
+export const addAppNotification = data => {
+  return {
+    type: ADD_APP_NOTIFICATION,
+    data
+  };
+};
+
+export const deleteAppNotification = data => {
+  return {
+    type: DELETE_APP_NOTIFICATION,
     data
   };
 };

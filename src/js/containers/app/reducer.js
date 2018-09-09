@@ -8,6 +8,7 @@ import {
   SET_TITLE,
   SET_URL,
   ADD_APP_NOTIFICATION,
+  DELETE_APP_NOTIFICATION,
   SET_RATES,
   SET_DATA_FETCHING_STATUS,
   REDUCER_NAME
@@ -47,6 +48,14 @@ export function appReducer(state = initialState, action) {
       return state.set(
         "appNotifications",
         state.get("appNotifications").push(fromJS(action.data))
+      );
+    case DELETE_APP_NOTIFICATION:
+      return state.updateIn(["appNotifications"], appNotifications =>
+        fromJS(
+          appNotifications.toJS().filter(appNotification => {
+            return appNotification.message !== action.data.message;
+          })
+        )
       );
 
     case SET_RATES:

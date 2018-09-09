@@ -14,6 +14,7 @@ import {
 } from "./actions";
 import { REDUCER_NAME } from "./constants";
 import { getAppState } from "../app/reducer";
+import { addAppNotification, deleteAppNotification } from "../app/actions";
 import { getCartState } from "../../screens/cart/reducer";
 import { getLoginState } from "../../screens/login/reducer";
 import { getAccountState } from "../../screens/account/reducer";
@@ -69,7 +70,7 @@ const Brand = props => (
   <Flex width={1} alignItems="center" justify="center" py={1}>
     <Flex justify="center" flexDirection="column">
       <Flex alignItems="center" justify="center">
-        <BrandLogo />
+        <BrandLogo {...props} />
       </Flex>
     </Flex>
   </Flex>
@@ -148,10 +149,19 @@ const CloseButton = props => (
       }}
       style={{ textDecoration: "none" }}
     >
-      <Flex flexDirection="column" width={1} alignItems="center">
+      <Flex
+        flexDirection="column"
+        width={1}
+        alignItems="center"
+        bg="blue"
+        p={1}
+        style={{
+          borderRadius: "100%"
+        }}
+      >
         <TransparentButton py={0} px={0}>
           <Flex>
-            <Icon name="close" size={30} />
+            <Icon name="close" size={24} />
             <Flex flexDirection="column" alignItems="center" justify="center" />
           </Flex>
         </TransparentButton>
@@ -239,6 +249,8 @@ class Header extends React.PureComponent {
       loginData,
       onSetNavItemActive
     } = this.props;
+
+    const { appNotifications } = app;
 
     return (
       <Flex>
@@ -345,7 +357,7 @@ class Header extends React.PureComponent {
                 isMenuOpen={header.isMenuOpen}
                 handleClick={this.handleMenuToggle}
               />
-              <Brand />
+              <Brand onClick={e => this.props.history.push("/")} />
               {location.pathname !== "/login" ? (
                 !loginData.isLoggedIn ? (
                   <LoginButton
@@ -365,35 +377,38 @@ class Header extends React.PureComponent {
           </Flex>
         </Flex>
 
-        {this.props.app.appNotifications.length > 0 && (
-          <Flex
-            bg="darkBlue"
-            style={{
-              transform: !this.props.app.appNotifications.length
+        <Flex
+          flexDirection="column"
+          style={{
+            opacity: appNotifications.length === 0 ? 0 : 1,
+            transform:
+              appNotifications.length === 0
                 ? "translateY(-90px)"
                 : "translateY(0)",
-              transition: "transform 0.5s ease-in",
-              display: !this.props.app.appNotifications.length
-                ? "none"
-                : "inherit",
-              position: "fixed",
-              width: "100%",
-              zIndex: 100
-            }}
-          >
-            <Flex width={1} justify="center" alignItems="center">
-              <Flex pl={3} width={[1, 0.9, 0.7, 0.7]}>
-                <Message text="Successfully logged in." color="white" />
-                <CloseButton
-                  onClick={e =>
-                    this.props.onSetAccountMenuOpenState({
-                      isAccountMenuOpen: true
-                    })}
-                />
+            transition: `transform 1.5s ease-in, opacity 1.5s ease-in`,
+            position: "fixed",
+            width: "100%",
+            zIndex: 100
+          }}
+        >
+          {appNotifications.length > 0 &&
+            appNotifications.map((appNotification, i) => (
+              <Flex bg="darkBlue" key={Math.random()} py={1}>
+                <Flex width={1} justify="center" alignItems="center">
+                  <Flex pl={3} width={[1, 0.9, 0.7, 0.7]}>
+                    <Message text={appNotification.message} color="white" />
+                    <CloseButton
+                      onClick={e => {
+                        this.props.deleteAppNotification({
+                          message: appNotification.message
+                        });
+                      }}
+                    />
+                  </Flex>
+                </Flex>
               </Flex>
-            </Flex>
-          </Flex>
-        )}
+            ))}
+        </Flex>
       </Flex>
     );
   }
@@ -447,6 +462,8 @@ const mapDispatchToProps = dispatch => {
     onSetNavItemActive: data => dispatch(setNavItemActive(data)),
     onSetMenuOpenState: data => dispatch(setMenuOpenState(data)),
     onSetAccountMenuOpenState: data => dispatch(setAccountMenuOpenState(data)),
+    addAppNotification: data => dispatch(addAppNotification(data)),
+    deleteAppNotification: data => dispatch(deleteAppNotification(data)),
     setHeaderVisibility: data => dispatch(setHeaderVisibility(data)),
     setLoginStatus: data => dispatch(setLoginStatus(data))
   };

@@ -200,7 +200,13 @@ class Reset extends React.PureComponent {
                 </Flex>
 
                 <Box mb={this.props.reset.recoveryNotice.length > 0 ? 1 : 3}>
-                  <Label mb={1} fontSize={0}>
+                  <Label
+                    mb={1}
+                    fontSize={0}
+                    style={{
+                      textTransform: "uppercase"
+                    }}
+                  >
                     Email or Username
                   </Label>
                   <Input
@@ -257,7 +263,13 @@ class Reset extends React.PureComponent {
                 </Flex>
 
                 <Box mb={this.props.reset.recoveryNotice.length > 0 ? 1 : 3}>
-                  <Label mb={1} fontSize={0}>
+                  <Label
+                    mb={1}
+                    fontSize={0}
+                    style={{
+                      textTransform: "uppercase"
+                    }}
+                  >
                     New password
                   </Label>
                   <Input

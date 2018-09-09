@@ -10,6 +10,10 @@ import {
   SET_LOGIN_ATTEMPTING_STATUS,
   SET_LOGGED_IN_STATUS
 } from "./constants";
+import {
+  addAppNotification,
+  deleteAppNotification
+} from "../../containers/app/actions";
 import { setUser } from "../../screens/account/actions";
 import { sendRequest } from "../../services/ApiService";
 
@@ -99,6 +103,20 @@ export const attemptLogout = () => {
         user: null
       })
     );
+
+    dispatch(
+      addAppNotification({
+        message: "You are logged out."
+      })
+    );
+
+    setTimeout(function() {
+      dispatch(
+        deleteAppNotification({
+          message: "You are logged out."
+        })
+      );
+    }, 5000);
 
     localStorage.removeItem("user");
   };
