@@ -5,11 +5,11 @@ import { IconButton } from "pcln-design-system";
 const CloseButton = props => {
   return (
     <IconButton
-      size={36}
+      size={40}
       style={{
         position: "absolute",
-        top: "10px",
-        right: "10px"
+        top: "30px",
+        right: "20px"
       }}
       color="#999"
       borderColor="transparent"

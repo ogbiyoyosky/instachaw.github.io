@@ -24,6 +24,7 @@ const SearchBar = ({ isSearchBarFocused, onSearchBarChange, ...props }) => {
         {...props}
         onChange={e => onSearchBarChange(e.target.value)}
         placeholder="Search..."
+        type="search"
       />
       <SearchBarAddon
         flexDirection="column"

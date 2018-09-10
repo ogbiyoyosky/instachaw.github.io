@@ -237,8 +237,6 @@ const OrdersTabComponent = props => {
     order => order.deleted_at === null && order.confirmed_at === null
   );
 
-  console.log(activeOrders);
-
   let receivedOrders = orders.filter(
     order => order.deleted_at === null && order.confirmed_at !== null
   );
