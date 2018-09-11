@@ -58,6 +58,7 @@ const FeedItemCard = props => {
             onPricesOptionsExpansion={id => props.onPricesOptionsExpansion(id)}
             priceInSTEEM={props.getSTEEMEquivalent(props.item.price)}
             priceInSBD={props.getSBDEquivalent(props.item.price)}
+            showStore={props.showStore}
           />
 
           {props.showControls && (
@@ -112,9 +113,14 @@ const FeedItemArticle = props => {
             textDecoration: "none"
           }}
         >
-          <Heading color="gray" fontSize={2}>
+          <Heading color="darkGray" fontSize={2}>
             {props.item.title}
           </Heading>
+          {props.showStore && (
+            <Text color="gray" fontSize={0}>
+              {props.item.store.name}
+            </Text>
+          )}
         </Link>
       </Flex>
       <Flex mb={2}>
@@ -357,6 +363,7 @@ class Feed extends React.PureComponent {
                 onIncrementCartItemQty={this.onIncrementCartItemQty}
                 onRemoveCartItem={this.onRemoveCartItem}
                 showControls={this.props.showControls}
+                showStore={this.props.showStore}
               />
             )
         )}
@@ -470,7 +477,8 @@ Feed.propTypes = {
   onFetchNextItems: PropTypes.func,
   isLoading: PropTypes.bool,
   showControls: PropTypes.bool,
-  useMiniFeedCard: PropTypes.bool
+  useMiniFeedCard: PropTypes.bool,
+  showStore: PropTypes.bool
 };
 
 Feed.defaultProps = {
@@ -481,7 +489,8 @@ Feed.defaultProps = {
   verticalSpacing: 3,
   highlightSelectedItem: true,
   showControls: true,
-  useMiniFeedCard: false
+  useMiniFeedCard: false,
+  showStore: false
 };
 
 const mapStateToProps = state => {

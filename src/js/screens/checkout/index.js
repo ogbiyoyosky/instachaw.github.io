@@ -569,8 +569,6 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    event.preventDefault();
-
     let total = this.getPaymentTotal();
 
     let rate = 1;
@@ -728,6 +726,8 @@ class Checkout extends React.PureComponent {
 
       self.props.clearCart();
     });
+
+    event.preventDefault();
   }
 
   static fetchData(store, { path }) {

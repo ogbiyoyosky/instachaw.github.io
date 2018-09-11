@@ -17,7 +17,12 @@ const SearchBarAddon = Styled(Flex)`
 
 const SearchBarIcon = Styled(Icon)``;
 
-const SearchBar = ({ isSearchBarFocused, onSearchBarChange, ...props }) => {
+const SearchBar = ({
+  isSearchBarFocused,
+  onSearchBarChange,
+  hasSearchIcon,
+  ...props
+}) => {
   return (
     <SearchBarWrapper>
       <SearchBarInput
@@ -26,14 +31,17 @@ const SearchBar = ({ isSearchBarFocused, onSearchBarChange, ...props }) => {
         placeholder="Search..."
         type="search"
       />
-      <SearchBarAddon
-        flexDirection="column"
-        justify="center"
-        align="center"
-        width={[0.15, 0.1, 0.08]}
-      >
-        <SearchBarIcon name="search" color="gray" size="14" />
-      </SearchBarAddon>
+
+      {hasSearchIcon && (
+        <SearchBarAddon
+          flexDirection="column"
+          justify="center"
+          align="center"
+          width={[0.15, 0.1, 0.08]}
+        >
+          <SearchBarIcon name="search" color="gray" size="14" />
+        </SearchBarAddon>
+      )}
     </SearchBarWrapper>
   );
 };
@@ -45,7 +53,8 @@ SearchBar.propTypes = {
 SearchBar.displayName = "SearchBar";
 
 SearchBar.defaultProps = {
-  isSearchBarFocused: false
+  isSearchBarFocused: false,
+  hasSearchIcon: true
 };
 
 export default SearchBar;
