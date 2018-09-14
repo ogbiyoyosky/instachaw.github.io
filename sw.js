@@ -29,7 +29,6 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/index.html/, workbox.strategies.networkFirst(), 'GET');
 workbox.routing.registerRoute(/.*/, workbox.strategies.networkFirst(), 'GET');
 workbox.routing.registerRoute(/^https:\/\/res.cloudinary.com\/(.*)/, workbox.strategies.cacheFirst(), 'GET');
 workbox.routing.registerRoute(/api/, workbox.strategies.networkFirst({ networkTimeoutSeconds: 10, cacheName: "instachaw-production-api-cache", plugins: [new workbox.expiration.Plugin({"maxEntries":5,"maxAgeSeconds":60,"purgeOnQuotaError":false}), new workbox.cacheableResponse.Plugin({"statuses":[0,200],"headers":{"x-test":"true"}})] }), 'GET');
