@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js");
 
 importScripts(
-  "/dist/precache-manifest.03a02d467c18fbb4b451c12fa690fc6c.js"
+  "/dist/precache-manifest.e9f6bd9f4c62bd9e9aa66a6f3336c690.js"
 );
 
 workbox.skipWaiting();
@@ -29,6 +29,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
+workbox.routing.registerRoute(/index.html/, workbox.strategies.networkFirst(), 'GET');
 workbox.routing.registerRoute(/.*/, workbox.strategies.networkFirst(), 'GET');
 workbox.routing.registerRoute(/^https:\/\/res.cloudinary.com\/(.*)/, workbox.strategies.cacheFirst(), 'GET');
 workbox.routing.registerRoute(/api/, workbox.strategies.networkFirst({ networkTimeoutSeconds: 10, cacheName: "instachaw-production-api-cache", plugins: [new workbox.expiration.Plugin({"maxEntries":5,"maxAgeSeconds":60,"purgeOnQuotaError":false}), new workbox.cacheableResponse.Plugin({"statuses":[0,200],"headers":{"x-test":"true"}})] }), 'GET');

@@ -116,6 +116,10 @@ let web = {
             skipWaiting: true,
             runtimeCaching: [
                 {
+                    urlPattern: /index.html/,
+                    handler: 'networkFirst'
+                },
+                {
                     urlPattern: /.*/,
                     handler: 'networkFirst'
                 },
