@@ -569,164 +569,165 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    let total = this.getPaymentTotal();
+    // let total = this.getPaymentTotal();
 
-    let rate = 1;
-    let method = this.props.checkout.paymentMethod;
+    // let rate = 1;
+    // let method = this.props.checkout.paymentMethod;
 
-    if (method !== "naira") {
-      switch (this.getValidWallet()) {
-        case "SBD":
-          rate = this.props.app.rates["SBD"];
-          method = "SBD";
-          break;
+    // if (method !== "naira") {
+    //   switch (this.getValidWallet()) {
+    //     case "SBD":
+    //       rate = this.props.app.rates["SBD"];
+    //       method = "SBD";
+    //       break;
 
-        case "STEEM":
-          rate = this.props.app.rates["STEEM"];
-          method = "STEEM";
-          break;
-      }
-    }
+    //     case "STEEM":
+    //       rate = this.props.app.rates["STEEM"];
+    //       method = "STEEM";
+    //       break;
+    //   }
+    // }
 
-    const placement_code = `${Math.random()
-      .toFixed(36)
-      .replace(/[^0-9]+/g, "")
-      .substr(1, 3)}-${Math.random()
-      .toString(36)
-      .replace(/[^a-z]+/g, "")
-      .substr(0, 3)
-      .toUpperCase()}`;
+    // const placement_code = `${Math.random()
+    //   .toFixed(36)
+    //   .replace(/[^0-9]+/g, "")
+    //   .substr(1, 3)}-${Math.random()
+    //   .toString(36)
+    //   .replace(/[^a-z]+/g, "")
+    //   .substr(0, 3)
+    //   .toUpperCase()}`;
 
-    let data = {
-      user_id: this.props.account.user.id,
-      total_amount: roundToDecimalPlaces(total / rate, 3),
-      placement_code,
-      delivery_address: this.props.checkout.deliveryAddress,
-      payment_mode: this.props.checkout.paymentMode,
-      rate,
-      payment_method: method,
-      items: this.props.cart.items.map(item => {
-        return {
-          description: item.description,
-          photo: item.photo,
-          price: item.price,
-          qty: item.qty,
-          title: item.title,
-          vat: item.vat,
-          origin: item.origin,
-          locale: item.locale,
-          classification: item.classification,
-          item_id: item.id,
-          store_id: item.store_id
-        };
-      })
-    };
+    // let data = {
+    //   user_id: this.props.account.user.id,
+    //   total_amount: roundToDecimalPlaces(total / rate, 3),
+    //   placement_code,
+    //   delivery_address: this.props.checkout.deliveryAddress,
+    //   payment_mode: this.props.checkout.paymentMode,
+    //   rate,
+    //   payment_method: method,
+    //   items: this.props.cart.items.map(item => {
+    //     return {
+    //       description: item.description,
+    //       photo: item.photo,
+    //       price: item.price,
+    //       qty: item.qty,
+    //       title: item.title,
+    //       vat: item.vat,
+    //       origin: item.origin,
+    //       locale: item.locale,
+    //       classification: item.classification,
+    //       item_id: item.id,
+    //       store_id: item.store_id
+    //     };
+    //   })
+    // };
 
-    let { setCheckoutStatusModalVisibility } = this.props;
-    var self = this;
-    this.props.attemptOrderPlacement(data, function(order) {
-      let user = self.props.account.user;
-      let checkout = self.props.checkout;
-      let addresses = user.addresses;
-      let wallets = user.wallets;
-      let currentAddress = checkout.deliveryAddress;
+    // let { setCheckoutStatusModalVisibility } = this.props;
+    // var self = this;
+    // this.props.attemptOrderPlacement(data, function(order) {
+    //   let user = self.props.account.user;
+    //   let checkout = self.props.checkout;
+    //   let addresses = user.addresses;
+    //   let wallets = user.wallets;
+    //   let currentAddress = checkout.deliveryAddress;
 
-      self.setState({
-        latestPlacementCode: order.placement_code
-      });
+    //   self.setState({
+    //     latestPlacementCode: order.placement_code
+    //   });
 
-      if (self.props.checkout.paymentMode === "on-demand") {
-        let walletBalance = self.getWalletBalance(checkout.paymentMethod);
+    //   if (self.props.checkout.paymentMode === "on-demand") {
+    //     let walletBalance = self.getWalletBalance(checkout.paymentMethod);
 
-        let newWalletBalance = walletBalance - Number(order.total_amount);
+    //     let newWalletBalance = walletBalance - Number(order.total_amount);
 
-        let wallet = {
-          ...self.getWallet(checkout.paymentMethod),
-          balance: newWalletBalance
-        };
+    //     let wallet = {
+    //       ...self.getWallet(checkout.paymentMethod),
+    //       balance: newWalletBalance
+    //     };
 
-        wallets = wallets.filter(wlt => wlt.title !== wallet.title);
+    //     wallets = wallets.filter(wlt => wlt.title !== wallet.title);
 
-        wallets = [...wallets, wallet];
+    //     wallets = [...wallets, wallet];
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            ...user,
-            wallets
-          })
-        );
+    //     localStorage.setItem(
+    //       "user",
+    //       JSON.stringify({
+    //         ...user,
+    //         wallets
+    //       })
+    //     );
 
-        self.props.setUser({
-          user: {
-            ...user,
-            wallets
-          }
-        });
-      }
+    //     self.props.setUser({
+    //       user: {
+    //         ...user,
+    //         wallets
+    //       }
+    //     });
+    //   }
 
-      if (addresses.length > 0) {
-        if (
-          addresses.filter(address => address.body === currentAddress)
-            .length === 0
-        ) {
-          var newAddress = {
-            id: addresses.reduce(
-              (total, address) => Math.max(total, address.id) + 1
-            ),
-            body: currentAddress,
-            user_id: user.id
-          };
+    //   if (addresses.length > 0) {
+    //     if (
+    //       addresses.filter(address => address.body === currentAddress)
+    //         .length === 0
+    //     ) {
+    //       var newAddress = {
+    //         id: addresses.reduce(
+    //           (total, address) => Math.max(total, address.id) + 1
+    //         ),
+    //         body: currentAddress,
+    //         user_id: user.id
+    //       };
 
-          addresses = [...addresses, newAddress];
+    //       addresses = [...addresses, newAddress];
 
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              ...user,
-              addresses
-            })
-          );
+    //       localStorage.setItem(
+    //         "user",
+    //         JSON.stringify({
+    //           ...user,
+    //           addresses
+    //         })
+    //       );
 
-          self.props.setUser({
-            user: {
-              ...user,
-              addresses
-            }
-          });
-        }
-      } else {
-        var newAddress = {
-          id: 1,
-          body: currentAddress,
-          user_id: user.id
-        };
+    //       self.props.setUser({
+    //         user: {
+    //           ...user,
+    //           addresses
+    //         }
+    //       });
+    //     }
+    //   } else {
+    //     var newAddress = {
+    //       id: 1,
+    //       body: currentAddress,
+    //       user_id: user.id
+    //     };
 
-        addresses = [...addresses, newAddress];
+    //     addresses = [...addresses, newAddress];
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            ...user,
-            addresses
-          })
-        );
+    //     localStorage.setItem(
+    //       "user",
+    //       JSON.stringify({
+    //         ...user,
+    //         addresses
+    //       })
+    //     );
 
-        self.props.setUser({
-          user: {
-            ...user,
-            addresses
-          }
-        });
-      }
+    //     self.props.setUser({
+    //       user: {
+    //         ...user,
+    //         addresses
+    //       }
+    //     });
+    //   }
 
-      setCheckoutStatusModalVisibility({
-        isCheckoutStatusModalOpen: true
-      });
+    //   setCheckoutStatusModalVisibility({
+    //     isCheckoutStatusModalOpen: true
+    //   });
 
-      self.props.clearCart();
-    });
+    //   self.props.clearCart();
+    // });
 
+    alert("ok...Im not the cause of this");
     event.preventDefault();
   }
 
