@@ -15,14 +15,14 @@ const PaymentModeCard = props => {
     <Card bg="lightGray">
       <Box pt={2} pb={3} px={3}>
         <CardHeading
-          title="Mode of Payment"
+          title="Payment Mode"
           onToggleClick={props.onPaymentModeToggleClick}
           isMinimized={props.isPaymentModeMinimized}
         />
 
         <Box
           style={{
-            height: props.isPaymentModeMinimized ? "23px" : "46px",
+            height: props.isPaymentModeMinimized ? "23px" : "65px",
             overflow: "hidden",
             transition: "height 0.3s ease-in-out"
           }}

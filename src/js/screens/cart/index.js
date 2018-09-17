@@ -46,6 +46,9 @@ import { getCheckoutState } from "../../screens/checkout/reducer";
 import { getStoreState } from "../../screens/store/reducer";
 
 import AccountService from "../../services/AccountService";
+import UserService from "../../services/UserService";
+import CheckoutService from "../../services/CheckoutService";
+
 import { roundToDecimalPlaces } from "../../util/util";
 
 class Cart extends React.PureComponent {
@@ -74,7 +77,9 @@ class Cart extends React.PureComponent {
       setFooterVisibility,
       onLoadCart,
       match,
-      app
+      app,
+      account,
+      cart
     } = this.props;
 
     setTimeout(() => {
@@ -89,6 +94,9 @@ class Cart extends React.PureComponent {
     if (app.url !== match.url) {
       onLoadCart(match.path);
     }
+
+    this.userService = new UserService(account.user);
+    this.checkoutService = new CheckoutService(cart);
   }
 
   componentWillUnmount() {
@@ -101,8 +109,8 @@ class Cart extends React.PureComponent {
   }
 
   render() {
-    const subtotal = this.getPaymentSubtotal();
     const {
+      app,
       account,
       cart,
       checkout,
@@ -120,9 +128,14 @@ class Cart extends React.PureComponent {
       isFundingModalOpen,
       user
     } = account;
+    const checkoutService = new CheckoutService(cart);
+    const userService = new UserService(user);
 
-    const vat = isNaN(this.getPaymentVat()) ? 0 : this.getPaymentVat();
-    const total = this.getTotal(paymentMethod);
+    const vat = checkoutService.calculateOrderVat();
+    const subtotal = checkoutService.calculateOrderSubtotal();
+    const total = checkoutService.calculateOrderTotalWithRate(
+      app.rates[paymentMethod]
+    );
 
     return items.length ? (
       <Flex flexDirection="column">
@@ -141,7 +154,7 @@ class Cart extends React.PureComponent {
             onSetFundingAmount={data => setFundingAmount(data)}
             onSetFundingMethod={data => {
               setFundingAmount({
-                fundingAmount: this.getPaymentAmount(fundingMethod)
+                fundingAmount: total
               });
               setFundingMethod(data);
             }}
@@ -208,12 +221,17 @@ class Cart extends React.PureComponent {
 
               <CheckoutInfo
                 rates={this.props.app.rates}
-                amount={this.getPaymentTotal()}
+                amount={total}
                 history={history}
                 isUserAuthenticated={user !== null}
-                getWalletBalance={wallet => this.getWalletBalance(wallet)}
-                onSetDeliveryAddress={this.setCurrentDeliveryAddress}
-                currentDeliveryAddress={deliveryAddress}
+                getWalletBalance={wallet =>
+                  userService.retrieveWalletBalance(wallet)}
+                onSetAddress={this.setCurrentDeliveryAddress}
+                /** Address options here */
+                address={deliveryAddress}
+                isAddressEditable={false}
+                userAddresses={user !== null ? user.addresses : []}
+                /** ----- */
                 onPaymentToggleClick={e =>
                   this.setState({
                     isPaymentMinimized: !this.state.isPaymentMinimized
@@ -228,7 +246,6 @@ class Cart extends React.PureComponent {
                 onSetActivePaymentMode={this.setActivePaymentMode}
                 activePaymentMethod={paymentMethod}
                 activePaymentMode={paymentMode}
-                userAddresses={user !== null ? user.addresses : []}
               />
 
               <Summary
@@ -292,119 +309,37 @@ class Cart extends React.PureComponent {
     });
   }
 
-  getValidWallet() {
-    return this.getWalletBalance("SBD") < this.getPaymentAmount("SBD")
-      ? "STEEM"
-      : "SBD";
-  }
+  selectPaymentMethodAction(method, cb = () => {}) {
+    const {
+      app,
+      cart,
+      checkout,
+      setPaymentMethod,
+      setFundingAmount,
+      setFundingModalStatus
+    } = this.props;
+    const { paymentMode, paymentMethod } = checkout;
 
-  getTotal(paymentMethod) {
-    let total = this.getPaymentTotal();
+    setPaymentMethod({
+      paymentMethod: method
+    });
 
-    if (paymentMethod === "naira") return total;
-
-    return this.getPaymentAmount(paymentMethod);
-  }
-
-  getWallet(wallet) {
-    return this.props.account.user !== null
-      ? this.props.account.user.wallets.filter(
-          currentWallet => currentWallet.title === wallet
-        )[0]
-      : null;
-  }
-
-  getWalletBalance(wallet) {
-    return typeof this.props.account.user === "object"
-      ? this.props.account.user.wallets.filter(
-          currentWallet => currentWallet.title === wallet
-        )[0].balance
-      : 0;
-  }
-
-  getPaymentSubtotal() {
-    return roundToDecimalPlaces(
-      this.props.cart.items.reduce(
-        (total, item) =>
-          total + parseFloat(item.price) * parseInt(item.qty, 10),
-        0
-      )
+    const total = this.checkoutService.calculateOrderTotalWithRate(
+      app.rates[method]
     );
-  }
+    let userBalance = this.userService.retrieveWalletBalance(method);
 
-  getPaymentVat() {
-    return roundToDecimalPlaces(
-      this.props.cart.items.reduce(
-        (total, item) => total + parseFloat(item.vat) * parseInt(item.qty, 10),
-        0
-      )
-    );
-  }
+    if (paymentMode === "on-demand") {
+      if (userBalance < total) {
+        setFundingAmount({
+          fundingAmount: total
+        });
 
-  getPaymentTotal() {
-    let vat = parseFloat(this.getPaymentVat(), 10);
-    vat = isNaN(vat) ? 0 : vat;
-    return roundToDecimalPlaces(
-      parseFloat(this.getPaymentSubtotal(), 10) + vat
-    );
-  }
-
-  getPaymentAmount(paymentCurrency = "SBD") {
-    let paymentAmount = this.getPaymentTotal();
-    return paymentCurrency === "SBD"
-      ? roundToDecimalPlaces(paymentAmount / this.props.app.rates["SBD"], 3)
-      : roundToDecimalPlaces(paymentAmount / this.props.app.rates["STEEM"], 3);
-  }
-
-  selectPaymentMethodAction(method, cb) {
-    const total = this.getTotal();
-
-    if (this.props.checkout.paymentMode === "on-demand") {
-      if (method === "naira") {
-        if (this.getWalletBalance("naira") < this.getTotal("naira")) {
-          this.props.setFundingAmount({
-            fundingAmount: this.getTotal("naira")
-          });
-
-          return this.props.setFundingModalStatus({
-            isFundingModalOpen: true
-          });
-        } else {
-          alert("You're doing great so far. Just tap the checkout button.");
-        }
+        return setFundingModalStatus({
+          isFundingModalOpen: true
+        });
       } else {
-        if (method === "STEEM") {
-          if (this.getWalletBalance("STEEM") < total) {
-            this.props.setPaymentMethod({
-              paymentMethod: "SBD"
-            });
-
-            if (this.getWalletBalance("SBD") < total) {
-              this.props.setFundingAmount({
-                fundingAmount: total
-              });
-
-              return this.props.setFundingModalStatus({
-                isFundingModalOpen: true
-              });
-            }
-          }
-        } else {
-          if (this.getWalletBalance("SBD") < total) {
-            this.props.setPaymentMethod({
-              paymentMethod: "STEEM"
-            });
-
-            if (this.getWalletBalance("STEEM") < total) {
-              this.props.setFundingAmount({
-                fundingAmount: total
-              });
-              return this.props.setFundingModalStatus({
-                isFundingModalOpen: true
-              });
-            }
-          }
-        }
+        alert("You're doing great so far. Just tap the checkout button.");
       }
     }
 
@@ -455,14 +390,6 @@ class Cart extends React.PureComponent {
         );
       }
     });
-  }
-
-  getWalletBalance(wallet) {
-    return this.props.account.user !== null
-      ? this.props.account.user.wallets.filter(
-          currentWallet => currentWallet.title === wallet
-        )[0].balance
-      : 0;
   }
 
   isValidForm() {

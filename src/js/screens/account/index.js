@@ -45,6 +45,7 @@ import {
 import { BaseFundingModal } from "../../components/UI/ecosystems";
 
 import AccountService from "../../services/AccountService";
+import UserService from "../../services/UserService";
 import {
   toTitleCase,
   roundToDecimalPlaces,
@@ -511,10 +512,8 @@ class Account extends React.PureComponent {
 
 const mapStateToProps = state => {
   const account = getAccountState(state).toJS();
-  const getWalletBalance = wallet =>
-    account.user.wallets.filter(
-      currentWallet => currentWallet.title == wallet
-    )[0].balance;
+  const userService = new UserService(account.user);
+  const getWalletBalance = wallet => userService.retrieveWalletBalance(wallet);
 
   return {
     account,

@@ -30,7 +30,7 @@ const PaymentCard = props => {
         />
         <Box
           style={{
-            height: props.isPaymentMinimized ? "45px" : "110px",
+            height: props.isPaymentMinimized ? "45px" : "140px",
             overflowY: "hidden",
             transition: "height 0.3s ease-in-out"
           }}
@@ -42,24 +42,25 @@ const PaymentCard = props => {
             onSetActivePaymentMethod={e =>
               props.onSetActivePaymentMethod("naira")}
           />
-          <Text fontSize={0} color="gray" mb={1} align="center">
-            or
-          </Text>
           <PaymentChoice
             choice="STEEM"
-            isActivePaymentMethod={
-              props.activePaymentMethod === "STEEM" ||
-              props.activePaymentMethod === "SBD"
-            }
+            isActivePaymentMethod={props.activePaymentMethod === "STEEM"}
             message={`Pay ${roundToDecimalPlaces(
               props.amount / STEEM_RATE,
               3
-            )} STEEM or ${roundToDecimalPlaces(
+            )} STEEM`}
+            onSetActivePaymentMethod={e =>
+              props.onSetActivePaymentMethod("STEEM")}
+          />
+          <PaymentChoice
+            choice="SBD"
+            isActivePaymentMethod={props.activePaymentMethod === "SBD"}
+            message={`Pay ${roundToDecimalPlaces(
               props.amount / SBD_RATE,
               3
             )} SBD`}
             onSetActivePaymentMethod={e =>
-              props.onSetActivePaymentMethod("STEEM")}
+              props.onSetActivePaymentMethod("SBD")}
           />
         </Box>
 

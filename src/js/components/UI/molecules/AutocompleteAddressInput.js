@@ -68,20 +68,22 @@ const AutocompleteAddressInput = props => {
         background: "white",
         width: "100%"
       }}
-      value={props.currentDeliveryAddress}
+      value={props.address}
       onChange={e => {
-        props.onSetDeliveryAddress(e.target.value);
+        props.onSetAddress(e.target.value);
       }}
       getItemValue={address => address.body}
       items={props.userAddresses}
       renderItem={renderItem}
       inputProps={{
-        onFocus: e => e.target.select()
+        onFocus: e => e.target.select(),
+        onBlur: e => props.onSetAddressInputDisabled(true),
+        disabled: props.isAddressInputDisabled
       }}
       renderInput={renderInput}
       menuStyle={menuStyle}
       wrapperStyle={wrapperStyle}
-      onSelect={val => props.onSetDeliveryAddress(val)}
+      onSelect={val => props.onSetAddress(val)}
     />
   );
 };

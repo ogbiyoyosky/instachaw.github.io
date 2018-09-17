@@ -85,10 +85,23 @@ export function removeQueryParameter(uri, key) {
  * Rounds a value to a the provided number of decimal places.
  * 
  * @param {*} value 
- * @param {*} decimals 
+ * @param {*} decimals
+ * 
+ * @return {Number} 
  */
 export function roundToDecimalPlaces(value, decimals = 2) {
   return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+}
+
+/**
+ * Proves a value is a valid number.
+ * 
+ * @param {*} value 
+ * 
+ * @return {Boolean} 
+ */
+export function isANumber(value) {
+  return !isNaN(value) && value !== null;
 }
 
 /**

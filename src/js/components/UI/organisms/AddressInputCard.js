@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, Flex, Text } from "pcln-design-system";
+import { Box, Icon, Card, Link, Flex, Text } from "pcln-design-system";
 import { Input } from "../../UI/atoms";
 import { AutocompleteAddressInput } from "../../UI/molecules";
 
@@ -10,21 +10,46 @@ const AddressInputCard = props => {
         <Flex>
           <Flex style={{ flex: 4 }}>
             <Text fontSize={2} bold>
-              Add an Address
+              {props.cardTitle}
             </Text>
           </Flex>
-        </Flex>
-        <Flex mb={2}>
-          <Text color="gray" fontSize={0}>
-            A correct address means faster delivery.
-          </Text>
+          {props.isAddressEditable && (
+            <Flex onClick={props.onSummaryToggleClick}>
+              <Flex flexDirection="column" justify="center">
+                <Icon mr={1} size={12} name="modeEdit" color="blue" />
+              </Flex>
+
+              <Flex flexDirection="column" justify="center">
+                <Link
+                  onClick={e => {
+                    e.preventDefault();
+                    props.onSetAddressInputDisabled(false);
+                  }}
+                  mr={1}
+                  color="blue"
+                  fontSize={0}
+                >
+                  <Text fontSize={0}>Change Address</Text>
+                </Link>
+              </Flex>
+            </Flex>
+          )}
         </Flex>
 
-        <Box>
-          {props.userAddresses !== undefined &&
-          props.userAddresses.length > 0 ? (
+        {props.hasHint && (
+          <Flex mb={2}>
+            <Text color="gray" fontSize={0}>
+              A correct address means faster delivery.
+            </Text>
+          </Flex>
+        )}
+
+        {props.userAddresses && props.userAddresses.length > 0 ? (
+          <Box>
             <AutocompleteAddressInput {...props} />
-          ) : (
+          </Box>
+        ) : (
+          <Box>
             <Input
               id="address"
               style={{
@@ -34,16 +59,28 @@ const AddressInputCard = props => {
               autoFocus={true}
               autocomplete="on"
               placeholder="Example: Room 2, Cali Villa, Alaska"
-              value={props.currentDeliveryAddress}
+              value={props.address}
               onChange={e => {
-                props.onSetDeliveryAddress(e.target.value);
+                props.onSetAddress(e.target.value);
               }}
+              style={{
+                backgroundColor: props.isAddressInputDisabled ? "#eee" : "#fff",
+                color: "#999"
+              }}
+              disabled={props.isAddressInputDisabled}
+              onBlur={e => props.onSetAddressInputDisabled(true)}
             />
-          )}
-        </Box>
+          </Box>
+        )}
       </Box>
     </Card>
   );
+};
+
+AddressInputCard.defaultProps = {
+  hasHint: true,
+  isAddressEditable: true,
+  cardTitle: "Add an address"
 };
 
 export default AddressInputCard;

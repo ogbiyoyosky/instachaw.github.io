@@ -20,7 +20,8 @@ const initialState = fromJS({
   isError: false,
   rates: {
     SBD: 290.0,
-    STEEM: 280.0
+    STEEM: 280.0,
+    naira: 1
   },
   hasFetchedRates: false,
   isFetchingData: false,

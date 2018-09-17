@@ -1,7 +1,13 @@
+import BaseFundingModal from "./BaseFundingModal";
 import CartModal from "./CartModal";
 import CheckoutInfo from "./CheckoutInfo";
-import PaystackFundingModal from "./PaystackFundingModal";
-import BaseFundingModal from "./BaseFundingModal";
+import OrderSuccessModal from "./OrderSuccessModal";
 import Summary from "./Summary";
 
-export { CartModal, CheckoutInfo, BaseFundingModal, Summary };
+export {
+  BaseFundingModal,
+  CartModal,
+  CheckoutInfo,
+  OrderSuccessModal,
+  Summary
+};
