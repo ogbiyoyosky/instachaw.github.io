@@ -178,97 +178,99 @@ class Cart extends React.PureComponent {
 
         <Flex mt={3} px={3} flexDirection="column">
           <Flex alignItems="center" justify="center">
-            <Flex
-              style={{
-                display:
-                  isCartModalOpen || isFundingModalOpen ? "none" : "block"
-              }}
-              width={[1, 0.9, 0.7, 0.7]}
-            >
-              <Flex mb={3}>
-                <Flex style={{ flex: 2 }}>
-                  <Text fontSize={3} mr={2} bold>
-                    My Order
-                  </Text>
-                  <Text regular color="gray" mt={2} fontSize={0}>
-                    ( {items.length} {items.length == 1 ? "Item" : "Items"} )
-                  </Text>
-                </Flex>
-                <Flex alignItems="flex-end" mt={2}>
-                  <UILink
-                    onClick={e =>
-                      confirm("Take this action?") && this.props.clearCart()}
-                  >
-                    <Text fontSize={0}>Clear Order</Text>
-                  </UILink>
-                </Flex>
-              </Flex>
-
-              <Feed items={[items[0]]} />
-
-              {items.length > 1 && (
-                <Flex mb={3}>
-                  <OutlineButton
-                    py={2}
-                    onClick={e => this.props.setCartModalStatus(true)}
-                    fullWidth
-                  >
-                    See {items.length - 1} more &nbsp;
-                    {items.length == 2 ? "treat" : "treats"}.
-                  </OutlineButton>
-                </Flex>
-              )}
-
-              <CheckoutInfo
-                rates={this.props.app.rates}
-                amount={total}
-                history={history}
-                isUserAuthenticated={user !== null}
-                getWalletBalance={wallet =>
-                  userService.retrieveWalletBalance(wallet)}
-                onSetAddress={this.setCurrentDeliveryAddress}
-                /** Address options here */
-                address={deliveryAddress}
-                isAddressEditable={false}
-                userAddresses={user !== null ? user.addresses : []}
-                /** ----- */
-                onPaymentToggleClick={e =>
-                  this.setState({
-                    isPaymentMinimized: !this.state.isPaymentMinimized
-                  })}
-                onPaymentModeToggleClick={e =>
-                  this.setState({
-                    isPaymentModeMinimized: !this.state.isPaymentModeMinimized
-                  })}
-                isPaymentMinimized={this.state.isPaymentMinimized}
-                isPaymentModeMinimized={this.state.isPaymentModeMinimized}
-                onSetActivePaymentMethod={this.setActivePaymentMethod}
-                onSetActivePaymentMode={this.setActivePaymentMode}
-                activePaymentMethod={paymentMethod}
-                activePaymentMode={paymentMode}
-              />
-
-              <Summary
-                onSummaryToggleClick={e =>
-                  this.setState({
-                    isSummaryMinimized: !this.state.isSummaryMinimized
-                  })}
-                isMinimized={this.state.isSummaryMinimized}
-                total={total}
-                subtotal={subtotal}
-                paymentMethod={paymentMethod}
-                vat={vat}
-                mb={2}
-              />
-              <GreenButton
-                disabled={!this.isValidForm()}
-                onClick={e => this.onCartSubmit(e)}
-                mb={4}
-                fullWidth
+            <form onSubmit={e => this.onCartSubmit(e)}>
+              <Flex
+                style={{
+                  display:
+                    isCartModalOpen || isFundingModalOpen ? "none" : "block"
+                }}
+                width={[1, 0.9, 0.7, 0.7]}
               >
-                Complete Checkout
-              </GreenButton>
-            </Flex>
+                <Flex mb={3}>
+                  <Flex style={{ flex: 2 }}>
+                    <Text fontSize={3} mr={2} bold>
+                      My Order
+                    </Text>
+                    <Text regular color="gray" mt={2} fontSize={0}>
+                      ( {items.length} {items.length == 1 ? "Item" : "Items"} )
+                    </Text>
+                  </Flex>
+                  <Flex alignItems="flex-end" mt={2}>
+                    <UILink
+                      onClick={e =>
+                        confirm("Take this action?") && this.props.clearCart()}
+                    >
+                      <Text fontSize={0}>Clear Order</Text>
+                    </UILink>
+                  </Flex>
+                </Flex>
+
+                <Feed items={[items[0]]} />
+
+                {items.length > 1 && (
+                  <Flex mb={3}>
+                    <OutlineButton
+                      py={2}
+                      onClick={e => this.props.setCartModalStatus(true)}
+                      fullWidth
+                    >
+                      See {items.length - 1} more &nbsp;
+                      {items.length == 2 ? "treat" : "treats"}.
+                    </OutlineButton>
+                  </Flex>
+                )}
+
+                <CheckoutInfo
+                  rates={this.props.app.rates}
+                  amount={total}
+                  history={history}
+                  isUserAuthenticated={user !== null}
+                  getWalletBalance={wallet =>
+                    userService.retrieveWalletBalance(wallet)}
+                  onSetAddress={this.setCurrentDeliveryAddress}
+                  /** Address options here */
+                  address={deliveryAddress}
+                  isAddressEditable={false}
+                  userAddresses={user !== null ? user.addresses : []}
+                  /** ----- */
+                  onPaymentToggleClick={e =>
+                    this.setState({
+                      isPaymentMinimized: !this.state.isPaymentMinimized
+                    })}
+                  onPaymentModeToggleClick={e =>
+                    this.setState({
+                      isPaymentModeMinimized: !this.state.isPaymentModeMinimized
+                    })}
+                  isPaymentMinimized={this.state.isPaymentMinimized}
+                  isPaymentModeMinimized={this.state.isPaymentModeMinimized}
+                  onSetActivePaymentMethod={this.setActivePaymentMethod}
+                  onSetActivePaymentMode={this.setActivePaymentMode}
+                  activePaymentMethod={paymentMethod}
+                  activePaymentMode={paymentMode}
+                />
+
+                <Summary
+                  onSummaryToggleClick={e =>
+                    this.setState({
+                      isSummaryMinimized: !this.state.isSummaryMinimized
+                    })}
+                  isMinimized={this.state.isSummaryMinimized}
+                  total={total}
+                  subtotal={subtotal}
+                  paymentMethod={paymentMethod}
+                  vat={vat}
+                  mb={2}
+                />
+                <GreenButton
+                  disabled={!this.isValidForm()}
+                  type="submit"
+                  mb={4}
+                  fullWidth
+                >
+                  Complete Checkout
+                </GreenButton>
+              </Flex>
+            </form>
           </Flex>
         </Flex>
       </Flex>

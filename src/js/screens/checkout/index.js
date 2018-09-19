@@ -137,54 +137,56 @@ class Checkout extends React.PureComponent {
                 display: isCheckoutStatusModalOpen ? "none" : "block"
               }}
             >
-              <CheckoutInfo
-                rates={app.rates}
-                amount={total}
-                getWalletBalance={wallet =>
-                  userService.retrieveWalletBalance(wallet)}
-                address={checkout.deliveryAddress}
-                onSetAddress={address =>
-                  this.props.setDeliveryAddress({
-                    deliveryAddress: address
-                  })}
-                onSetAddressInputDisabled={isAddressInputDisabled => {
-                  this.setState({
-                    isAddressInputDisabled: isAddressInputDisabled
-                  });
-                }}
-                isAddressInputDisabled={this.state.isAddressInputDisabled}
-                onSetActivePaymentMethod={this.setActivePaymentMethod}
-                onSetActivePaymentMode={this.setActivePaymentMode}
-                activePaymentMethod={checkout.paymentMethod}
-                onPaymentToggleClick={e =>
-                  this.setState({
-                    isPaymentMinimized: !this.state.isPaymentMinimized
-                  })}
-                onPaymentModeToggleClick={e =>
-                  this.setState({
-                    isPaymentModeMinimized: !this.state.isPaymentModeMinimized
-                  })}
-                isPaymentMinimized={this.state.isPaymentMinimized}
-                isPaymentModeMinimized={this.state.isPaymentModeMinimized}
-                activePaymentMode={checkout.paymentMode}
-                userAddresses={
-                  account.user !== null ? account.user.addresses : []
-                }
-                isUserAuthenticated={account.user !== null}
-              />
+              <form onSubmit={e => this.handleCheckoutSubmit(e)}>
+                <CheckoutInfo
+                  rates={app.rates}
+                  amount={total}
+                  getWalletBalance={wallet =>
+                    userService.retrieveWalletBalance(wallet)}
+                  address={checkout.deliveryAddress}
+                  onSetAddress={address =>
+                    this.props.setDeliveryAddress({
+                      deliveryAddress: address
+                    })}
+                  onSetAddressInputDisabled={isAddressInputDisabled => {
+                    this.setState({
+                      isAddressInputDisabled: isAddressInputDisabled
+                    });
+                  }}
+                  isAddressInputDisabled={this.state.isAddressInputDisabled}
+                  onSetActivePaymentMethod={this.setActivePaymentMethod}
+                  onSetActivePaymentMode={this.setActivePaymentMode}
+                  activePaymentMethod={checkout.paymentMethod}
+                  onPaymentToggleClick={e =>
+                    this.setState({
+                      isPaymentMinimized: !this.state.isPaymentMinimized
+                    })}
+                  onPaymentModeToggleClick={e =>
+                    this.setState({
+                      isPaymentModeMinimized: !this.state.isPaymentModeMinimized
+                    })}
+                  isPaymentMinimized={this.state.isPaymentMinimized}
+                  isPaymentModeMinimized={this.state.isPaymentModeMinimized}
+                  activePaymentMode={checkout.paymentMode}
+                  userAddresses={
+                    account.user !== null ? account.user.addresses : []
+                  }
+                  isUserAuthenticated={account.user !== null}
+                />
 
-              <GreenButton
-                disabled={isAttemptingCheckout || !this.isValidForm()}
-                onClick={e => this.handleCheckoutSubmit(e)}
-                mb={4}
-                fullWidth
-              >
-                {!isAttemptingCheckout ? (
-                  <Text>Place Order</Text>
-                ) : (
-                  <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
-                )}
-              </GreenButton>
+                <GreenButton
+                  disabled={isAttemptingCheckout || !this.isValidForm()}
+                  mb={4}
+                  type="submit"
+                  fullWidth
+                >
+                  {!isAttemptingCheckout ? (
+                    <Text>Place Order</Text>
+                  ) : (
+                    <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
+                  )}
+                </GreenButton>
+              </form>
             </Flex>
           </Box>
         </Flex>
