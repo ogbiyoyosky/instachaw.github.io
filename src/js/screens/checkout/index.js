@@ -297,16 +297,16 @@ class Checkout extends React.PureComponent {
         );
       }
 
-      if (!self.userService.hasAddress(currentAddress)) {
-        self.userService.addToAddressBook(currentAddress, function() {
-          self.props.setUser({
-            user: {
-              ...user,
-              addresses
-            }
-          });
-        });
-      }
+      // if (!self.userService.hasAddress(currentAddress)) {
+      //   self.userService.addToAddressBook(currentAddress, function() {
+      //     self.props.setUser({
+      //       user: {
+      //         ...user,
+      //         addresses
+      //       }
+      //     });
+      //   });
+      // }
 
       setCheckoutStatusModalVisibility({
         isCheckoutStatusModalOpen: true
