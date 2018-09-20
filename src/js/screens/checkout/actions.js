@@ -52,7 +52,7 @@ export const attemptOrderPlacement = (data, callback) => {
             })
           );
 
-          callback(response);
+          return callback(response);
         } else {
           setTimeout(() => {
             dispatch(
