@@ -9,7 +9,11 @@ import {
   SET_URL,
   SET_RATES,
   SET_RATES_FETCHED_STATUS,
-  SET_DATA_FETCHING_STATUS
+  SET_DATA_FETCHING_STATUS,
+  SET_SEARCH,
+  SET_SEARCH_FOCUS,
+  SET_SEARCH_RESULTS,
+  SET_SEARCH_RESULTS_LOADING_STATE
 } from "./constants";
 
 import { sendRequest } from "../../services/ApiService";
@@ -128,5 +132,58 @@ export const fetchRates = () => {
         }
       })
       .catch(e => console.log(e));
+  };
+};
+
+export const setSearch = data => {
+  return {
+    type: SET_SEARCH,
+    data
+  };
+};
+
+const setSearchResults = data => {
+  return {
+    type: SET_SEARCH_RESULTS,
+    data
+  };
+};
+
+export const setSearchResultsLoadingState = data => {
+  return {
+    type: SET_SEARCH_RESULTS_LOADING_STATE,
+    data
+  };
+};
+
+export const attemptSearchQuery = data => {
+  let endpoint = `api/v1/items?search=${data["search"]}`;
+  return dispatch => {
+    sendRequest({
+      endpoint: `${HOST_URL}/${endpoint}`,
+      method: "GET"
+    })
+      .then(response => {
+        if (typeof response !== "undefined" && typeof response !== null) {
+          dispatch(
+            setSearchResults({
+              results: response
+            })
+          );
+          dispatch(
+            setSearchResultsLoadingState({
+              isLoadingSearchResults: false
+            })
+          );
+        }
+      })
+      .catch(e => console.log(e));
+  };
+};
+
+export const toggleSearchFocus = data => {
+  return {
+    type: SET_SEARCH_FOCUS,
+    data
   };
 };

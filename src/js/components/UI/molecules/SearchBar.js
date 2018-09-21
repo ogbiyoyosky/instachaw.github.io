@@ -7,7 +7,20 @@ const SearchBarWrapper = Styled(Flex)`
     position: relative;
 `;
 
-const SearchBarInput = Styled(Input)``;
+const SearchBarInput = Styled(Input)`
+    background: ${props => props.theme.colors.darkRed}
+    border-color: ${props => props.theme.colors.darkRed}
+    box-shadow: 0 0 0 1px ${props => props.theme.colors.darkRed};    
+
+    :focus {
+      border-color: ${props => props.theme.colors.darkRed};
+      box-shadow: 0 0 0 2px ${props => props.theme.colors.darkRed};
+    }
+
+    ::placeholder {
+      color: ${props => props.theme.colors.lightGray};
+    }  
+`;
 
 const SearchBarAddon = Styled(Flex)`
     height: 50px;
@@ -39,7 +52,7 @@ const SearchBar = ({
           align="center"
           width={[0.15, 0.1, 0.08]}
         >
-          <SearchBarIcon name="search" color="gray" size="14" />
+          <SearchBarIcon name="search" color="white" size="14" />
         </SearchBarAddon>
       )}
     </SearchBarWrapper>

@@ -19,7 +19,8 @@ const initialState = fromJS({
   },
   isMenuOpen: false,
   isAccountMenuOpen: false,
-  isHeaderVisible: true
+  isHeaderVisible: true,
+  isSearchFocused: true
 });
 
 export function headerReducer(state = initialState, action) {

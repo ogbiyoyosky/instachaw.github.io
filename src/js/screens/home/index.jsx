@@ -11,12 +11,8 @@ import { homeReducer, getHomeState } from "./reducer";
 import { getAppState } from "../../containers/app/reducer";
 import { getStoreState } from "../../screens/store/reducer";
 import { getCartState } from "../../screens/cart/reducer";
-import { debounce } from "../../util/util";
 import { Flex, Text, Box } from "pcln-design-system";
-import LazyLoad from "react-lazyload";
-import { ClipLoader } from "react-spinners";
 import StoreFeed from "../../containers/storefeed";
-import styled from "styled-components";
 
 class Home extends React.PureComponent {
   constructor(props) {

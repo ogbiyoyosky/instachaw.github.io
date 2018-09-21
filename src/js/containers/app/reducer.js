@@ -11,6 +11,10 @@ import {
   DELETE_APP_NOTIFICATION,
   SET_RATES,
   SET_DATA_FETCHING_STATUS,
+  SET_SEARCH,
+  SET_SEARCH_FOCUS,
+  SET_SEARCH_RESULTS,
+  SET_SEARCH_RESULTS_LOADING_STATE,
   REDUCER_NAME
 } from "./constants";
 
@@ -18,6 +22,9 @@ const initialState = fromJS({
   deferredPrompt: null,
   isLoading: false,
   isError: false,
+  isSearchFocused: false,
+  search: "",
+  searchResults: [],
   rates: {
     SBD: 290.0,
     STEEM: 280.0,
@@ -63,6 +70,19 @@ export function appReducer(state = initialState, action) {
       return state.set("rates", action.data.rates);
     case SET_DATA_FETCHING_STATUS:
       return state.set("isFetchingData", action.data.isFetchingData);
+
+    case SET_SEARCH:
+      return state.set("search", action.data.search);
+    case SET_SEARCH_FOCUS:
+      return state.set("isSearchFocused", action.data.isSearchFocused);
+    case SET_SEARCH_RESULTS:
+      return state.set("searchResults", action.data.results);
+    case SET_SEARCH_RESULTS_LOADING_STATE:
+      return state.set(
+        "isLoadingSearchResults",
+        action.data.isLoadingSearchResults
+      );
+
     default:
       return state;
   }

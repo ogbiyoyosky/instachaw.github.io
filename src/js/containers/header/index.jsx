@@ -12,9 +12,17 @@ import {
   setAccountMenuOpenState,
   setHeaderVisibility
 } from "./actions";
+
 import { REDUCER_NAME } from "./constants";
 import { getAppState } from "../app/reducer";
-import { addAppNotification, deleteAppNotification } from "../app/actions";
+import {
+  addAppNotification,
+  deleteAppNotification,
+  toggleSearchFocus,
+  attemptSearchQuery,
+  setSearch,
+  setSearchResultsLoadingState
+} from "../app/actions";
 import { getCartState } from "../../screens/cart/reducer";
 import { getLoginState } from "../../screens/login/reducer";
 import { getAccountState } from "../../screens/account/reducer";
@@ -32,7 +40,10 @@ import {
   Button,
   Text
 } from "pcln-design-system";
+import { debounce } from "../../util/util";
 import HamburgerMenu from "../../components/navigation/hamburgerMenu";
+import { SearchBar, SearchFeed } from "../../components/UI/molecules";
+
 import { BrandLogo, TransparentButton } from "../../components/UI/atoms";
 import Styled from "styled-components";
 import posed from "react-pose";
@@ -198,6 +209,9 @@ class Header extends React.PureComponent {
     this.handleAccountMenuClose = this.handleAccountMenuClose.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.navigateToLocation = this.navigateToLocation.bind(this);
+    this.handleSearchStateChange = this.handleSearchStateChange.bind(this);
+    this.runSearchQuery = debounce(this.runSearchQuery.bind(this), 2000);
+    this.onSearchBarChange = this.onSearchBarChange.bind(this);
   }
 
   componentDidMount() {
@@ -250,10 +264,16 @@ class Header extends React.PureComponent {
       onSetNavItemActive
     } = this.props;
 
-    const { appNotifications } = app;
+    const {
+      appNotifications,
+      isSearchFocused,
+      isLoadingSearchResults,
+      search,
+      searchResults
+    } = app;
 
     return (
-      <Flex>
+      <Flex mb={5}>
         <StyledModal
           pose={header.isAccountMenuOpen ? "fullscreen" : "idle"}
           style={{
@@ -340,6 +360,7 @@ class Header extends React.PureComponent {
 
         <Flex
           bg="red"
+          flexDirection="column"
           style={{
             transform: !this.props.header.isHeaderVisible
               ? "translateY(-90px)"
@@ -375,7 +396,38 @@ class Header extends React.PureComponent {
               ) : null}
             </Flex>
           </Flex>
+
+          <Flex justify="center" alignItems="center">
+            <Box mt={3} px={3} width={[1, 0.9, 0.7, 0.7]}>
+              <SearchBar
+                id="search"
+                isSearchBarFocused={isSearchFocused}
+                onSearchBarChange={query => this.onSearchBarChange(query)}
+                value={search}
+                style={{
+                  color: "#f5f5f5"
+                }}
+                fontSize={2}
+                onFocus={this.handleSearchStateChange}
+              />
+            </Box>
+          </Flex>
         </Flex>
+        {isSearchFocused && (
+          <SearchFeed
+            onCloseButtonClick={e =>
+              this.props.onToggleSearchFocus({
+                isSearchFocused: !isSearchFocused
+              })}
+            onCheckoutBannerClick={e => this.props.history.push("/cart")}
+            cartItems={this.props.cart.items}
+            isSearchBarFocused={isSearchFocused}
+            onSearchBarChange={this.onSearchBarChange}
+            isLoadingSearchResults={isLoadingSearchResults}
+            searchResults={searchResults}
+            searchValue={search}
+          />
+        )}
 
         <Flex
           flexDirection="column"
@@ -428,6 +480,39 @@ class Header extends React.PureComponent {
     this.props.history.push(location);
   }
 
+  handleSearchStateChange() {
+    this.props.onToggleSearchFocus({
+      isSearchFocused: true
+    });
+  }
+
+  onSearchBarChange(query) {
+    if (!this.props.app.isLoadingSearchResults) {
+      this.props.setSearchResultsLoadingState({
+        isLoadingSearchResults: true
+      });
+    }
+
+    this.props.setSearch({
+      search: query
+    });
+
+    this.runSearchQuery(query);
+  }
+
+  runSearchQuery(query) {
+    let search = query.trim();
+    if (search.length > 1) {
+      this.props.attemptSearchQuery({
+        search
+      });
+    } else {
+      this.props.setSearchResultsLoadingState({
+        isLoadingSearchResults: false
+      });
+    }
+  }
+
   static fetchData(store, { path }) {
     return store.dispatch(fetchHeader(path));
   }
@@ -465,7 +550,13 @@ const mapDispatchToProps = dispatch => {
     addAppNotification: data => dispatch(addAppNotification(data)),
     deleteAppNotification: data => dispatch(deleteAppNotification(data)),
     setHeaderVisibility: data => dispatch(setHeaderVisibility(data)),
-    setLoginStatus: data => dispatch(setLoginStatus(data))
+    setLoginStatus: data => dispatch(setLoginStatus(data)),
+    onToggleSearchFocus: data => dispatch(toggleSearchFocus(data)),
+    setSearch: data => dispatch(setSearch(data)),
+    setSearchResultsLoadingState: data =>
+      dispatch(setSearchResultsLoadingState(data)),
+
+    attemptSearchQuery: data => dispatch(attemptSearchQuery(data))
   };
 };
 

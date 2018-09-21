@@ -15,21 +15,21 @@ const initialState = fromJS({
   title: "",
   html: "",
   items: [
-    {
-      id: 115,
-      store_id: 1,
-      title: "Sharwama (Mixed-Grilled)",
-      description: "Tasty Sharwama with hotdog and shredded chicken &amp; beef",
-      price: 1300,
-      qty: 1,
-      type: "continental",
-      origin: "western",
-      locale: null,
-      photo: "IMG_9398.jpg",
-      classification: "healthy",
-      created_at: null,
-      updated_at: null
-    }
+    // {
+    //   id: 115,
+    //   store_id: 1,
+    //   title: "Sharwama (Mixed-Grilled)",
+    //   description: "Tasty Sharwama with hotdog and shredded chicken &amp; beef",
+    //   price: 1300,
+    //   qty: 1,
+    //   type: "continental",
+    //   origin: "western",
+    //   locale: null,
+    //   photo: "IMG_9398.jpg",
+    //   classification: "healthy",
+    //   created_at: null,
+    //   updated_at: null
+    // }
   ],
   isCartModalOpen: false
 });

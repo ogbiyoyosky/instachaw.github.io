@@ -269,13 +269,13 @@ class Checkout extends React.PureComponent {
         };
       })
     };
-
     var self = this;
+    var { setState, userService, props } = this;
+    var { clearCart, setUser } = props;
     attemptOrderPlacement(data, function(order) {
-      alert("attempted to place order");
       const { total_amount } = order;
-      let user = self.props.account.user;
-      let checkout = self.props.checkout;
+      let user = props.account.user;
+      let checkout = props.checkout;
       let addresses = user.addresses;
       let currentAddress = checkout.deliveryAddress;
 
@@ -284,23 +284,21 @@ class Checkout extends React.PureComponent {
       });
 
       if (paymentMode === "on-demand") {
-        self.userService.debitAmountFromWallet(
-          paymentMethod,
-          total_amount,
-          function(wallets) {
-            self.props.setUser({
-              user: {
-                ...user,
-                wallets
-              }
-            });
-          }
-        );
+        userService.debitAmountFromWallet(paymentMethod, total_amount, function(
+          wallets
+        ) {
+          setUser({
+            user: {
+              ...user,
+              wallets
+            }
+          });
+        });
       }
 
-      if (!self.userService.hasAddress(currentAddress)) {
-        self.userService.addToAddressBook(currentAddress, function() {
-          self.props.setUser({
+      if (!userService.hasAddress(currentAddress)) {
+        userService.addToAddressBook(currentAddress, function() {
+          setUser({
             user: {
               ...user,
               addresses
@@ -313,7 +311,7 @@ class Checkout extends React.PureComponent {
         isCheckoutStatusModalOpen: true
       });
 
-      self.props.clearCart();
+      clearCart();
     });
 
     event.preventDefault();
