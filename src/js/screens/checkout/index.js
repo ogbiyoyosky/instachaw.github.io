@@ -176,8 +176,7 @@ class Checkout extends React.PureComponent {
 
                 <GreenButton
                   disabled={isAttemptingCheckout || !this.isValidForm()}
-                  onTouchStart={e => this.handleCheckoutSubmit(e)}
-                  onClick={e => this.handleCheckoutSubmit(e)}
+                  onClick={this.handleCheckoutSubmit}
                   mb={4}
                   type="submit"
                   fullWidth
@@ -316,8 +315,6 @@ class Checkout extends React.PureComponent {
 
       clearCart();
     });
-
-    event.preventDefault();
   }
 
   static fetchData(store, { path }) {
