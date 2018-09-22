@@ -137,7 +137,7 @@ class Checkout extends React.PureComponent {
                 display: isCheckoutStatusModalOpen ? "none" : "block"
               }}
             >
-              <form>
+              <form onSubmit={this.handleCheckoutSubmit} method="post">
                 <CheckoutInfo
                   rates={app.rates}
                   amount={total}
@@ -176,7 +176,6 @@ class Checkout extends React.PureComponent {
 
                 <GreenButton
                   disabled={isAttemptingCheckout || !this.isValidForm()}
-                  onClick={this.handleCheckoutSubmit}
                   style={{
                     cursor: "pointer"
                   }}
