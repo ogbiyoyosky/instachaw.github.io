@@ -137,7 +137,7 @@ class Checkout extends React.PureComponent {
                 display: isCheckoutStatusModalOpen ? "none" : "block"
               }}
             >
-              <form onSubmit={this.handleCheckoutSubmit} method="post">
+              <form onSubmit={this.handleCheckoutSubmit}>
                 <CheckoutInfo
                   rates={app.rates}
                   amount={total}
