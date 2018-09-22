@@ -221,7 +221,7 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    // event.preventDefault();
+    event.preventDefault();
     let {
       account,
       app,
@@ -313,6 +313,8 @@ class Checkout extends React.PureComponent {
       });
 
       clearCart();
+
+      alert("Got to the end.");
     });
   }
 
