@@ -2,7 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { SyncLoader } from "react-spinners";
-import { Flex, Text, Box, GreenButton } from "pcln-design-system";
+import {
+  Flex,
+  Text,
+  Box,
+  Link as UILink,
+  GreenButton
+} from "pcln-design-system";
 import { withRouter, Link } from "react-router-dom";
 import reducerInjector from "../../redux/reducerInjector";
 import { REDUCER_NAME } from "./constants";
@@ -174,14 +180,13 @@ class Checkout extends React.PureComponent {
                   isUserAuthenticated={account.user !== null}
                 />
 
-                <GreenButton
+                <UILink
                   disabled={isAttemptingCheckout || !this.isValidForm()}
                   onClick={this.handleCheckoutSubmit}
                   style={{
                     cursor: "pointer"
                   }}
                   mb={4}
-                  type="submit"
                   fullWidth
                 >
                   {!isAttemptingCheckout ? (
@@ -189,7 +194,7 @@ class Checkout extends React.PureComponent {
                   ) : (
                     <SyncLoader color={"#f1f1f1"} size={10} loading={true} />
                   )}
-                </GreenButton>
+                </UILink>
               </form>
             </Flex>
           </Box>
