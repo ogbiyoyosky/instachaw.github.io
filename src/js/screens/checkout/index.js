@@ -137,7 +137,7 @@ class Checkout extends React.PureComponent {
                 display: isCheckoutStatusModalOpen ? "none" : "block"
               }}
             >
-              <form onSubmit={e => this.handleCheckoutSubmit(e)}>
+              <form>
                 <CheckoutInfo
                   rates={app.rates}
                   amount={total}
@@ -176,6 +176,8 @@ class Checkout extends React.PureComponent {
 
                 <GreenButton
                   disabled={isAttemptingCheckout || !this.isValidForm()}
+                  onTouchStart={e => this.handleCheckoutSubmit(e)}
+                  onClick={e => this.handleCheckoutSubmit(e)}
                   mb={4}
                   type="submit"
                   fullWidth
@@ -221,7 +223,6 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    event.preventDefault();
     let {
       account,
       app,
@@ -273,6 +274,7 @@ class Checkout extends React.PureComponent {
     var self = this;
     var { setState, userService, props } = this;
     var { clearCart, setUser } = props;
+
     attemptOrderPlacement(data, function(order) {
       const { total_amount } = order;
       let user = props.account.user;
@@ -313,9 +315,9 @@ class Checkout extends React.PureComponent {
       });
 
       clearCart();
-
-      alert("Got to the end.");
     });
+
+    event.preventDefault();
   }
 
   static fetchData(store, { path }) {
