@@ -273,7 +273,7 @@ class Header extends React.PureComponent {
     } = app;
 
     return (
-      <Flex mb={5}>
+      <Flex mb={this.props.header.isHeaderVisible ? 5 : 1}>
         <StyledModal
           pose={header.isAccountMenuOpen ? "fullscreen" : "idle"}
           style={{

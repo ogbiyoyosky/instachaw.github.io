@@ -176,7 +176,7 @@ class Cart extends React.PureComponent {
           />
         )}
 
-        <Flex mt={3} px={3} flexDirection="column">
+        <Flex mt={1} px={3} flexDirection="column">
           <Flex alignItems="center" justify="center">
             <form onSubmit={e => this.onCartSubmit(e)}>
               <Flex
