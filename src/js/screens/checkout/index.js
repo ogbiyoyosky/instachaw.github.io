@@ -225,7 +225,6 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    event.preventDefault();
     let {
       account,
       app,
@@ -320,6 +319,8 @@ class Checkout extends React.PureComponent {
 
       clearCart();
     });
+
+    event.preventDefault();
   }
 
   static fetchData(store, { path }) {
