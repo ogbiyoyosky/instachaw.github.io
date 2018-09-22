@@ -225,7 +225,8 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    event.preventDefault();
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
 
     let {
       account,
