@@ -273,11 +273,12 @@ class Checkout extends React.PureComponent {
         };
       })
     };
+    alert(JSON.stringify(data));
+    return false;
     var self = this;
     var { setState, userService, props } = this;
     var { clearCart, setUser } = props;
 
-    return alert(JSON.stringify(data));
     attemptOrderPlacement(data, function(order) {
       const { total_amount } = order;
       let user = props.account.user;
