@@ -237,6 +237,9 @@ class Checkout extends React.PureComponent {
     let { deliveryAddress, paymentMethod, paymentMode } = checkout;
     let conversionRate = app.rates[paymentMethod];
 
+    alert(JSON.stringify(cart));
+    return false;
+
     // How much does this order cost?
     let total = this.checkoutService.calculateOrderTotalWithRate(
       conversionRate
@@ -274,8 +277,6 @@ class Checkout extends React.PureComponent {
         };
       })
     };
-    alert(JSON.stringify(data));
-    return false;
     var self = this;
     var { setState, userService, props } = this;
     var { clearCart, setUser } = props;
