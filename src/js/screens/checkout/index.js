@@ -222,100 +222,149 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    let {
-      account,
-      app,
-      attemptOrderPlacement,
-      cart,
-      checkout,
-      setCheckoutStatusModalVisibility
-    } = this.props;
-    let { deliveryAddress, paymentMethod, paymentMode } = checkout;
-    let conversionRate = app.rates[paymentMethod];
+    event.preventDefault();
 
-    // How much does this order cost?
-    let total = this.checkoutService.calculateOrderTotalWithRate(
-      conversionRate
+    const subtotal = roundToDecimalPlaces(
+      this.props.cart.items.reduce(
+        (total, item) =>
+          total + parseFloat(item.price) * parseInt(item.qty, 10),
+        0
+      )
     );
-    let userBalance = this.userService.retrieveWalletBalance(paymentMethod);
+    const vat = roundToDecimalPlaces(
+      this.props.cart.items.reduce(
+        (total, item) => total + parseFloat(item.vat) * parseInt(item.qty, 10),
+        0
+      )
+    );
+    const total = roundToDecimalPlaces(
+      parseFloat(subtotal, 10) + parseFloat(vat, 10)
+    );
 
-    if (paymentMode === "on-demand" && userBalance < total)
-      return alert(
-        `You need at least ${total} ${paymentMethod} in your wallet to place your order.`
-      );
-
-    const placement_code = this.checkoutService.generatePlacementCode();
+    const placement_code = `${Math.random()
+      .toFixed(36)
+      .replace(/[^0-9]+/g, "")
+      .substr(0, 3)}-${Math.random()
+      .toString(36)
+      .replace(/[^a-z]+/g, "")
+      .substr(0, 3)
+      .toUpperCase()}`;
 
     let data = {
-      user_id: account.user.id,
-      total_amount: total,
+      user_id: this.props.account.user.id,
+      total_amount: 2000,
       placement_code,
-      delivery_address: deliveryAddress,
-      payment_mode: paymentMode,
-      rate: conversionRate,
-      payment_method: paymentMethod,
-      items: cart.items.map(item => {
-        return {
-          description: item.description,
-          photo: item.photo,
-          price: item.price,
-          qty: item.qty,
-          title: item.title,
-          vat: item.vat,
-          origin: item.origin,
-          locale: item.locale,
-          classification: item.classification,
-          item_id: item.id,
-          store_id: item.store_id
-        };
-      })
+      delivery_address: this.props.checkout.deliveryAddress,
+      payment_mode: this.props.checkout.paymentMode,
+      payment_method: this.props.checkout.paymentMethod,
+      items: this.props.cart.items
     };
-    var self = this;
-    var { setState, userService, props } = this;
-    var { clearCart, setUser } = props;
 
-    attemptOrderPlacement(data, function(order) {
-      const { total_amount } = order;
-      let user = props.account.user;
-      let checkout = props.checkout;
-      let addresses = user.addresses;
-      let currentAddress = checkout.deliveryAddress;
+    let { clearCart, setCheckoutStatusModalVisibility } = this.props;
 
-      self.setState({
-        latestPlacementCode: order.placement_code
-      });
-
-      if (paymentMode === "on-demand") {
-        userService.debitAmountFromWallet(paymentMethod, total_amount, function(
-          wallets
-        ) {
-          setUser({
-            user: {
-              ...user,
-              wallets
-            }
-          });
-        });
-      }
-
-      if (!userService.hasAddress(currentAddress)) {
-        userService.addToAddressBook(currentAddress, function() {
-          setUser({
-            user: {
-              ...user,
-              addresses
-            }
-          });
-        });
-      }
-
+    this.props.attemptOrderPlacement(data, function() {
+      clearCart();
       setCheckoutStatusModalVisibility({
         isCheckoutStatusModalOpen: true
       });
-
-      clearCart();
     });
   }
+
+  // handleCheckoutSubmit(event) {
+  //   let {
+  //     account,
+  //     app,
+  //     attemptOrderPlacement,
+  //     cart,
+  //     checkout,
+  //     setCheckoutStatusModalVisibility
+  //   } = this.props;
+  //   let { deliveryAddress, paymentMethod, paymentMode } = checkout;
+  //   let conversionRate = app.rates[paymentMethod];
+
+  //   // How much does this order cost?
+  //   let total = this.checkoutService.calculateOrderTotalWithRate(
+  //     conversionRate
+  //   );
+  //   let userBalance = this.userService.retrieveWalletBalance(paymentMethod);
+
+  //   if (paymentMode === "on-demand" && userBalance < total)
+  //     return alert(
+  //       `You need at least ${total} ${paymentMethod} in your wallet to place your order.`
+  //     );
+
+  //   const placement_code = this.checkoutService.generatePlacementCode();
+
+  //   let data = {
+  //     user_id: account.user.id,
+  //     total_amount: total,
+  //     placement_code,
+  //     delivery_address: deliveryAddress,
+  //     payment_mode: paymentMode,
+  //     rate: conversionRate,
+  //     payment_method: paymentMethod,
+  //     items: cart.items.map(item => {
+  //       return {
+  //         description: item.description,
+  //         photo: item.photo,
+  //         price: item.price,
+  //         qty: item.qty,
+  //         title: item.title,
+  //         vat: item.vat,
+  //         origin: item.origin,
+  //         locale: item.locale,
+  //         classification: item.classification,
+  //         item_id: item.id,
+  //         store_id: item.store_id
+  //       };
+  //     })
+  //   };
+  //   var self = this;
+  //   var { setState, userService, props } = this;
+  //   var { clearCart, setUser } = props;
+
+  //   attemptOrderPlacement(data, function(order) {
+  //     const { total_amount } = order;
+  //     let user = props.account.user;
+  //     let checkout = props.checkout;
+  //     let addresses = user.addresses;
+  //     let currentAddress = checkout.deliveryAddress;
+
+  //     self.setState({
+  //       latestPlacementCode: order.placement_code
+  //     });
+
+  //     if (paymentMode === "on-demand") {
+  //       userService.debitAmountFromWallet(paymentMethod, total_amount, function(
+  //         wallets
+  //       ) {
+  //         setUser({
+  //           user: {
+  //             ...user,
+  //             wallets
+  //           }
+  //         });
+  //       });
+  //     }
+
+  //     if (!userService.hasAddress(currentAddress)) {
+  //       userService.addToAddressBook(currentAddress, function() {
+  //         setUser({
+  //           user: {
+  //             ...user,
+  //             addresses
+  //           }
+  //         });
+  //       });
+  //     }
+
+  //     setCheckoutStatusModalVisibility({
+  //       isCheckoutStatusModalOpen: true
+  //     });
+
+  //     clearCart();
+  //   });
+  // }
 
   static fetchData(store, { path }) {
     return store.dispatch(fetchCheckout(path));
