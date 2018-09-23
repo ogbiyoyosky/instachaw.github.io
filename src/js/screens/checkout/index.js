@@ -248,13 +248,28 @@ class Checkout extends React.PureComponent {
     }
 
     const placement_code = this.checkoutService.generatePlacementCode();
+    const items = cart.items.map(item => {
+      return {
+        description: item.description,
+        photo: item.photo,
+        price: item.price,
+        qty: item.qty,
+        title: item.title,
+        vat: item.vat,
+        origin: item.origin,
+        locale: item.locale,
+        classification: item.classification,
+        item_id: item.id,
+        store_id: item.store_id
+      };
+    });
 
-    alert(JSON.stringify(placement_code));
+    alert(JSON.stringify(items));
     event.preventDefault();
 
     return false;
 
-    let data = {
+    const data = {
       user_id: account.user.id,
       total_amount: total,
       placement_code,
@@ -262,21 +277,7 @@ class Checkout extends React.PureComponent {
       payment_mode: paymentMode,
       rate: conversionRate,
       payment_method: paymentMethod,
-      items: cart.items.map(item => {
-        return {
-          description: item.description,
-          photo: item.photo,
-          price: item.price,
-          qty: item.qty,
-          title: item.title,
-          vat: item.vat,
-          origin: item.origin,
-          locale: item.locale,
-          classification: item.classification,
-          item_id: item.id,
-          store_id: item.store_id
-        };
-      })
+      items
     };
 
     var self = this;
