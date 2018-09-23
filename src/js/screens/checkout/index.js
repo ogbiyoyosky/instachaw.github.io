@@ -241,12 +241,18 @@ class Checkout extends React.PureComponent {
     );
     let userBalance = this.userService.retrieveWalletBalance(paymentMethod);
 
-    if (paymentMode === "on-demand" && userBalance < total)
+    if (paymentMode === "on-demand" && userBalance < total) {
       return alert(
         `You need at least ${total} ${paymentMethod} in your wallet to place your order.`
       );
+    }
 
     const placement_code = this.checkoutService.generatePlacementCode();
+
+    alert(JSON.stringify(placement_code));
+    event.preventDefault();
+
+    return false;
 
     let data = {
       user_id: account.user.id,
@@ -272,11 +278,6 @@ class Checkout extends React.PureComponent {
         };
       })
     };
-
-    alert(JSON.stringify(data));
-    event.preventDefault();
-
-    return false;
 
     var self = this;
     var { setState, userService, props } = this;
