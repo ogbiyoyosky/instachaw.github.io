@@ -137,7 +137,7 @@ class Checkout extends React.PureComponent {
                 display: isCheckoutStatusModalOpen ? "none" : "block"
               }}
             >
-              <form onSubmit={this.handleCheckoutSubmit}>
+              <form>
                 <CheckoutInfo
                   rates={app.rates}
                   amount={total}
@@ -180,7 +180,7 @@ class Checkout extends React.PureComponent {
                     cursor: "pointer"
                   }}
                   mb={4}
-                  type="submit"
+                  onClick={this.handleCheckoutSubmit}
                   fullWidth
                 >
                   {!isAttemptingCheckout ? (
@@ -224,8 +224,6 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
-    event.preventDefault();
-
     let {
       account,
       app,
@@ -238,6 +236,8 @@ class Checkout extends React.PureComponent {
     let conversionRate = app.rates[paymentMethod];
 
     alert(JSON.stringify(cart));
+    event.preventDefault();
+
     return false;
 
     // How much does this order cost?
