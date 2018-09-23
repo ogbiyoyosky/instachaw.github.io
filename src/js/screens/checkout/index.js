@@ -248,7 +248,9 @@ class Checkout extends React.PureComponent {
     }
 
     const placement_code = this.checkoutService.generatePlacementCode();
+
     const items = cart.items.map(item => {
+      console.log(item);
       return {
         description: item.description,
         photo: item.photo,
