@@ -266,7 +266,7 @@ class Checkout extends React.PureComponent {
     //   };
     // });
 
-    alert(JSON.stringify(cart));
+    alert(JSON.stringify(placement_code));
     event.preventDefault();
 
     return false;
