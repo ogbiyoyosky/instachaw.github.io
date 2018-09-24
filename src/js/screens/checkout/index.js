@@ -247,6 +247,11 @@ class Checkout extends React.PureComponent {
       );
     }
 
+    alert(JSON.stringify(placement_code));
+    event.preventDefault();
+
+    return false;
+
     const placement_code = this.checkoutService.generatePlacementCode();
 
     // const items = cart.items.map(item => {
@@ -265,11 +270,6 @@ class Checkout extends React.PureComponent {
     //     store_id: item.store_id
     //   };
     // });
-
-    alert(JSON.stringify(placement_code));
-    event.preventDefault();
-
-    return false;
 
     const data = {
       user_id: account.user.id,
