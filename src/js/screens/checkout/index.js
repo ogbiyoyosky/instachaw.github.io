@@ -319,10 +319,7 @@ class Checkout extends React.PureComponent {
       clearCart();
     });
 
-    alert("Reached the end");
     event.preventDefault();
-
-    return false;
   }
 
   static fetchData(store, { path }) {
