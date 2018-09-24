@@ -249,24 +249,24 @@ class Checkout extends React.PureComponent {
 
     const placement_code = this.checkoutService.generatePlacementCode();
 
-    const items = cart.items.map(item => {
-      console.log(item);
-      return {
-        description: item.description,
-        photo: item.photo,
-        price: item.price,
-        qty: item.qty,
-        title: item.title,
-        vat: item.vat,
-        origin: item.origin,
-        locale: item.locale,
-        classification: item.classification,
-        item_id: item.id,
-        store_id: item.store_id
-      };
-    });
+    // const items = cart.items.map(item => {
+    //   console.log(item);
+    //   return {
+    //     description: item.description,
+    //     photo: item.photo,
+    //     price: item.price,
+    //     qty: item.qty,
+    //     title: item.title,
+    //     vat: item.vat,
+    //     origin: item.origin,
+    //     locale: item.locale,
+    //     classification: item.classification,
+    //     item_id: item.id,
+    //     store_id: item.store_id
+    //   };
+    // });
 
-    alert(JSON.stringify(items));
+    alert(JSON.stringify(cart.items));
     event.preventDefault();
 
     return false;
