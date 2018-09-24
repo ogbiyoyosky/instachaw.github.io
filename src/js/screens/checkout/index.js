@@ -247,29 +247,35 @@ class Checkout extends React.PureComponent {
       );
     }
 
-    const placementCode = `hello`;
+    // const placementCode = `${Math.random()
+    //   .toFixed(36)
+    //   .replace(/[^0-9]+/g, "")
+    //   .substr(1, 3)}-${Math.random()
+    //   .toString(36)
+    //   .replace(/[^a-z]+/g, "")
+    //   .substr(0, 3)
+    //   .toUpperCase()}`;
 
-    alert(placementCode);
+    const items = cart.items.map(item => {
+      return {
+        description: item.description,
+        photo: item.photo,
+        price: item.price,
+        qty: item.qty,
+        title: item.title,
+        vat: item.vat,
+        origin: item.origin,
+        locale: item.locale,
+        classification: item.classification,
+        item_id: item.id,
+        store_id: item.store_id
+      };
+    });
+
+    alert(JSON.stringify(items));
     event.preventDefault();
 
     return false;
-
-    // const items = cart.items.map(item => {
-    //   console.log(item);
-    //   return {
-    //     description: item.description,
-    //     photo: item.photo,
-    //     price: item.price,
-    //     qty: item.qty,
-    //     title: item.title,
-    //     vat: item.vat,
-    //     origin: item.origin,
-    //     locale: item.locale,
-    //     classification: item.classification,
-    //     item_id: item.id,
-    //     store_id: item.store_id
-    //   };
-    // });
 
     const data = {
       user_id: account.user.id,
