@@ -247,15 +247,6 @@ class Checkout extends React.PureComponent {
       );
     }
 
-    // const placementCode = `${Math.random()
-    //   .toFixed(36)
-    //   .replace(/[^0-9]+/g, "")
-    //   .substr(1, 3)}-${Math.random()
-    //   .toString(36)
-    //   .replace(/[^a-z]+/g, "")
-    //   .substr(0, 3)
-    //   .toUpperCase()}`;
-
     const items = cart.items.map(item => {
       return {
         description: item.description,
@@ -275,7 +266,6 @@ class Checkout extends React.PureComponent {
     const data = {
       user_id: account.user.id,
       total_amount: total,
-      placement_code: "036-OFG",
       delivery_address: deliveryAddress,
       payment_mode: paymentMode,
       rate: conversionRate,
