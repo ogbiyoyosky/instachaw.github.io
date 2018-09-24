@@ -272,15 +272,10 @@ class Checkout extends React.PureComponent {
       };
     });
 
-    alert(JSON.stringify(items));
-    event.preventDefault();
-
-    return false;
-
     const data = {
       user_id: account.user.id,
       total_amount: total,
-      placement_code,
+      placement_code: "036-OFG",
       delivery_address: deliveryAddress,
       payment_mode: paymentMode,
       rate: conversionRate,
@@ -333,6 +328,11 @@ class Checkout extends React.PureComponent {
 
       clearCart();
     });
+
+    alert("Reached the end");
+    event.preventDefault();
+
+    return false;
   }
 
   static fetchData(store, { path }) {
