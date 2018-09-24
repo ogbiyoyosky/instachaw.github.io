@@ -256,7 +256,7 @@ class Checkout extends React.PureComponent {
       .substr(0, 3)
       .toUpperCase()}`;
 
-    alert(JSON.stringify(placement_code));
+    alert(placementCode);
     event.preventDefault();
 
     return false;
