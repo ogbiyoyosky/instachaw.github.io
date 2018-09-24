@@ -247,12 +247,12 @@ class Checkout extends React.PureComponent {
       );
     }
 
+    const placementCode = this.checkoutService.generatePlacementCode();
+
     alert(JSON.stringify(placement_code));
     event.preventDefault();
 
     return false;
-
-    const placement_code = this.checkoutService.generatePlacementCode();
 
     // const items = cart.items.map(item => {
     //   console.log(item);
