@@ -247,7 +247,14 @@ class Checkout extends React.PureComponent {
       );
     }
 
-    const placementCode = this.checkoutService.generatePlacementCode();
+    const placementCode = `${Math.random()
+      .toFixed(36)
+      .replace(/[^0-9]+/g, "")
+      .substr(1, 3)}-${Math.random()
+      .toString(36)
+      .replace(/[^a-z]+/g, "")
+      .substr(0, 3)
+      .toUpperCase()}`;
 
     alert(JSON.stringify(placement_code));
     event.preventDefault();
