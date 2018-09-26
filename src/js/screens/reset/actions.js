@@ -77,7 +77,7 @@ export const attemptPasswordReset = data => {
 };
 
 export const attemptPasswordUpdate = (data, token) => {
-  const endpoint = `api/v1/auth/updatePassword/${token}`;
+  const endpoint = `api/v1/auth/updatePassword/?tkn=${token}`;
   return dispatch => {
     dispatch(
       setResetAttemptingStatus({

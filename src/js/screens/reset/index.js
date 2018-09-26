@@ -30,6 +30,7 @@ import {
 } from "pcln-design-system";
 import { Button, Input, Label } from "../../components/UI/atoms";
 import { BrandLogo } from "../../components/UI/atoms";
+import { convertQueryStringToMap } from "../../util/util";
 import styled from "styled-components";
 import posed from "react-pose";
 import { tween } from "popmotion";
@@ -61,6 +62,7 @@ class Reset extends React.PureComponent {
     };
     this.handleResetSubmit = this.handleResetSubmit.bind(this);
     this.navigateToLocation = this.navigateToLocation.bind(this);
+    this.hasActiveNewPasswordScreen = false;
   }
 
   componentDidMount() {
@@ -68,7 +70,8 @@ class Reset extends React.PureComponent {
       setHeaderVisibility,
       setFooterVisibility,
       onLoadReset,
-      match
+      match,
+      location
     } = this.props;
 
     setTimeout(() => {
@@ -79,6 +82,11 @@ class Reset extends React.PureComponent {
         isFooterVisible: false
       });
     }, 200);
+
+    this.passwordResetToken = convertQueryStringToMap(location.search).tkn;
+
+    this.hasActiveNewPasswordScreen =
+      typeof this.passwordResetToken !== "undefined";
 
     onLoadReset(match.path);
   }
@@ -105,7 +113,7 @@ class Reset extends React.PureComponent {
               height: "100%"
             }}
           >
-            {!this.props.match.params.token ? (
+            {!this.hasActiveNewPasswordScreen ? (
               <Box>
                 <Box mb={2}>
                   <Text align="center" fontSize={3} bold>
@@ -182,7 +190,7 @@ class Reset extends React.PureComponent {
           }}
           width={[1, 0.9, 0.7]}
         >
-          {!this.props.match.params.token ? (
+          {!this.hasActiveNewPasswordScreen ? (
             <form
               method="get"
               onSubmit={e => {
@@ -323,7 +331,7 @@ class Reset extends React.PureComponent {
   handleResetSubmit() {
     const self = this;
 
-    if (!this.props.match.params.token) {
+    if (!this.hasActiveNewPasswordScreen) {
       this.props.attemptPasswordReset({
         uid: this.state.uid
       });
@@ -333,7 +341,7 @@ class Reset extends React.PureComponent {
           password: this.state.password,
           password_confirmation: this.state.password
         },
-        this.props.match.params.token
+        this.passwordResetToken
       );
     }
   }
