@@ -179,6 +179,7 @@ const FeedItemControls = props => {
             display: isActiveCartItem ? "block" : "none",
             animation: isActiveCartItem && "fadeInUp 0.5s ease"
           }}
+          type="button"
           onClick={e => props.onIncrementCartItemQty(props.item)}
           ariaLabelledBy="#addItemButtonText"
         >
@@ -218,6 +219,7 @@ const FeedItemControls = props => {
               "fadeInUp 0.5s ease",
             transition: "0.4s opacity ease"
           }}
+          type="button"
           onClick={e => props.onDecrementCartItemQty(props.item)}
           ariaLabelledBy="#decreaseQuantityButtonText"
         >
@@ -238,6 +240,7 @@ const FeedItemControls = props => {
         <TransparentButton
           py={0}
           onClick={e => props.onRemoveCartItem(props.item)}
+          type="button"
           style={{
             display:
               isActiveCartItem && isActiveCartItem.qty === 1 ? "block" : "none",
@@ -282,6 +285,7 @@ const FeedItemControls = props => {
         }}
       >
         <TransparentButton
+          type="button"
           onClick={e => props.onAddCartItem(props.item)}
           ariaLabelledBy="#incrementText"
         >
