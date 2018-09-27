@@ -239,9 +239,11 @@ class Header extends React.PureComponent {
       this.props.onSetMenuOpenState({
         isMenuOpen: false
       });
-      this.props.setHeaderVisibility({
-        isHeaderVisible: true
-      });
+      if (location.pathname !== "/cart") {
+        this.props.setHeaderVisibility({
+          isHeaderVisible: true
+        });
+      }
       this.props.onSetAccountMenuOpenState({
         isAccountMenuOpen: false
       });

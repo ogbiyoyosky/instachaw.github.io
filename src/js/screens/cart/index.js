@@ -81,7 +81,9 @@ class Cart extends React.PureComponent {
       app,
       account,
       cart,
-      location
+      location,
+      setCartModalStatus,
+      setFundingModalStatus
     } = this.props;
 
     setTimeout(() => {
@@ -97,12 +99,18 @@ class Cart extends React.PureComponent {
       onLoadCart(match.path);
     }
 
-    // console.log(this.props);
+    this.unblock = history.block(targetLocation => {
+      if (this.props.cart.isCartModalOpen) {
+        setCartModalStatus(false);
+        return false;
+      }
+      if (this.props.account.isFundingModalOpen) {
+        setFundingModalStatus(false);
+        return false;
+      }
 
-    // history.listen((location, action) => {
-    //   console.log({ action, location, props: this.props.location });
-    // });
-
+      return true;
+    });
     this.userService = new UserService(account.user);
     this.checkoutService = new CheckoutService(cart);
   }
@@ -114,6 +122,8 @@ class Cart extends React.PureComponent {
     this.paymentStatusInterval = clearInterval(this.paymentStatusInterval);
     this.onFundingSubmit = null;
     this.onCartSubmit = null;
+
+    this.unblock();
   }
 
   render() {

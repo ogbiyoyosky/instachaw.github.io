@@ -95,9 +95,11 @@ class Footer extends React.PureComponent {
       this.props.onSetDockItemActive({
         path: location.pathname
       });
-      this.props.setFooterVisibility({
-        isFooterVisible: true
-      });
+      if (location.pathname !== "/cart") {
+        this.props.setFooterVisibility({
+          isFooterVisible: true
+        });
+      }
     });
   }
 

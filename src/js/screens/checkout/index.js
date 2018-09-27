@@ -224,6 +224,7 @@ class Checkout extends React.PureComponent {
   }
 
   handleCheckoutSubmit(event) {
+    event.preventDefault();
     let {
       account,
       app,
@@ -242,9 +243,10 @@ class Checkout extends React.PureComponent {
     let userBalance = this.userService.retrieveWalletBalance(paymentMethod);
 
     if (paymentMode === "on-demand" && userBalance < total) {
-      return alert(
+      alert(
         `You need at least ${total} ${paymentMethod} in your wallet to place your order.`
       );
+      return false;
     }
 
     const items = cart.items.map(item => {
@@ -319,8 +321,6 @@ class Checkout extends React.PureComponent {
 
       clearCart();
     });
-
-    event.preventDefault();
   }
 
   static fetchData(store, { path }) {
