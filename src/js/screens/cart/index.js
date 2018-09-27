@@ -132,6 +132,7 @@ class Cart extends React.PureComponent {
     const userService = new UserService(user);
 
     const vat = checkoutService.calculateOrderVat();
+    const charge = checkoutService.calculateOrderCharge();
     const subtotal = checkoutService.calculateOrderSubtotal();
     const total = checkoutService.calculateOrderTotalWithRate(
       app.rates[paymentMethod]
@@ -259,6 +260,7 @@ class Cart extends React.PureComponent {
                   subtotal={subtotal}
                   paymentMethod={paymentMethod}
                   vat={vat}
+                  charge={charge}
                   mb={2}
                 />
                 <GreenButton

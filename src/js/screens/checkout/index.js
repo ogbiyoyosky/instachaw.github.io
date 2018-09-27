@@ -259,7 +259,8 @@ class Checkout extends React.PureComponent {
         locale: item.locale,
         classification: item.classification,
         item_id: item.id,
-        store_id: item.store_id
+        store_id: item.store_id,
+        store: item.store
       };
     });
 

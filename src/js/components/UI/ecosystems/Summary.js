@@ -24,7 +24,7 @@ const Summary = props => {
       <Flex
         flexDirection="column"
         style={{
-          height: props.isMinimized ? 0 : "60px",
+          height: props.isMinimized ? 0 : "80px",
           overflowY: "hidden",
           transition: "height 0.3s ease-in-out"
         }}
@@ -38,12 +38,20 @@ const Summary = props => {
           </Text>
         </Flex>
 
-        <Flex mb={3}>
+        <Flex mb={2}>
           <Text fontSize={1} regular>
             VAT
           </Text>
           <Text color="gray" ml="auto" fontSize={1} regular>
             {props.vat}
+          </Text>
+        </Flex>
+        <Flex mb={3}>
+          <Text fontSize={1} regular>
+            Service fee
+          </Text>
+          <Text color="gray" ml="auto" fontSize={1} regular>
+            {props.charge}
           </Text>
         </Flex>
       </Flex>

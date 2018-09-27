@@ -3,6 +3,7 @@ const isDev = process.env.NODE_ENV !== "production";
 const isHttps = false;
 const outputFolder = "../dist";
 const isDeploy = process.env.DEPLOY && process.env.NODE_ENV === "production";
+const isBundleAnalyzerActive = false;
 
 /* imports */
 const path = require("path");
@@ -159,20 +160,7 @@ let web = {
                 to: "./"
             }
         ]),
-        new StyleLintPlugin(),
-        // new SWPrecacheWebpackPlugin({
-        //     cacheId: "instachaw",
-        //     filename: "../sw.js",
-        //     minify: true,
-        //     dontCacheBustUrlsMatching: /\.\w{8}\./,
-        //     staticFileGlobs: [
-        //         // `index.html`,
-        //         // `404.html`,
-        //         // `dist/**.{js.gz}`,
-        //         `dist/img/**`
-        //     ],
-        //     stripPrefix: `/${outputFolder}`
-        // }),
+        new StyleLintPlugin()
     ].concat(isDev ? [] : [
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -238,6 +226,6 @@ let web = {
     }
 };
 
-isDev && web.plugins.push(new BundleAnalyzerPlugin())
+(isDev && isBundleAnalyzerActive) && web.plugins.push(new BundleAnalyzerPlugin())
 
 module.exports = web;
