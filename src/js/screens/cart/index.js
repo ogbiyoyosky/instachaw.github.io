@@ -76,10 +76,12 @@ class Cart extends React.PureComponent {
       setHeaderVisibility,
       setFooterVisibility,
       onLoadCart,
+      history,
       match,
       app,
       account,
-      cart
+      cart,
+      location
     } = this.props;
 
     setTimeout(() => {
@@ -94,6 +96,12 @@ class Cart extends React.PureComponent {
     if (app.url !== match.url) {
       onLoadCart(match.path);
     }
+
+    // console.log(this.props);
+
+    // history.listen((location, action) => {
+    //   console.log({ action, location, props: this.props.location });
+    // });
 
     this.userService = new UserService(account.user);
     this.checkoutService = new CheckoutService(cart);
@@ -212,6 +220,7 @@ class Cart extends React.PureComponent {
                   <Flex mb={3}>
                     <OutlineButton
                       py={2}
+                      type="button"
                       onClick={e => this.props.setCartModalStatus(true)}
                       fullWidth
                     >
