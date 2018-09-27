@@ -41,7 +41,7 @@ const PaymentCard = props => {
             message={`Pay N${roundToDecimalPlaces(
               props.amount,
               3
-            )} ${props.paymentMode === "on-demand" ? "online" : "cash"}`}
+            )} ${props.activePaymentMode === "on-demand" ? "online" : "cash"}`}
             onSetActivePaymentMethod={e =>
               props.onSetActivePaymentMethod("naira")}
           />
