@@ -244,6 +244,7 @@ class Cart extends React.PureComponent {
                   rates={this.props.app.rates}
                   amount={total}
                   history={history}
+                  paymentMode={paymentMode}
                   isUserAuthenticated={user !== null}
                   getWalletBalance={wallet =>
                     userService.retrieveWalletBalance(wallet)}
