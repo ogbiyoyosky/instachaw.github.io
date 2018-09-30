@@ -9,6 +9,7 @@ import { appReducer } from "../containers/app/reducer";
 import { headerReducer } from "../containers/header/reducer";
 import { footerReducer } from "../containers/footer/reducer";
 import { homeReducer } from "../screens/home/reducer";
+import { welcomeReducer } from "../screens/welcome/reducer";
 import { storeReducer } from "../screens/store/reducer";
 import { pageReducer } from "../screens/page/reducer";
 import { treatReducer } from "../screens/treat/reducer";
@@ -33,6 +34,7 @@ export default function createReducer(injectedReducers) {
     reset: resetReducer,
     page: pageReducer,
     home: homeReducer,
+    welcome: welcomeReducer,
     header: headerReducer,
     footer: footerReducer,
     ...injectedReducers

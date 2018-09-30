@@ -2,6 +2,7 @@ import Button from "./Button";
 import BrandLogo from "./BrandLogo";
 import CloseButton from "./CloseButton";
 import Input from "./Input";
+import InputBarInput from "./InputBarInput";
 import Label from "./Label";
 import OutlineButton from "./OutlineButton";
 import TransparentButton from "./TransparentButton";
@@ -13,6 +14,7 @@ export {
   BrandLogo,
   CloseButton,
   Input,
+  InputBarInput,
   Label,
   OutlineButton,
   TransparentButton,

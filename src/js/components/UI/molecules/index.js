@@ -7,6 +7,8 @@ import OrdersFeed from "./OrdersFeed";
 import NotificationFeed from "./NotificationFeed";
 import FundingConfirmationDisplay from "./FundingConfirmationDisplay";
 import SearchBar from "./SearchBar";
+import InputBar from "./InputBar";
+import PlacesBar from "./PlacesBar";
 import SearchFeed from "./SearchFeed";
 import TabBar from "./TabBar";
 import PaymentChoice from "./PaymentChoice";
@@ -20,6 +22,8 @@ export {
   FundingConfirmationDisplay,
   NotificationFeed,
   OrdersFeed,
+  InputBar,
+  PlacesBar,
   SearchBar,
   SearchFeed,
   TabBar,

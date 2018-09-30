@@ -17,6 +17,11 @@ const Home = Loadable({
   loading: Loading
 });
 
+const Welcome = Loadable({
+  loader: () => import("../screens/welcome"),
+  loading: Loading
+});
+
 const Store = Loadable({
   loader: () => import("../screens/store"),
   loading: Loading
@@ -64,6 +69,7 @@ const ResetPassword = Loadable({
 
 const routeComponents = {
   Home,
+  Welcome,
   Store,
   Page,
   Cart,
