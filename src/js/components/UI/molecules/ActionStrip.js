@@ -4,11 +4,19 @@ import { Card, Icon, Flex, Text } from "pcln-design-system";
 
 const ActionStrip = props => {
   return (
-    <Card boxShadowSize="md" bg={props.bg} px={3} py={2} {...props}>
+    <Card
+      boxShadowSize={props.boxShadowSize}
+      bg={props.bg}
+      px={3}
+      py={2}
+      {...props}
+    >
       <Flex>
-        <Flex justify="center" mr={3} flexDirection="column">
-          <Icon color={props.color} size={20} name={props.icon} />
-        </Flex>
+        {props.icon && (
+          <Flex justify="center" mr={3} flexDirection="column">
+            <Icon color={props.color} size={props.iconSize} name={props.icon} />
+          </Flex>
+        )}
         <Flex
           style={{
             flex: 5
@@ -19,7 +27,11 @@ const ActionStrip = props => {
           </Text>
         </Flex>
         <Flex justify="center" flexDirection="column">
-          <Icon color={props.color} size={20} name={props.actionIcon} />
+          <Icon
+            color={props.color}
+            size={props.actionIconSize}
+            name={props.actionIcon}
+          />
         </Flex>
       </Flex>
     </Card>
@@ -32,7 +44,10 @@ ActionStrip.propTypes = {
 };
 
 ActionStrip.defaultProps = {
+  iconSize: 20,
+  boxShadowSize: "md",
   actionIcon: "arrowRight",
+  actionIconSize: 20,
   color: "gray",
   bg: "white"
 };

@@ -3,6 +3,7 @@ import AuthCard from "./AuthCard";
 import CartEmptyState from "./CartEmptyState";
 import PaymentCard from "./PaymentCard";
 import PaymentModeCard from "./PaymentModeCard";
+import PlacesList from "./PlacesList";
 import BaseFundingForm from "./BaseFundingForm";
 
 export {
@@ -10,6 +11,7 @@ export {
   AddressInputCard,
   CartEmptyState,
   PaymentCard,
+  PlacesList,
   PaymentModeCard,
   BaseFundingForm
 };

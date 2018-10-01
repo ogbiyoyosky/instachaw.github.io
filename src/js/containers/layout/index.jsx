@@ -19,6 +19,10 @@ class Layout extends React.PureComponent {
     if (!this.props.app.hasFetchedRates) {
       this.props.fetchRates();
     }
+
+    if (!window.localStorage.getItem("place")) {
+      this.props.history.push("/welcome");
+    }
   }
 
   // returns the JSX that will be rendered for this component
