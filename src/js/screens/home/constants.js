@@ -1,4 +1,0 @@
-export const SET_HOME = "Home/SET_HOME";
-export const SET_HOME_FEED_LOADING_STATE = "Home/SET_HOME_FEED_LOADING_STATE";
-export const SET_FETCHED_HOME_FEED_STATE = "Home/SET_FETCHED_HOME_FEED_STATE";
-export const REDUCER_NAME = "home";
