@@ -11,12 +11,13 @@
             "./"
           ],
           "alias": {
-            "@Actions": "./src/Actions",
+            "@Utilities": "./src/Utilities",
             "@Components": "./src/Components",
-            "@Definations": "./src/Definations",
+            "@Containers": "./src/Containers",
+            "@Constants": "./src/Constants",
             "@Interfaces": "./src/Interfaces",
             "@Reducers": "./src/Redux/Reducers",
-            "@Redux": "./src/Redux"
+            "@Store": "./src/Store"
           }
         }
       ]

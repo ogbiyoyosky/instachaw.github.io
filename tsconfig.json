@@ -26,14 +26,23 @@
 			"@Components": [
 				"./src/Components"
 			],
+			"@Containers/*": [
+				"./src/Containers/*"
+			],
+			"@Containers": [
+				"./src/Containers"
+			],
 			"@Interfaces": [
 				"./src/Interfaces"
 			],
 			"@Interfaces/*": [
 				"./src/Interfaces/*"
 			],
-			"@Definations": [
-				"./src/Definations"
+			"@Constants": [
+				"./src/Constants"
+			],
+			"@Constants/*": [
+				"./src/Constants/*"
 			],
 			"@Reducers": [
 				"./src/Redux/Reducers"
@@ -41,14 +50,14 @@
 			"@Reducers/*": [
 				"./src/Redux/Reducers/*"
 			],
-			"@Redux": [
-				"./src/Redux"
+			"@Store": [
+				"./src/Store"
 			],
-			"@Redux/*": [
-				"./src/Redux/*"
+			"@Store/*": [
+				"./src/Store/*"
 			],
-			"@Actions": [
-				"./src/Actions"
+			"@Utilities": [
+				"./src/Utilities"
 			]
 		},
 	}

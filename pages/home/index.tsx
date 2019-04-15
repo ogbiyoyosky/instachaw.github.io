@@ -7,7 +7,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 //#region Interface Imports
 import { IHomePage, IStore } from '@Interfaces';
 import { Heading } from '@Components';
-import { HomeActions } from '@Actions';
+import { HomeActions } from '@Store/Home/actions';
 //#endregion Interface Imports
 
 export class HomePage extends React.Component<IHomePage.IProps, IHomePage.IState> {

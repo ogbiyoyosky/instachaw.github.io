@@ -1,18 +1,14 @@
-//#region Global Imports
+'use strict';
+
 import App, { Container } from 'next/app';
 import * as React from 'react';
 
 import { Provider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
-//#endregion Global Imports
 
-//#region Local Imports
-import store from '@Redux/store';
-//#endregion Local Imports
-
-//#region Interface Imports
+import store from '@Store';
+import { AppContainer } from '@Containers';
 import { IApp } from '@Interfaces';
-//#endregion Interface Imports
 
 class MyApp extends App<IApp.IProps> {
     static async getInitialProps(props: any) {
@@ -32,7 +28,9 @@ class MyApp extends App<IApp.IProps> {
         return (
             <Container>
                 <Provider store={store}>
-                    <Component {...pageProps} />
+                    <AppContainer>
+                        <Component {...pageProps} />
+                    </AppContainer>
                 </Provider>
             </Container>
         );
