@@ -1,0 +1,7 @@
+## other configuration excluded from example...
+exclude_patterns:
+- "coverage/"
+- "src/__tests__/**"
+- "src/Constants/**"
+- "**/reducer.ts"
+- "**/actions.ts"
