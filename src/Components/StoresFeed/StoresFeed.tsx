@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Box, Heading } from 'reakit';
+import { Box, Heading } from 'rebass';
 import {
   Col,
   Row,
@@ -14,7 +14,9 @@ import { StoresFeedItemSkeleton } from './StoresFeedItemAtoms';
 import { formatServiceHour } from '@Utilities';
 
 type StoresFeedProps = {
+  /** Displays stores loading animation */
   isFetchingStores?: boolean,
+  /** Array list of stores */
   stores: IStorePage.IStoreData[]
 };
 
@@ -23,22 +25,26 @@ const defaultProps = {
   stores: []
 }
 
+/** Pool of characters corresponding to one store item within listings */
+const RANGE_POOL = '12345';
+
 export const StoresFeed:React.FC<StoresFeedProps> = ({ stores, isFetchingStores }) => {
   return (
-    <Box padding={`${theme.spacing[0]} 0`}>
+    <Box padding={`${theme.space[0]} 0`}>
       <Grid>
         <Row>
           <Col>
             <Heading
-              use="h3"
-              margin={`${theme.spacing[1]} 0`}
+              margin={`${theme.space[1]} 0`}
               color={theme.palette.grayscale[2]}
               data-testid={'stores-screen-title'}
-            >Quick & Delightful.</Heading>
+            >
+              Quick & Delightful.
+            </Heading>
             {isFetchingStores && 
               <Box>
-                {Array.from('12345').map((item:any, key:number) => (
-                  <Box key={key} marginBottom={theme.spacing[1]}>
+                {Array.from(RANGE_POOL).map((poolPick:string) => (
+                  <Box key={poolPick} marginBottom={theme.space[1]}>
                     <StoresFeedItemSkeleton />
                   </Box>
                 ))}
@@ -57,9 +63,10 @@ export const StoresFeed:React.FC<StoresFeedProps> = ({ stores, isFetchingStores 
                 close_at,
                 verified_at
               }:IStorePage.IStoreData) => 
-                <Box key={id} marginBottom={'8px'}>
+                <Box key={id} marginBottom={theme.space[0]}>
                   <StoresFeedItem
                     description={description}
+                    id={id}
                     thumbnailImageSrc={`/static/img/${brand}`}
                     title={name}
                     serviceHours={`${formatServiceHour(open_at)} am - ${formatServiceHour(close_at)} pm`}

@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { Box, Flex, Toolbar } from "reakit";
+import { Box, Flex, Text } from "rebass";
 import { theme } from "@Config";
 import { Icon } from "@Components";
+
+const { palette: { primary } } = theme;
 
 type DockerBarProps = {}
 
@@ -10,7 +12,16 @@ const defaultProps = {
   isActive: false
 }
 
-const DockerIcon:React.FC<{ name: string, label: string, isActive?: boolean }> = ({
+type DockerIconProps = {
+  /** SVG icon name. Examples: home, airplane, user. */
+  name: string,
+  /** Text label */
+  label: string,
+  /** Renders an active state for the icon. */
+  isActive?: boolean
+}
+
+const DockerIcon:React.FC<DockerIconProps> = ({
   name,
   label,
   isActive
@@ -18,16 +29,20 @@ const DockerIcon:React.FC<{ name: string, label: string, isActive?: boolean }> =
   const iconColor = isActive ? theme.palette.primary[6]: theme.palette.primary[5];
 
   return (
-    <Flex flexDirection={'column'} alignItems={'center'}>
-      <Icon size={32} name={name} fill={iconColor}/>
-      <Box
-        color={iconColor}
-        fontSize={'8px'}
-        fontWeight={'600'}
-        textTransform={'uppercase'}
-      >
-        {label}
-      </Box>
+    <Flex style={{ flex: 1 }} py={1} flexDirection={'column'} justifyContent={'center'}>
+      <Flex flexDirection={'column'} alignItems={'center'}>
+        <Icon size={32} name={name} fill={iconColor}/>
+        <Text
+          color={iconColor}
+          fontSize={'8px'}
+          fontWeight={600}
+          style={{
+            textTransform: 'uppercase'
+          }}
+        >
+          {label}
+        </Text>
+      </Flex>
     </Flex>
   )
 }
@@ -36,26 +51,18 @@ const DockerBarContainerStyles:React.CSSProperties = {
   position: 'fixed',
   bottom: 0,
   width: '100%',
-  zIndex: 600
+  zIndex: 600,
+  background: primary[3]
 }
 
 export const DockerBar:React.FC<DockerBarProps> = () => {
-  const { palette: { primary } } = theme;
-  const brand = primary[3];
-
   return (
     <Box style={DockerBarContainerStyles}>
-      <Toolbar background={brand} gutter={'16px 32px'}>
-        <Toolbar.Content align="start">
-          <DockerIcon name={'home'} label={'Home'} isActive />
-        </Toolbar.Content>
-        <Toolbar.Content align={'center'}>
-          <DockerIcon name={'shopping-basket'} label={'Basket'} />
-        </Toolbar.Content>
-        <Toolbar.Content align="end">
-          <DockerIcon name={'profile'} label={'Account'} />
-        </Toolbar.Content>
-      </Toolbar>
+      <Flex>
+        <DockerIcon name={'home'} label={'Home'} isActive />
+        <DockerIcon name={'shopping-basket'} label={'Basket'} />
+        <DockerIcon name={'profile'} label={'Account'} />
+      </Flex>
     </Box>
   )
 }

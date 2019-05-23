@@ -1,12 +1,16 @@
 import * as React from 'react';
-import { Flex } from 'reakit';
+import { Flex } from 'rebass';
 import { theme } from '@Config';
 import { Icon } from '@Components';
 
 type BadgeProps = {
+  /** Badge background. Could be Hex, RGB or named colors. */
   background?: string,
+  /** Badge text color. */
   color?: string,
+  /** SVG icon for badge. Examples: home, car, airplane. */
   icon?: string,
+  /** Badge text content */
   text: string
 }
 
@@ -20,17 +24,19 @@ export const Badge:React.FC<BadgeProps> = ({ background, color, icon, text }) =>
   return (
     <Flex
       alignItems={'center'}
-      background={background}
-      borderRadius={theme.radius[3]}
+      backgroundColor={background}
+      style={{
+        borderRadius: theme.radius[3],
+        fontWeight: 600,
+        textTransform: 'uppercase'
+      }}
       color={color}
       fontSize={theme.fontSizes[0]}
-      fontWeight={'600'}
       margin={0}
-      padding={`${parseInt(theme.spacing[0]) / 2}px ${theme.spacing[0]}`}
-      textTransform={'uppercase'}
+      padding={`${parseInt(theme.space[0]) / 2}px ${theme.space[0]}`}
     >
-      {icon && <Icon name={icon} size={theme.spacing[1]}/>}
-      <span style={{ paddingLeft: theme.spacing[0] }}>{text}</span>
+      {icon && <Icon name={icon} size={theme.space[1]}/>}
+      <span style={{ paddingLeft: theme.space[0] }}>{text}</span>
     </Flex>
   )
 }

@@ -10,5 +10,6 @@ export { GridContainer as Grid } from './GridContainer';
 export { Navbar } from './Navbar';
 export { SearchBar } from './SearchBar';
 export { StoresFeed } from './StoresFeed';
+export { StoreMerchandiseFeed, StoreMerchantBrief } from './StoreMerchant';
 export { Stencil } from './Stencil';
 export { VerificationMark } from './VerificationMark';

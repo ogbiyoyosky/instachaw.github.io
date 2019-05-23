@@ -7,9 +7,13 @@ import { getIconsPath } from '@Utilities'
 import { theme } from '@Config';
 
 type BaseProps = {
+  /** SVG icon name */
   name: string,
+  /** Icon size. Examples: 16, '32px' */
   size?: number|string,
+  /** Renders a legacy icon */
   legacy?: boolean,
+  /** Icon fill color */
   fill?: string
   theme?: object
 }
@@ -49,7 +53,7 @@ const Base:React.FC<BaseProps> = ({ name, size, legacy, fill, ...props })
 
 export const Icon = styled(Base)`
   flex: none;
-  ${theme.spacing[0]} ${theme.palette.grayscale[0]};
+  ${theme.space[0]} ${theme.palette.grayscale[0]};
 `
 
 Icon.displayName = 'Icon'

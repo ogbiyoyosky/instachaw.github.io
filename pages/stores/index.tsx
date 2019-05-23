@@ -19,7 +19,7 @@ export class StoresPage extends React.Component<IStorePage.IProps, IStorePage.IS
 		return (
 			<>
 				<Head>
-					<title>Nearby Stores | Instachaw</title>
+					<title>Stores Close To You | Instachaw</title>
 				</Head>
 				<StoresFeed
 					isFetchingStores={isFetchingStores}

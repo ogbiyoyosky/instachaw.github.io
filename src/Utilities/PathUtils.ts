@@ -1,7 +1,9 @@
+import { slugify } from './StringUtils'
+
 const icons = require('../../src/Data/icons.json');
 
 type iconsType = {
-  [icon:string]: any
+  [icon: string]: any
 }
 
 type getIconsPathArgs = {
@@ -10,7 +12,7 @@ type getIconsPathArgs = {
 }
 
 // Should be removed eventually after v1.0.0
-const aliases:iconsType = {
+const aliases: iconsType = {
   scrollLeft: 'chevronLeft',
   chevronLight: 'chevronDown',
   chevronThick: 'chevronDownThick',
@@ -45,4 +47,16 @@ export const getIconsPath = ({ name, legacy }: getIconsPathArgs) => {
   }
 
   return icons.legacy[name] || icons[name] || icons[aliases[name]]
+}
+
+/**
+ * Generates the route string for a store item.
+ * 
+ * @param  {number} id
+ * @param  {string} title
+ * 
+ * @return {string}
+ */
+export function getStoreItemPath(id: number, title: string) {
+  return `/store/${slugify(title)}-${id}`
 }
