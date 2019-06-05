@@ -8,7 +8,6 @@ const { palette: { primary } } = theme;
 type DockerBarProps = {}
 
 const defaultProps = {
-  isMenuOpen: false,
   isActive: false
 }
 
@@ -24,12 +23,13 @@ type DockerIconProps = {
 const DockerIcon:React.FC<DockerIconProps> = ({
   name,
   label,
-  isActive
+  isActive,
+  ...props
 }) => {
   const iconColor = isActive ? theme.palette.primary[6]: theme.palette.primary[5];
 
   return (
-    <Flex style={{ flex: 1 }} py={1} flexDirection={'column'} justifyContent={'center'}>
+    <Flex style={{ flex: 1 }} py={1} flexDirection={'column'} justifyContent={'center'} {...props}>
       <Flex flexDirection={'column'} alignItems={'center'}>
         <Icon size={32} name={name} fill={iconColor}/>
         <Text
@@ -59,9 +59,9 @@ export const DockerBar:React.FC<DockerBarProps> = () => {
   return (
     <Box style={DockerBarContainerStyles}>
       <Flex>
-        <DockerIcon name={'home'} label={'Home'} isActive />
-        <DockerIcon name={'shopping-basket'} label={'Basket'} />
-        <DockerIcon name={'profile'} label={'Account'} />
+        <DockerIcon data-testid={'dockerbar-home-icon'} name={'home'} label={'Home'} isActive />
+        <DockerIcon data-testid={'dockerbar-basket-icon'} name={'shopping-basket'} label={'Basket'} />
+        <DockerIcon data-testid={'dockerbar-account-icon'} name={'profile'} label={'Account'} />
       </Flex>
     </Box>
   )

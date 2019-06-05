@@ -27,7 +27,6 @@ export class ContextProvider extends React.Component<{}, ContextProviderState> {
   };
 
   private update = ({ key, value }: UpdateStateArg) => {
-
     const stateObject:StateObjectArg = { [key]: value};
 
     this.setState(stateObject);

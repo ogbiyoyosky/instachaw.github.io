@@ -1,3 +1,5 @@
+'use strict'
+
 import styled from 'styled-components';
 import { Flex } from 'rebass';
 import { theme } from '@Config';
@@ -23,6 +25,7 @@ export const SearchBarInput = styled('input')`
     background: #fff;
     border-color: #fff;
     height: ${searchBarHeight};
+    width: inherit;
     border-radius: ${radius[2]};
     padding-left: ${searchBarAddonWidth}px;
     --webkit-appearance: none;
@@ -42,4 +45,5 @@ export const SearchBarInput = styled('input')`
 
 export const SearchBarWrapper = styled(Flex)`
   position: relative;
+  width: 100%;
 `;

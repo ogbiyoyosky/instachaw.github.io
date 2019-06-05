@@ -5,17 +5,18 @@ import { bindActionCreators, Dispatch } from 'redux';
 import Head from 'next/head'
 
 import { StoresFeed } from '@Components';
-import { IStorePage, IStore } from '@Interfaces';
+import { IStoresPage, IStore } from '@Interfaces';
 import { StoreActions } from '@Store/Store/actions';
 import { getStores, getIsFetchingStores } from '@Store/Store/selectors';
 
-export class StoresPage extends React.Component<IStorePage.IProps, IStorePage.IState> {
+export class StoresPage extends React.Component<IStoresPage.IProps, IStoresPage.IState> {
 	componentDidMount() {
-		this.props.fetchStores();
+		(this.props as any).fetchStores();
 	}
 
 	public render(): JSX.Element {
 		const { isFetchingStores, stores } = this.props;
+		
 		return (
 			<>
 				<Head>

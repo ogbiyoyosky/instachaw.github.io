@@ -13,6 +13,7 @@ const moduleNameMapper =  {
   "^@Store": "<rootDir>/src/Store",
   "^@Store/(.*)$": "<rootDir>/src/Store/$1",
   "^@Utilities": "<rootDir>/src/Utilities",
+  "^@Utilities/(.*)$": "<rootDir>/src/Utilities/$1",
 }
 
 module.exports = {
@@ -24,6 +25,9 @@ module.exports = {
   ],
   automock: false,
   setupFiles: [
+    "./jest.setup.ts"
+  ],
+  setupFilesAfterEnv: [
     "./setupJest.ts"
   ],
   moduleNameMapper,

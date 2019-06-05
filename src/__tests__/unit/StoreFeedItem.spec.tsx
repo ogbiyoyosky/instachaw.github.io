@@ -5,6 +5,7 @@ import { StoresFeedItem } from '@Components/StoresFeed/StoresFeedItem';
 const setup = ({ isVerified }: { isVerified: boolean}) => {
   const { queryByTestId } = render(
     <StoresFeedItem
+      id={1}
       description={'We are a fancy eatery out in Nigeria'}
       title={'Instachaw, Choba'}
       isVerified={isVerified}
@@ -22,14 +23,16 @@ const setup = ({ isVerified }: { isVerified: boolean}) => {
 
 afterEach(cleanup)
 
-test('it should render a verification mark if a store is verified', () => {
-  const { verificationSign } = setup({ isVerified: true });
-
-  expect(verificationSign).toBeInstanceOf(HTMLElement);
-})
-
-test('it should not render a verification mark if a store is not verified.', () => {
-  const { verificationSign } = setup({ isVerified: false });
-
-  expect(verificationSign).toBeNull()
+describe('<VerificationMark />', () => {
+  test('it should render a verification mark if a store is verified', () => {
+    const { verificationSign } = setup({ isVerified: true });
+  
+    expect(verificationSign).toBeInstanceOf(HTMLElement);
+  })
+  
+  test('it should not render a verification mark if a store is not verified.', () => {
+    const { verificationSign } = setup({ isVerified: false });
+  
+    expect(verificationSign).toBeNull()
+  })
 })

@@ -1,23 +1,30 @@
+'use strict';
+const fetch = require('isomorphic-fetch');
+
 const { NEXT_PUBLIC_API_URL } = process.env;
 
 type callApiArgs = {
+  /** Endpoint to call */
   endpoint: string,
+  /** Available HTTP request methods */
   method?: "GET"|"POST"|"PUT"|"DELETE",
+  /** Additional request headers */
   headers?: object
 }
 
 /**
  * Makes a parameterized API request.
  * 
- * @param {String} endpoint - Endpoint for the request.
- * @param {String} method - HTTP method for the request. "GET", "POST", "PUT", "DELETE".
+ * @param {string} endpoint - Endpoint for the request.
+ * @param {string} method - HTTP method for the request. "GET", "POST", "PUT", "DELETE".
  * 
- * @returns {String}
+ * @returns {string}
  */
-export function callApi ({ endpoint, method, headers }: callApiArgs) {
-  headers = headers || {};
-  method = method || 'GET';
-
+export function callApi ({
+  endpoint,
+  method = 'GET',
+  headers = {}
+}: callApiArgs) {
   return fetch(`${NEXT_PUBLIC_API_URL}/${endpoint}`, {
     method,
     headers: {

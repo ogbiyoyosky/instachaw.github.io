@@ -8,20 +8,14 @@ import { AppActions } from '@Store/App/actions';
 import { RootComponent } from '@Components';
 import { ContextProvider } from '@Containers';
 
-type AppContainerProps = {}
+type AppContainerProps = { router:any }
 type AppContainerState = {}
 
 class AppContainer extends React.Component<AppContainerProps, AppContainerState> {
-  state = {
-    isMenuOpen: true
-  }
-
   render () {
     return (
       <ContextProvider>
-        <RootComponent>
-          {this.props.children}
-        </RootComponent>
+        <RootComponent>{this.props.children}</RootComponent>
       </ContextProvider>
     );
   }

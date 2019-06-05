@@ -40,7 +40,7 @@ export const Stencil:React.FC<StencilProps> = (props) => {
 }
 
 Stencil.defaultProps = {
-  radius: '16px',
-  height: '16px',
+  radius: theme.space[1],
+  height: theme.space[1],
   width: '100px'
 }

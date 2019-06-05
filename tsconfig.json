@@ -48,6 +48,9 @@
 			"@Constants/*": [
 				"./src/Constants/*"
 			],
+			"@Generics": [
+				"./src/Generics"
+			],
 			"@Reducers": [
 				"./src/Redux/Reducers"
 			],
@@ -62,6 +65,9 @@
 			],
 			"@Utilities": [
 				"./src/Utilities"
+			],
+			"@Utilities/*": [
+				"./src/Utilities/*"
 			]
 		},
 	}

@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react'
+
 import {
   SearchBarAddon,
   SearchBarInput,
@@ -8,18 +9,15 @@ import {
 } from './SearchBarAtoms'
 
 import { Icon } from '@Components';
+import { theme } from '@Config';
 
-type SearchBarProps = {
-
-}
-
-export const SearchBar:React.FC<SearchBarProps> = (props) => {
+export const SearchBar:React.FC = () => {
   return (
-    <label>
-      <SearchBarWrapper>
-        <SearchBarInput width={'60vw'} placeholder={'Find food...'} />
+    <label style={{ width: '100%' }}>
+      <SearchBarWrapper width={1}>
+        <SearchBarInput placeholder={'Find great meals...'} />
         <SearchBarAddon>
-          <Icon name="search" fill={'#b8b4ad'} />
+          <Icon name="search" fill={theme.palette.grayscale[5]} />
         </SearchBarAddon>
       </SearchBarWrapper>
     </label>

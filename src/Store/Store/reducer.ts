@@ -7,7 +7,18 @@ import { IAction, IStorePage } from '@Interfaces';
  * INITIAL_STATE
 */
 const INITIAL_STATE: IStorePage.IStateProps = {
-	isFetchingStores: false
+	/** Displays a loading indicator for store products */
+	isFetchingStoreProducts: false,
+	/** Displays a loading indicator for stores */
+	isFetchingStores: false,
+	/** Displays a loading indicator for a single store */
+	isLoadingStore: false,
+	/** A collection of stores */
+	stores: [],
+	// Associative map that holds the products count for each store.
+	storesProductsCountMap: {},
+	// Holds the current products page index for each store.
+	storesProductsPageIndexMap: {},
 };
 
 type IMapPayload = IStorePage.Actions.IMapPayload;

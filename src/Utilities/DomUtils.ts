@@ -1,10 +1,12 @@
+'use strict';
+
 /**
  * Calculates the width of a column in a row.
  * 
- * @param {Number} span - Width of a single column.
- * @param {Number} gridSize - Total capacity of columns in the grid.
+ * @param {number} span - Width of a single column.
+ * @param {number} gridSize - Total capacity of columns in the grid.
  * 
- * @returns {String}
+ * @returns {string}
  */
 export function computeColumnWidth (span:number, gridSize = 12) {
   const width:number = (span / gridSize) * 100;

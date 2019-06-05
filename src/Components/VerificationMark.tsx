@@ -1,19 +1,20 @@
+'use strict'
+
 import * as React from 'react';
+
 import { Box } from 'rebass';
 import { theme } from '@Config';
 import { Icon } from '@Components';
 
-type VerificationMarkProps = {}
-
-export const VerificationMark:React.FC<VerificationMarkProps> = () => {
+export const VerificationMark:React.FC = () => {
   return (
     <Box
       backgroundColor={theme.palette.blue[6]}
       style={{
         borderRadius: '50%',
         position: 'relative',
-        height: '24px',
-        width: '24px'
+        height: theme.space[2],
+        width: theme.space[2]
       }}
       data-testid = {'verification-mark'}
     >

@@ -1,6 +1,11 @@
+'use strict';
+
 import { slugify } from './StringUtils'
 
+const { NEXT_PUBLIC_CLOUDINARY_BUCKET_ID } = process.env;
 const icons = require('../../src/Data/icons.json');
+
+import { THUMBNAIL_URL } from '@Constants/ApiConstants'
 
 type iconsType = {
   [icon: string]: any
@@ -50,6 +55,16 @@ export const getIconsPath = ({ name, legacy }: getIconsPathArgs) => {
 }
 
 /**
+ * Generates the query string for a store item.
+ * 
+ * @param  {number} id
+ * @return {string}
+ */
+export function getStoreItemQs(id: number) {
+  return `/store?slug=store-${id}`
+}
+
+/**
  * Generates the route string for a store item.
  * 
  * @param  {number} id
@@ -59,4 +74,61 @@ export const getIconsPath = ({ name, legacy }: getIconsPathArgs) => {
  */
 export function getStoreItemPath(id: number, title: string) {
   return `/store/${slugify(title)}-${id}`
+}
+
+/**
+ * Generates the route query string for a product within a store.
+ * 
+ * @param  {number} storeId
+ * @param  {number} productId
+ * 
+ * @return {string}
+ */
+export function getStoreProductQs(
+  storeId: number,
+  productId:number
+) {
+  return `/store?slug=store-${storeId}&productId=${productId}`
+}
+
+/**
+ * Generates the route string for a product within a store.
+ * 
+ * @param  {string} storePath
+ * @param  {number} id
+ * @param  {string} title
+ * 
+ * @return {string}
+ */
+export function getStoreProductPath(
+  storePath: string,
+  productId:number,
+  productTitle:string
+) {
+  return `${storePath}/${slugify(productTitle)}-${productId}`
+}
+
+/**
+ * Returns the depth of a route path string.
+ * 
+ * @param {String} routePathString - The path string to resolve.
+ * @returns Number;
+ */
+export function findRoutePathDepth (routePathString:any) {
+  return routePathString
+          .split('/')
+          .filter((pathFragment:any) => pathFragment !== '')
+          .length;
+}
+
+/**
+ * Generates the thumbnail path for a product within a store.
+ * 
+ * @param {string} storeId - Store Id.
+ * @param {string} photo
+ * 
+ * @returns {string};
+ */
+export function getStoreProductThumbnailPath (storeId:number, photo:string):string {
+return `${THUMBNAIL_URL}/${NEXT_PUBLIC_CLOUDINARY_BUCKET_ID}/store-${storeId}/${photo}`;
 }

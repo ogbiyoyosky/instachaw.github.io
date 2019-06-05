@@ -1,7 +1,10 @@
+'use strict';
+
 import * as React from 'react';
 import styled from 'styled-components';
 import { Flex } from 'rebass';
 
+import { theme } from '@Config';
 import { computeColumnWidth } from '@Utilities';
 
 type ColumnProps = {
@@ -20,7 +23,7 @@ type ColumnProps = {
 };
 
 export const Column:React.FC<ColumnProps> = (props) => {
-  const { sm, md, lg, xl, gutterWidth, children, style } = props;
+  const { sm, md, lg, xl, gutterWidth=theme.space[1], children, style } = props;
 
   const Col = styled(Flex)`
     padding-left: ${gutterWidth};
@@ -40,14 +43,10 @@ export const Column:React.FC<ColumnProps> = (props) => {
       ${lg && computeColumnWidth(lg)};
     }
 
-    @media only screen and (max-width: 1200px) {
+    @media only screen and (min-width: 992px) {
       ${xl && computeColumnWidth(xl)};
     }
   `;
 
   return <Col style={style}>{children}</Col>
-}
-
-Column.defaultProps = {
-  gutterWidth: '16px'
 }

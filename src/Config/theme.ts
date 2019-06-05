@@ -1,6 +1,5 @@
 import { Box } from 'rebass';
 import styled from 'styled-components';
-import { palette } from 'styled-tools';
 
 const grayscale = [
   "#221a1a",
@@ -52,11 +51,105 @@ const radius = [
   '32px',
 ]
 
+export const shadows = [
+  `0px 1px 3px 0px ${grayscale[5]}`,
+  `0px 4px 6px 0px ${grayscale[5]}`,
+  `0px 5px 15px 5px ${grayscale[5]}`,
+  `0px 10px 24px 0px ${grayscale[5]}`,
+  `0px 15px 35px 0px ${grayscale[5]}`
+]
+
+const buttonVariants = {
+  base: {
+    margin: '0',
+    borderRadius: radius[1]
+  },
+  primary: {
+    color: primary[primary.length - 1],
+    backgroundColor: primary[3],
+  },
+  primaryMild: {
+    color: primary[0],
+    backgroundColor: primary[5],
+  },
+  success: {
+    color: green[green.length - 1],
+    backgroundColor: green[3],
+  },
+  successMild: {
+    color: green[0],
+    backgroundColor: green[6],
+  },
+  outline: {
+    boxShadow: 'inset 0 0 0 2px'
+  },
+  neutral: {
+    color: grayscale[0],
+    backgroundColor: grayscale[5],
+    border: `1px solid ${grayscale[5]}`,
+  },
+  xs: {
+    padding: `${parseInt(space[0]) / 2}px ${space[1]}`,
+    fontSize: fontSizes[1]
+  },
+  sm: {
+    padding: `${space[1]} ${space[1]}`,
+    fontSize: fontSizes[2]
+  },
+  transparent: {
+    backgroundColor: 'transparent',
+  }
+}
+
+const buttons = {
+  ...buttonVariants,
+  primary: { ...buttonVariants.primary, ...buttonVariants.base },
+  primaryXs: {
+    ...buttonVariants.primary,
+    ...buttonVariants.xs,
+    ...buttonVariants.base
+  },
+  primaryMildXs: {
+    ...buttonVariants.primaryMild,
+    ...buttonVariants.xs,
+    ...buttonVariants.base
+  },
+  successXs: {
+    ...buttonVariants.success,
+    ...buttonVariants.xs,
+    ...buttonVariants.base
+  },
+  successMildXs: {
+    ...buttonVariants.successMild,
+    ...buttonVariants.xs,
+    ...buttonVariants.base
+  },
+  outline: {
+    ...buttonVariants.outline,
+    ...buttonVariants.transparent,
+    ...buttonVariants.base
+  },
+  neutral: {
+    ...buttonVariants.neutral,
+    ...buttonVariants.base
+  },
+  neutralSm: {
+    ...buttonVariants.neutral,
+    ...buttonVariants.sm,
+    ...buttonVariants.base
+  },
+  transparentXs: {
+    ...buttonVariants.transparent,
+    ...buttonVariants.xs,
+    ...buttonVariants.base
+  }
+}
+
 const Card = styled(Box)`
   background: #fff;
   width: 100%;
   border-radius: ${radius[1]};
-  box-shadow: 0px 15px 35px 0px ${palette('shadow', 5)};  
+  box-shadow: ${(props:any) => props.shadowSize ? shadows[props.shadowSize] : shadows[0]}
 `;
 
 const Heading = styled(Box)`
@@ -126,10 +219,6 @@ export const Paragraph = styled(Box)`
   }
 `;
 
-export const shadows = [
-  `0px 15px 35px 0px ${grayscale[5]}`
-]
-
 export const theme = {
   palette: {
     grayscale,
@@ -138,9 +227,10 @@ export const theme = {
     green
   },
 
+  buttons,
   fontSizes,
   radius,
-  space: space,
+  space,
   shadows,
 
   Card,

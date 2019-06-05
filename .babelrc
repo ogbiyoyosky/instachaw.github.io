@@ -17,6 +17,7 @@
             "@Config": "./src/Config",
             "@Constants": "./src/Constants",
             "@Interfaces": "./src/Interfaces",
+            "@Generics": "./src/Generics",
             "@Reducers": "./src/Redux/Reducers",
             "@Store": "./src/Store"
           }

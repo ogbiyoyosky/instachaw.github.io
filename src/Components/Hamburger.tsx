@@ -28,16 +28,6 @@ type HamburgerMenuState = {
   isOpen: boolean
 }
 
-const defaultProps = {
-  width: 24,
-  height: 8,
-  strokeWidth: 2,
-  animationDuration: 6,
-  rotate: 0,
-  borderRadius: 64,
-  color: '#000'
-}
-
 const getTransformValue = (isOpen:any, defaultPos:any, rotate:any, halfHeight:any) => {
   let height =  isOpen ? halfHeight : defaultPos;
   height = height || 0;
@@ -60,14 +50,28 @@ const getLineBase = (
     borderRadius: `${borderRadius}px`,
     transformOrigin: 'center',
     position: absolutePosition,
-    marginTop
+    marginTop,
+    transition: `transform 0.5s cubic-bezier(0.04, 0.04, 0.12, 0.96)`
   }
 }
 
-export class HamburgerIcon extends React.PureComponent<HamburgerMenuProps, HamburgerMenuState> {
+const defaultProps = {
+  width: 24,
+  height: 8,
+  strokeWidth: 3,
+  animationDuration: 6,
+  rotate: 0,
+  borderRadius: 64,
+  color: '#000'
+}
+
+
+export class Hamburger extends React.Component<HamburgerMenuProps, HamburgerMenuState> {
   state = {
     isOpen: false
   }
+
+  static defaultProps = defaultProps;  
 
   constructor(props:HamburgerMenuProps) {
     super(props)
@@ -104,12 +108,10 @@ export class HamburgerIcon extends React.PureComponent<HamburgerMenuProps, Hambu
     };
 
     return (
-      <div style={{ ...styles.container }} className={isOpen ? 'hamburgerLineOpen': 'hamburgerLineClose'} onClick={this.handleMenuToggleClick}>
+      <div style={{ ...styles.container }} data-testid="hamburger" className={isOpen ? 'hamburgerLineOpen': 'hamburgerLineClose'} onClick={this.handleMenuToggleClick}>
         <span style={{ ...styles.lineBase, ...styles.firstLine }} />
         <span style={{ ...styles.lineBase, ...styles.thirdLine }} />
       </div>
     );  
   }
 }
-
-HamburgerIcon.defaultProps = defaultProps;
