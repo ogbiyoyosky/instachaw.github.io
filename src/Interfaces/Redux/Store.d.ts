@@ -1,11 +1,15 @@
-//#region Global Imports
 import { Props } from 'react';
-//#endregion Global Imports
 
-//#region Interface Imports
-import { IHomePage } from '@Interfaces';
-//#endregion Interface Imports
+import {
+    IHomePage,
+    IStorePage,
+    IStoresPage,
+    IEntity
+} from '@Interfaces';
 
 export type IStore = {
-    home: IHomePage.IStateProps
+    home: IHomePage.IStateProps,
+    store: IStorePage.IStateProps,
+    stores: IStoresPage.IStateProps,
+    entities: IEntity.IStateProps,
 }

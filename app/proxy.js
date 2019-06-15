@@ -3,7 +3,7 @@
 const isInDevelopmentMode = process.env.NODE_ENV !== 'production';
 
 const localServerUrl = 'http://localhost:3333/api/';
-const remoteServerUrl = 'http://localhost:3333/api/';
+const remoteServerUrl = 'http://api.instachaw.com/api/';
 
 const target = isInDevelopmentMode ? localServerUrl: remoteServerUrl;
 

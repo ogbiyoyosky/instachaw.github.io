@@ -1,0 +1,1 @@
+export { StoresFeed } from './StoresFeed'

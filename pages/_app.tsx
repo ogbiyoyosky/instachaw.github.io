@@ -23,13 +23,13 @@ class MyApp extends App<IApp.IProps> {
 
 
     render(): JSX.Element {
-        const { Component, pageProps, store } = this.props;
+        const { Component, pageProps, router, store } = this.props;
 
         return (
             <Container>
                 <Provider store={store}>
-                    <AppContainer>
-                        <Component {...pageProps} />
+                    <AppContainer router={router}>
+                        <Component {...pageProps} router={router} />
                     </AppContainer>
                 </Provider>
             </Container>

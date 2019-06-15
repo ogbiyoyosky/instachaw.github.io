@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.page-container {
+  padding-top: 70px;
+}
+
+.page-transition-enter.left {
+  transform: translate3d(-100%, 0, 0);
+}
+
+.page-transition-enter.right {
+  transform: translate3d(-100%, 0, 0);
+}
+
+.page-transition-enter-active.left {
+  transform: translate3d(0, 0, 0);
+}
+
+.page-transition-enter-active.right {
+  transform: translate3d(-100%, 0, 0);
+}
+
+.page-transition-exit {
+  transform: translate3d(0, 0, 0);
+}
+
+.page-transition-exit-active.left {
+  transform: translate3d(-100%, 0, 0);
+  transition: transform 600ms;
+}
+
+.page-transition-exit-active.right {
+  transform: translate3d(100%, 0, 0);
+  transition: transform 600ms;
+}
+
+.page-container {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.hamburgerLineOpen {
+  transform: rotate(180deg);
+  transition: transform 1.5s cubic-bezier(0.04, 0.04, 0.12, 0.96);
+}

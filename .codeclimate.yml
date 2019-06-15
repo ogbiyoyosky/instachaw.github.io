@@ -1,6 +1,9 @@
 ## other configuration excluded from example...
 exclude_patterns:
 - "coverage/"
+- "node_modules/**"
+- ".next/**"
+- ".circleci/**"
 - "src/__tests__/**"
 - "src/Constants/**"
 - "**/reducer.ts"

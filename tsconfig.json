@@ -16,6 +16,7 @@
 		"preserveConstEnums": true,
 		"removeComments": false,
 		"skipLibCheck": true,
+		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
 		"target": "esnext",
@@ -38,11 +39,17 @@
 			"@Interfaces/*": [
 				"./src/Interfaces/*"
 			],
+			"@Config": [
+				"./src/Config"
+			],
 			"@Constants": [
 				"./src/Constants"
 			],
 			"@Constants/*": [
 				"./src/Constants/*"
+			],
+			"@Generics": [
+				"./src/Generics"
 			],
 			"@Reducers": [
 				"./src/Redux/Reducers"
@@ -58,6 +65,9 @@
 			],
 			"@Utilities": [
 				"./src/Utilities"
+			],
+			"@Utilities/*": [
+				"./src/Utilities/*"
 			]
 		},
 	}

@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    environment:
+      CC_TEST_REPORTER_ID: 3c410abff2ed90f02dd42efe53bc3496d5fc2e2a812f71a6cfb41b7ee42037ee
+    docker:
+      - image: circleci/node:latest-browsers
+    steps:
+      - checkout
+      - restore_cache: # special step to restore the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Setup Dependencies
+          command: npm install
+      - run:
+          name: Start Next.js server
+          command: npm run start:dev
+          background: true
+      # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
+      # so override the shell and have the last command be the : { null } command to force exit code 0.
+      - run:
+          shell: /bin/sh
+          command: |
+            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:3000/stores
+            :
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run: # run tests
+          name: Run Test and Coverage
+          command: |
+            ./cc-test-reporter before-build
+            npm test -- --coverage
+            ./cc-test-reporter after-build --exit-code $?

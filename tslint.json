@@ -191,7 +191,7 @@
 			false,
 			"regex"
 		],
-		"import-spacing": true,
+		"import-space": true,
 		"interface-name": [
 			true,
 			"always-prefix"

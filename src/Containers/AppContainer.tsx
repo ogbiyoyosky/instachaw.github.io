@@ -1,21 +1,22 @@
+'use strict';
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { AppActions } from '@Store/App/actions'
+import { AppActions } from '@Store/App/actions';
+import { RootComponent } from '@Components';
+import { ContextProvider } from '@Containers';
 
-const AppComponent:React.SFC = ({ children }) => {
-  return (
-    <div>{children}</div>
-  )
-}
+type AppContainerProps = { router:any }
+type AppContainerState = {}
 
-class AppContainer extends React.Component {
+class AppContainer extends React.Component<AppContainerProps, AppContainerState> {
   render () {
     return (
-      <AppComponent>
-        {this.props.children}
-      </AppComponent>      
+      <ContextProvider>
+        <RootComponent>{this.props.children}</RootComponent>
+      </ContextProvider>
     );
   }
 }
